@@ -1,0 +1,58 @@
+﻿
+Implement Non-literal to Non-literal pattern matching?
+
+Implement Other Data Types
+
+http://opensoundcontrol.org/spec-1_0
+============================================================================================================
+
+This table lists the correspondance between each OSC Type Tag and the type of its corresponding OSC Argument:OSC Type Tag	Type of corresponding argument
+i	int32
+f	float32
+s	OSC-string
+b	OSC-blob
+
+The meaning of each OSC Type Tag
+
+Some OSC applications communicate among instances of themselves with additional, nonstandard argument types beyond those specified above. OSC applications are not required to recognize these types; an OSC application should discard any message whose OSC Type Tag String contains any unrecognized OSC Type Tags. An application that does use any additional argument types must encode them with the OSC Type Tags in this table:OSC Type Tag	Type of corresponding argument
+h	64 bit big-endian two's complement integer
+t	OSC-timetag
+d	64 bit ("double") IEEE 754 floating point number
+S	Alternate type represented as an OSC-string (for example, for systems that differentiate "symbols" from "strings")
+c	an ascii character, sent as 32 bits
+r	32 bit RGBA color
+m	4 byte MIDI message. Bytes from MSB to LSB are: port id, status byte, data1, data2
+T	True. No bytes are allocated in the argument data.
+F	False. No bytes are allocated in the argument data.
+N	Nil. No bytes are allocated in the argument data.
+I	Infinitum. No bytes are allocated in the argument data.
+[	Indicates the beginning of an array. The tags following are for data in the Array until a close brace tag is reached.
+]	Indicates the end of an array.
+
+
+http://stackoverflow.com/questions/5206857/convert-ntp-timestamp-to-utc
+============================================================================================================
+
+As rene pointed out the NTP timestamp is made up of an integer and a fractional part. The integer part represents the number of seconds since base time, which is 1st Jan 1900. The fractional part represents the number of fractional units (a unit is 1/((2^32)-1)) in the second.
+Also, the time representation is UTC.
+
+Therefore, if you have an NTP Timestamp of say 14236589681638796952. NTP is a 64-bit unsigned fixed-point number. We can say:
+UInt64 ntpTimestamp = 14236589681638796952;
+
+The high 32 bits are given by:
+UInt32 seconds = (UInt32)((ntpTimestamp >> 32) & 0xFFFFFFFF);
+
+And the low 32 bits are are given by:
+UInt32 fraction = (UInt32)(ntpTimestamp & 0xFFFFFFFF);
+
+The number in seconds is equal to the most significant word or in this case: seconds == 3314714339
+The number of milliseconds can be calculated from the fraction using this calculation:
+Int32 milliseconds = (Int32)(((Double)fraction / UInt32.MaxValue) * 1000);
+
+Which is 12 in this case.
+Thus the DateTime value is yielded from:
+
+DateTime BaseDate = new DateTime(1900, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+DateTime dt = BaseDate.AddSeconds(seconds ).AddMilliseconds(milliseconds);
+
+Therefore the NTP Timestamp of 14236589681638796952 is equal to the 14th Jan 2005 at 17:58:59 and 12 milliseconds UTC.

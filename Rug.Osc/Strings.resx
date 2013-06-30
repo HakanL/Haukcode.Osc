@@ -123,6 +123,21 @@
   <data name="Arguments_UnsupportedType" xml:space="preserve">
     <value>Unsupported arguemnt type '{0}'</value>
   </data>
+  <data name="Container_IsValidContainerAddress" xml:space="preserve">
+    <value>Invalid container address '{0}'</value>
+  </data>
+  <data name="OscAddress_CannotMatch2AddressPatterns" xml:space="preserve">
+    <value>Cannot match 2 address patterns</value>
+  </data>
+  <data name="OscAddress_CannotMatchNonLiteral" xml:space="preserve">
+    <value>{0} cannot match non literal address parts</value>
+  </data>
+  <data name="OscAddress_NotAValidOscAddress" xml:space="preserve">
+    <value>The address '{0}' is not a valid osc address</value>
+  </data>
+  <data name="OscAddress_UnknownAddressPart" xml:space="preserve">
+    <value>Unknown address part '{0}'</value>
+  </data>
   <data name="Parser_ArgumentUnexpectedEndOfMessage" xml:space="preserve">
     <value>Unexpected end of message while parsing argument '{0}'</value>
   </data>

@@ -106,6 +106,15 @@ namespace Rug.Osc
 
 				#endregion
 
+				#region Zero Arguments
+
+				if (m_Arguments.Length == 0)
+				{
+					return size;
+				}
+
+				#endregion
+
 				#region Type Tag
 
 				// comma 
@@ -127,6 +136,9 @@ namespace Rug.Osc
                         return 0;
                     }
                 }
+
+				// terminator
+				size++;
 
 				// padding
                 nullCount = 4 - (int)(size % 4);
@@ -278,9 +290,18 @@ namespace Rug.Osc
 
                 #endregion 
 
-                #region Type Tag
-                
-                // Write the comma 
+				#region Zero Arguments
+
+				if (m_Arguments.Length == 0)
+				{
+					return (int)stream.Position;
+				}
+
+				#endregion
+
+				#region Type Tag
+
+				// Write the comma 
                 writer.Write((byte)',');
 
                 // iterate through arguments and check their types
@@ -307,6 +328,9 @@ namespace Rug.Osc
                         throw new Exception(String.Format(Strings.Arguments_UnsupportedType, obj.GetType().ToString())); 
                     }
                 }
+
+				// write null terminator
+				writer.Write((byte)0);
 
 				// padding
 				Helper.WritePadding(writer, stream.Position); 
@@ -357,7 +381,6 @@ namespace Rug.Osc
 						Helper.WritePadding(writer, stream.Position); 
                     }
                 }                    
-
 
                 #endregion
 
@@ -434,6 +457,8 @@ namespace Rug.Osc
 
                     msg.m_Error = OscMessageError.MissingAddress;
                     msg.m_ErrorMessage = Strings.Parser_MissingAddressEmpty;
+
+					return msg; 
                 }
 
                 // read the string 
@@ -464,20 +489,19 @@ namespace Rug.Osc
 
                 #endregion 
 
-                #region Parse Type Tag
+				#region Zero Arguments
 
-                // skip over the comma
-                if (stream.Position + 1 >= stream.Length) 
-                {
-                    // this shouldn't happen and means we're decoding rubbish
+				if (stream.Position == stream.Length)
+				{
 					msg.m_Arguments = new object[0];
 
-                    msg.m_Error = OscMessageError.InvalidSegmentLength;
-                    msg.m_ErrorMessage = Strings.Parser_UnexpectedEndOfMessage; 
+					return msg;
+				}
 
-                    return msg; 
-                }  
-                
+				#endregion
+
+                #region Parse Type Tag
+
                 // check that the next char is a comma                
                 if ((char)reader.ReadByte() != ',')
                 {
@@ -551,11 +575,32 @@ namespace Rug.Osc
                         case 'b': 
                             // blob
                             {
+								if (stream.Position + 4 > stream.Length)
+								{
+									msg.m_Arguments = new object[0];
+
+									msg.m_Error = OscMessageError.ErrorParsingBlob;
+									msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+
+									return msg;
+								}
+
                                 uint length = reader.ReadUInt32(); 
                                 length = unchecked((length & 0xFF000000) >> 24 | 
                                                    (length & 0x00FF0000) >> 8 | 
                                                    (length & 0x0000FF00) << 8 |
                                                    (length & 0x000000FF) << 24);
+
+								// this shouldn't happen and means we're decoding rubbish
+								if (length > 0 && stream.Position + length >= stream.Length)
+								{
+									msg.m_Arguments = new object[0];
+
+									msg.m_Error = OscMessageError.ErrorParsingBlob;
+									msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+
+									return msg;
+								}  
 
 								msg.m_Arguments[i] = reader.ReadBytes((int)length); 
 
@@ -606,7 +651,7 @@ namespace Rug.Osc
                                     return msg; 
                                 }
 
-								msg.m_Arguments[i] = Encoding.UTF8.GetString(bytes, (int)stringStart, (int)(stream.Position - start) - 1);
+								msg.m_Arguments[i] = Encoding.UTF8.GetString(bytes, (int)stringStart, (int)(stream.Position - stringStart) - 1);
 
                                 // Advance pass the padding
                                 if (stream.Position % 4 != 0)

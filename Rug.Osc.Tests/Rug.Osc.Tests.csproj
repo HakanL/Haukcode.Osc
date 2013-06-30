@@ -46,11 +46,11 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HelperTest.cs" />
+    <Compile Include="OscAddressTest.cs" />
     <Compile Include="OscMessageTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Shadow Include="Test References\Rug.Osc.accessor" />
+    <Compile Include="UnitTestHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rug.Osc\Rug.Osc.csproj">
