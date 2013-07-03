@@ -84,13 +84,31 @@ namespace Rug.Osc.Tests
 		}
 
 		/// <summary>
+		///A test for ReadSingle
+		///</summary>
+		[TestMethod()]
+		public void ReadSingleTest()
+		{
+			byte[] data = new byte[] { 0x41, 0xCA, 0x00, 0x00 };
+			float expected = 25.25F;
+
+			using (MemoryStream stream = new MemoryStream(data))
+			using (BinaryReader reader = new BinaryReader(stream))
+			{				
+				float actual;
+				actual = Helper.ReadSingle(reader);
+				Assert.AreEqual(expected, actual);
+			}
+		}
+
+		/// <summary>
 		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void WriteTest_Int()
+		public void WriteTest_Int32()
 		{
-			byte[] expected = new byte[] { 0x00, 0x00, 0xCA,0x41 };
-			int value = 51777;
+			byte[] expected = new byte[] { 0xAB, 0xCD, 0xEF, 0x42 };
+			int value = unchecked((int)0xABCDEF42);
 
 			using (MemoryStream stream = new MemoryStream())
 			using (BinaryWriter writer = new BinaryWriter(stream))
@@ -98,6 +116,170 @@ namespace Rug.Osc.Tests
 				Helper.Write(writer, value);
 
 				UnitTestHelper.AreEqual(expected, stream.GetBuffer(), stream.Length); 
+			}
+		}
+
+		/// <summary>
+		///A test for ReadInt32
+		///</summary>
+		[TestMethod()]
+		public void ReadInt32Test()
+		{
+			byte[] data = new byte[] { 0xAB, 0xCD, 0xEF, 0x42 };
+			int expected = unchecked((int)0xABCDEF42);
+
+			using (MemoryStream stream = new MemoryStream(data))
+			using (BinaryReader reader = new BinaryReader(stream))
+			{
+				int actual;
+				actual = Helper.ReadInt32(reader);
+				Assert.AreEqual(expected, actual);
+			} 
+		}
+
+		/// <summary>
+		///A test for Write
+		///</summary>
+		[TestMethod()]
+		public void WriteTest_UInt32()
+		{
+			byte[] expected = new byte[] { 0xAB, 0xCD, 0xEF, 0xF2 };
+			uint value = 0xABCDEFF2;			
+
+			using (MemoryStream stream = new MemoryStream())
+			using (BinaryWriter writer = new BinaryWriter(stream))
+			{
+				Helper.Write(writer, value);
+
+				UnitTestHelper.AreEqual(expected, stream.GetBuffer(), stream.Length);
+			}
+		}
+
+		/// <summary>
+		///A test for ReadUInt32
+		///</summary>
+		[TestMethod()]
+		public void ReadUInt32Test()
+		{
+			byte[] data = new byte[] { 0xAB, 0xCD, 0xEF, 0xF2 };
+			uint expected = 0xABCDEFF2;			
+
+			using (MemoryStream stream = new MemoryStream(data))
+			using (BinaryReader reader = new BinaryReader(stream))
+			{
+				uint actual;
+				actual = Helper.ReadUInt32(reader);
+				Assert.AreEqual(expected, actual);
+			}
+		}
+		
+		/// <summary>
+		///A test for Write
+		///</summary>
+		[TestMethod()]
+		public void WriteTest_Int64()
+		{
+			byte[] expected = new byte[] { 0xA1, 0xC2, 0xE3, 0xF4, 0xA5, 0xC6, 0xE7, 0xF8 };
+			long value = unchecked((long)0xA1C2E3F4A5C6E7F8);
+
+			using (MemoryStream stream = new MemoryStream())
+			using (BinaryWriter writer = new BinaryWriter(stream))
+			{
+				Helper.Write(writer, value);
+
+				UnitTestHelper.AreEqual(expected, stream.GetBuffer(), stream.Length);
+			}
+		}
+
+		/// <summary>
+		///A test for ReadInt64
+		///</summary>
+		[TestMethod()]
+		public void ReadInt64Test()
+		{
+			byte[] data = new byte[] { 0xA1, 0xC2, 0xE3, 0xF4, 0xA5, 0xC6, 0xE7, 0xF8 };
+			long expected = unchecked((long)0xA1C2E3F4A5C6E7F8);
+
+			using (MemoryStream stream = new MemoryStream(data))
+			using (BinaryReader reader = new BinaryReader(stream))
+			{
+				long actual;
+				actual = Helper.ReadInt64(reader);
+				Assert.AreEqual(expected, actual);
+			}
+		}
+
+		/// <summary>
+		///A test for Write
+		///</summary>
+		[TestMethod()]
+		public void WriteTest_UInt64()
+		{
+			byte[] expected = new byte[] { 0xA1, 0xC2, 0xE3, 0xF4, 0xA5, 0xC6, 0xE7, 0xF8 };
+			ulong value = 0xA1C2E3F4A5C6E7F8;
+
+			using (MemoryStream stream = new MemoryStream())
+			using (BinaryWriter writer = new BinaryWriter(stream))
+			{
+				Helper.Write(writer, value);
+
+				UnitTestHelper.AreEqual(expected, stream.GetBuffer(), stream.Length);
+			}
+		}
+
+		/// <summary>
+		///A test for ReadInt64
+		///</summary>
+		[TestMethod()]
+		public void ReadUInt64Test()
+		{
+			byte[] data = new byte[] { 0xA1, 0xC2, 0xE3, 0xF4, 0xA5, 0xC6, 0xE7, 0xF8 };
+			ulong expected = 0xA1C2E3F4A5C6E7F8;
+
+			using (MemoryStream stream = new MemoryStream(data))
+			using (BinaryReader reader = new BinaryReader(stream))
+			{
+				ulong actual;
+				actual = Helper.ReadUInt64(reader);
+				Assert.AreEqual(expected, actual);
+			}
+		}
+
+		/// <summary>
+		///A test for Write
+		///</summary>
+		[TestMethod()]
+		public void WriteTest_Double()
+		{
+			// 0x4028d8c7e28240b8
+			// 12.4234
+			byte[] expected = new byte[] { 0x40, 0x28, 0xd8, 0xc7, 0xe2, 0x82, 0x40, 0xb8 };
+			double value = 12.4234;
+
+			using (MemoryStream stream = new MemoryStream())
+			using (BinaryWriter writer = new BinaryWriter(stream))
+			{
+				Helper.Write(writer, value);
+
+				UnitTestHelper.AreEqual(expected, stream.GetBuffer(), stream.Length);
+			}
+		}
+
+		/// <summary>
+		///A test for ReadDouble
+		///</summary>
+		[TestMethod()]
+		public void ReadDoubleTest()
+		{
+			byte[] data = new byte[] { 0x40, 0x28, 0xd8, 0xc7, 0xe2, 0x82, 0x40, 0xb8 };
+			double expected = 12.4234;
+
+			using (MemoryStream stream = new MemoryStream(data))
+			using (BinaryReader reader = new BinaryReader(stream))
+			{
+				double actual;
+				actual = Helper.ReadDouble(reader);
+				Assert.AreEqual(expected, actual);
 			}
 		}
 
@@ -197,6 +379,6 @@ namespace Rug.Osc.Tests
 
 				Assert.AreEqual(stream.Position, expected);
 			}
-		}
+		}		
 	}
 }

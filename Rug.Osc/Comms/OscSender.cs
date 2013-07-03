@@ -6,9 +6,6 @@ using System.Threading;
 
 namespace Rug.Osc
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public class OscSender : OscSocket
     {
         public const int DefaultMessageBufferSize = 600;

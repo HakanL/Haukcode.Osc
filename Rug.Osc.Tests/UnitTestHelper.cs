@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Drawing;
 
 namespace Rug.Osc.Tests
 {
@@ -29,6 +30,25 @@ namespace Rug.Osc.Tests
 
 		#endregion
 
+		#region Message Single Arg (Long)
+
+		internal static byte[] MessageBody_Long = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'h', 0, 0, 
+				// value
+				0xA1, 0xC2, 0xE3, 0xF4, 0xA5, 0xC6, 0xE7, 0xF8 
+			};
+
+		internal static OscMessage Message_Long()
+		{
+			return new OscMessage("/test", unchecked((long)0xA1C2E3F4A5C6E7F8));
+		}
+
+		#endregion
+
 		#region Message Single Arg (Float)
 
 		internal static byte[] MessageBody_Float = new byte[] 
@@ -44,6 +64,214 @@ namespace Rug.Osc.Tests
 		internal static OscMessage Message_Float()
 		{
 			return new OscMessage("/test", 25.25f);
+		}
+
+		#endregion
+
+		#region Message Single Arg (Double)
+
+		internal static byte[] MessageBody_Double = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'d', 0, 0, 
+				// value				
+				0x40, 0x28, 0xd8, 0xc7, 0xe2, 0x82, 0x40, 0xb8 
+			};
+
+		internal static OscMessage Message_Double()
+		{
+			return new OscMessage("/test", 12.4234);
+		}
+
+		#endregion
+
+		#region Message Single Arg (TimeTag)
+
+		internal static byte[] MessageBody_TimeTag = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'t', 0, 0, 
+				// value				
+				0x13, 0xC1, 0xDA, 0x49, 0xE6, 0xB5, 0x0B, 0x0F
+			};
+
+		internal static OscMessage Message_TimeTag()
+		{
+			return new OscMessage("/test", new OscTimeTag(0x13C1DA49E6B50B0F));
+		}
+
+		#endregion
+
+		#region Message Single Arg (Char)
+
+		internal static byte[] MessageBody_Char = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'c', 0, 0, 
+				// value				
+				(byte)'p', 0x00, 0x00, 0x00
+			};
+
+		internal static OscMessage Message_Char()
+		{
+			return new OscMessage("/test", (byte)'p');
+		}
+
+		#endregion
+
+		#region Message Single Arg (Color)
+
+		internal static byte[] MessageBody_Color_Red = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'r', 0, 0, 
+				// value				
+				0xFF, 0x00, 0x00, 0xFF
+			};
+
+		internal static OscMessage Message_Color_Red()
+		{
+			return new OscMessage("/test", Color.FromArgb(255, 255, 0, 0));
+		}
+
+		internal static byte[] MessageBody_Color_Green = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'r', 0, 0, 
+				// value				
+				0x00, 0xFF, 0x00, 0xFF
+			};
+
+		internal static OscMessage Message_Color_Green()
+		{
+			return new OscMessage("/test", Color.FromArgb(255, 0, 255, 0));
+		}
+
+		internal static byte[] MessageBody_Color_Blue = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'r', 0, 0, 
+				// value				
+				0x00, 0x00, 0xFF, 0xFF
+			};
+
+		internal static OscMessage Message_Color_Blue()
+		{
+			return new OscMessage("/test", Color.FromArgb(255, 0, 0, 255));
+		}
+
+		internal static byte[] MessageBody_Color_Transparent = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'r', 0, 0, 
+				// value				
+				0x00, 0x00,0x00, 0x00
+			};
+
+		internal static OscMessage Message_Color_Transparent()
+		{
+			return new OscMessage("/test", Color.FromArgb(0, 0, 0, 0));
+		}
+
+		#endregion
+
+		#region Message Single Arg (Midi)
+
+		internal static byte[] MessageBody_Midi = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'m', 0, 0, 
+				// value				
+				0x01, 0x94, 0x22, 0x01
+			};
+
+		internal static OscMessage Message_Midi()
+		{
+			return new OscMessage("/test", new OscMidiMessage(1, OscMidiMessageType.NoteOn, 4, 34, 1));
+		}
+
+		#endregion
+
+		#region Message Single Arg (True)
+
+		internal static byte[] MessageBody_True = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'T', 0, 0, 				
+			};
+
+		internal static OscMessage Message_True()
+		{
+			return new OscMessage("/test", true);
+		}
+
+		#endregion
+
+		#region Message Single Arg (False)
+
+		internal static byte[] MessageBody_False = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'F', 0, 0, 				
+			};
+
+		internal static OscMessage Message_False()
+		{
+			return new OscMessage("/test", false);
+		}
+
+		#endregion
+
+		#region Message Single Arg (Nill)
+
+		internal static byte[] MessageBody_Nill = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'N', 0, 0, 				
+			};
+
+		internal static OscMessage Message_Nill()
+		{
+			return new OscMessage("/test", OscNil.Value);
+		}
+
+		#endregion
+
+		#region Message Single Arg (Infinitum)
+
+		internal static byte[] MessageBody_Infinitum = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'I', 0, 0, 				
+			};
+
+		internal static OscMessage Message_Infinitum()
+		{
+			return new OscMessage("/test", OscInfinitum.Value);
 		}
 
 		#endregion
@@ -111,6 +339,25 @@ namespace Rug.Osc.Tests
 
 		#endregion
 
+		#region Message Single Arg (Symbol)
+
+		internal static byte[] MessageBody_Symbol = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'S', 0, 0, 
+				// value				
+				(byte)'h', (byte)'e', (byte)'l', (byte)'l', (byte)'o', (byte)'!', 0, 0
+			};
+
+		internal static OscMessage Message_Symbol()
+		{
+			return new OscMessage("/test", new OscSymbol("hello!"));
+		}
+
+		#endregion
+
 		#region Message Single Arg (Blob)
 
 		internal static byte[] MessageBody_Blob = new byte[] 
@@ -128,6 +375,109 @@ namespace Rug.Osc.Tests
 		internal static OscMessage Message_Blob()
 		{
 			return new OscMessage("/test", new byte[] { 3, 2, 1 });
+		}
+
+		#endregion
+
+		#region Message Array Arg (Ints)
+
+		internal static byte[] MessageBody_Array_Ints = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'i', (byte)'[', (byte)'i', (byte)'i', (byte)'i', (byte)']', 0,
+				// value
+				0x1A, 0x2A, 0x3A, 0x4A,
+
+				// value array 
+				0x1A, 0x2A, 0x3A, 0x4A,
+				0x5A, 0x6A, 0x7A, 0x8A,
+				0x9A, 0xAA, 0xBA, 0xCA,
+			};
+
+		internal static OscMessage Message_Array_Ints()
+		{
+			return new OscMessage("/test", unchecked((int)0x1A2A3A4A), 
+				new object[] 
+				{ 
+					unchecked((int)0x1A2A3A4A),
+					unchecked((int)0x5A6A7A8A),
+					unchecked((int)0x9AAABACA),
+				});
+		}
+
+		internal static byte[] MessageBody_Array_Ints2 = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'[', (byte)'i', (byte)'i', (byte)'i', (byte)']', (byte)'i', 0,
+
+				// value array 
+				0x1A, 0x2A, 0x3A, 0x4A,
+				0x5A, 0x6A, 0x7A, 0x8A,
+				0x9A, 0xAA, 0xBA, 0xCA,
+
+				// value
+				0x1A, 0x2A, 0x3A, 0x4A,
+			};
+
+		internal static OscMessage Message_Array_Ints2()
+		{
+			return new OscMessage("/test", 
+				new object[] 
+				{ 
+					unchecked((int)0x1A2A3A4A),
+					unchecked((int)0x5A6A7A8A),
+					unchecked((int)0x9AAABACA),
+				},
+				unchecked((int)0x1A2A3A4A));
+		}
+
+		#endregion
+
+		#region Message Nested Array Arg (Ints)
+
+		internal static byte[] MessageBody_Array_NestedInts = new byte[] 
+			{ 
+				// Address 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
+				// Typetag
+				(byte)',', (byte)'i', (byte)'[', (byte)'i', (byte)'i', (byte)'[', (byte)'i', (byte)'i', (byte)'i', (byte)']', (byte)'i', (byte)']', 0, 0, 0, 0,
+				// value
+				0x1A, 0x2A, 0x3A, 0x4A,
+
+				// value array 
+				0x1A, 0x2A, 0x3A, 0x4A,
+				0x5A, 0x6A, 0x7A, 0x8A,
+
+				// nested value array 
+				0x1A, 0x2A, 0x3A, 0x4A,
+				0x5A, 0x6A, 0x7A, 0x8A,
+				0x9A, 0xAA, 0xBA, 0xCA,
+
+				0x9A, 0xAA, 0xBA, 0xCA,
+			};
+
+		internal static OscMessage Message_Array_NestedInts()
+		{
+			return new OscMessage("/test", unchecked((int)0x1A2A3A4A),
+				new object[] 
+				{ 
+					unchecked((int)0x1A2A3A4A),
+					unchecked((int)0x5A6A7A8A),
+					
+					new object[] 
+					{ 
+						unchecked((int)0x1A2A3A4A),
+						unchecked((int)0x5A6A7A8A),
+						unchecked((int)0x9AAABACA),
+					},
+
+					unchecked((int)0x9AAABACA),
+					
+				});
 		}
 
 		#endregion
@@ -233,6 +583,15 @@ namespace Rug.Osc.Tests
 				0, 0, 0, 0x2A
 			};
 
+		internal static byte[] BadlyFormedMessage_ErrorParsingDouble = new byte[] 
+			{ 
+				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0,
+
+				(byte)',', (byte)'d', 0, 0,
+
+				0, 0, 0, 0x2A
+			};
+
 		#endregion
 
 		#endregion
@@ -244,22 +603,45 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(expected.Error, actual.Error, "Error states do not match");
 			Assert.AreEqual(expected.ErrorMessage, actual.ErrorMessage, "Error messages do not match");
 			Assert.AreEqual(expected.Address, actual.Address, "Message addresses do not match");
-			Assert.AreEqual(expected.Arguments.Length, actual.Arguments.Length, "Number of arguments do not match");
 
-			for (int i = 0; i < actual.Arguments.Length; i++)
+			AreEqual(expected.Arguments, actual.Arguments);
+		}
+
+		internal static void AreEqual(object[] expected, object[] actual)
+		{
+			Assert.AreEqual(expected.Length, actual.Length, "Number of arguments do not match");
+
+			for (int i = 0; i < actual.Length; i++)
 			{
-				Assert.AreEqual(expected.Arguments[i].GetType(), actual.Arguments[i].GetType(), "Argument types at index {0} do not match", i);
+				Assert.AreEqual(expected[i].GetType(), actual[i].GetType(), "Argument types at index {0} do not match", i);
 
-				if (expected.Arguments[i] is byte[])
+				if (expected[i] is object[])
 				{
-					byte[] expectedArg = (byte[])expected.Arguments[i];
-					byte[] actualArg = (byte[])actual.Arguments[i];
+					object[] expectedArg = (object[])expected[i];
+					object[] actualArg = (object[])actual[i];
 
 					AreEqual(expectedArg, actualArg);
 				}
+				else if (expected[i] is byte[])
+				{
+					byte[] expectedArg = (byte[])expected[i];
+					byte[] actualArg = (byte[])actual[i];
+
+					AreEqual(expectedArg, actualArg);
+				}
+				else if (expected[i] is Color)
+				{
+					Color expectedArg = (Color)expected[i];
+					Color actualArg = (Color)actual[i];
+
+					Assert.AreEqual(expectedArg.R, actualArg.R, "Color arguments at index {0} Red componets do not match", i);
+					Assert.AreEqual(expectedArg.G, actualArg.G, "Color arguments at index {0} Green componets do not match", i);
+					Assert.AreEqual(expectedArg.B, actualArg.B, "Color arguments at index {0} Blue componets do not match", i);
+					Assert.AreEqual(expectedArg.A, actualArg.A, "Color arguments at index {0} Alpha componets do not match", i);
+				}
 				else
 				{
-					Assert.AreEqual(expected.Arguments[i], actual.Arguments[i], "Arguments at index {0} do not match", i);
+					Assert.AreEqual(expected[i], actual[i], "Arguments at index {0} do not match", i);
 				}
 			}
 		}
@@ -311,7 +693,6 @@ namespace Rug.Osc.Tests
 		}
 
 		#endregion
-
 
 		#region Address Test Data 
 

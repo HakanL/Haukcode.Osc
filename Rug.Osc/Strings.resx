@@ -144,6 +144,9 @@
   <data name="Parser_InvalidSegmentLength" xml:space="preserve">
     <value>The packet length is not the correct size</value>
   </data>
+  <data name="Parser_MalformedTypeTag" xml:space="preserve">
+    <value>Malformed type tag</value>
+  </data>
   <data name="Parser_MissingAddressEmpty" xml:space="preserve">
     <value>Address was empty</value>
   </data>

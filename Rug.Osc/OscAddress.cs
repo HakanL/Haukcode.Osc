@@ -5,11 +5,17 @@ using System.Text.RegularExpressions;
 
 namespace Rug.Osc
 {
+	#region Osc Address Type
+
 	internal enum OscAddressType 
 	{
 		Literal, 
 		Pattern 
 	}
+
+	#endregion
+
+	#region Osc Address Part Type
 
 	public enum OscAddressPartType
 	{
@@ -21,6 +27,13 @@ namespace Rug.Osc
 		CharList,
 	}
 
+	#endregion 
+
+	#region Osc Address Part
+
+	/// <summary>
+	/// Encompasses a single part of an osc address
+	/// </summary>
 	public struct OscAddressPart
 	{
 		#region Regex Char Escape Helpers
@@ -263,8 +276,12 @@ namespace Rug.Osc
 		#endregion 
 	}
 
+	#endregion
+
+	#region Osc Address
+
 	/// <summary>
-	/// Helper class for osc addresses 
+	/// Encompasses an entire osc address
 	/// </summary>
 	public class OscAddress
 	{
@@ -572,4 +589,6 @@ namespace Rug.Osc
 
 		#endregion
 	}
+
+	#endregion
 }

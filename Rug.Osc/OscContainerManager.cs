@@ -46,6 +46,8 @@ namespace Rug.Osc
 
 	#endregion
 
+	#region Osc Container Manager
+
 	/// <summary>
 	/// Manages osc address event listening
 	/// </summary>
@@ -182,4 +184,6 @@ namespace Rug.Osc
 
 		#endregion
 	}
+
+	#endregion
 }

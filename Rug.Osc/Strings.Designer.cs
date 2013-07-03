@@ -142,6 +142,15 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Malformed type tag.
+        /// </summary>
+        internal static string Parser_MalformedTypeTag {
+            get {
+                return ResourceManager.GetString("Parser_MalformedTypeTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Address was empty.
         /// </summary>
         internal static string Parser_MissingAddressEmpty {
