@@ -135,25 +135,28 @@ namespace Rug.Osc
 
         #region Receive
 
-        /// <summary>
-        /// Receive a osc message, this method is non-blocking and will return imediatly with a message or null
-        /// </summary>
-        /// <returns>an osc message if one is ready else null if there are none</returns>
-        public OscMessage Receive()
+		/// <summary>
+		/// Try to receive a osc message, this method is non-blocking and will return imediatly with a message or null
+		/// </summary>
+		/// <param name="message">an osc message if one is ready else null if there are none</param>
+		/// <returns>true if a message was ready</returns>
+        public bool TryReceive(out OscMessage message)
         {
+			message = null; 
+
             if (State == OscSocketState.Connected)
             {
                 if (m_Count > 0)
                 {
                     lock (m_Lock)
                     {
-                        OscMessage message = m_ReceiveQueue[m_ReadIndex];
+                        message = m_ReceiveQueue[m_ReadIndex];
 
                         m_ReadIndex = NextReadIndex;
 
                         m_Count--;
 
-                        return message;
+                        return true;
                     }
                 }
                 // if we are not receiving then start
@@ -169,14 +172,14 @@ namespace Rug.Osc
                 }
             }
 
-            return null;
+            return false;
         }
 
         /// <summary>
         /// Receive a osc message, this method is blocking and will only return once a message is recived
         /// </summary>
         /// <returns>an osc message</returns>
-        public OscMessage WaitTillReceived()
+        public OscMessage Received()
         {
             if (State == OscSocketState.Connected)
             {
@@ -243,7 +246,7 @@ namespace Rug.Osc
             try
             {
                 int count = Socket.EndReceive(ar);
-                OscMessage message = OscMessage.Parse(m_Bytes, count);
+                OscMessage message = OscMessage.Read(m_Bytes, count);
 
                 lock (m_Lock)
                 {

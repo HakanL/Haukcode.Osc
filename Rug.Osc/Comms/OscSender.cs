@@ -13,7 +13,7 @@ namespace Rug.Osc
         #region Private Members
 
         private object m_Lock = new object();
-        private AutoResetEvent m_QueueEmpty = new AutoResetEvent(false);
+        private AutoResetEvent m_QueueEmpty = new AutoResetEvent(true);
 
         private byte[] m_Bytes;
 
@@ -137,7 +137,7 @@ namespace Rug.Osc
 
                     if (m_Count == 1)
                     {
-                        int size = message.GetDatagram(m_Bytes);
+                        int size = message.Write(m_Bytes);
 
                         Socket.BeginSend(m_Bytes, 0, size, SocketFlags, Send_Callback, message);
                     }
@@ -183,7 +183,7 @@ namespace Rug.Osc
                     {
                         OscMessage message = m_SendQueue[m_ReadIndex];
 
-                        int size = message.GetDatagram(m_Bytes);
+                        int size = message.Write(m_Bytes);
 
                         Socket.BeginSend(m_Bytes, 0, size, SocketFlags, Send_Callback, message);
                     }

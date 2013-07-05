@@ -88,6 +88,15 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not a midi message &apos;{0}&apos;.
+        /// </summary>
+        internal static string MidiMessage_NotAMidiMessage {
+            get {
+                return ResourceManager.GetString("MidiMessage_NotAMidiMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot match 2 address patterns.
         /// </summary>
         internal static string OscAddress_CannotMatch2AddressPatterns {
@@ -124,6 +133,15 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Argument is empty.
+        /// </summary>
+        internal static string Parser_ArgumentEmpty {
+            get {
+                return ResourceManager.GetString("Parser_ArgumentEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected end of message while parsing argument &apos;{0}&apos;.
         /// </summary>
         internal static string Parser_ArgumentUnexpectedEndOfMessage {
@@ -133,11 +151,56 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid address.
+        /// </summary>
+        internal static string Parser_InvalidAddress {
+            get {
+                return ResourceManager.GetString("Parser_InvalidAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The packet length is not the correct size.
         /// </summary>
         internal static string Parser_InvalidSegmentLength {
             get {
                 return ResourceManager.GetString("Parser_InvalidSegmentLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Malformed array &apos;{0}&apos;.
+        /// </summary>
+        internal static string Parser_MalformedArrayArgument {
+            get {
+                return ResourceManager.GetString("Parser_MalformedArrayArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Malformed object &apos;{0}&apos;.
+        /// </summary>
+        internal static string Parser_MalformedObjectArgument {
+            get {
+                return ResourceManager.GetString("Parser_MalformedObjectArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Malformed object &apos;{0}&apos;, missing type name.
+        /// </summary>
+        internal static string Parser_MalformedObjectArgument_MissingType {
+            get {
+                return ResourceManager.GetString("Parser_MalformedObjectArgument_MissingType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Malformed string argument &apos;{0}&apos; .
+        /// </summary>
+        internal static string Parser_MalformedStringArgument {
+            get {
+                return ResourceManager.GetString("Parser_MalformedStringArgument", resourceCulture);
             }
         }
         
@@ -178,11 +241,38 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected &apos;]&apos;.
+        /// </summary>
+        internal static string Parser_MissingArrayEndChar {
+            get {
+                return ResourceManager.GetString("Parser_MissingArrayEndChar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No comma found.
         /// </summary>
         internal static string Parser_MissingComma {
             get {
                 return ResourceManager.GetString("Parser_MissingComma", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected &apos;}}&apos;.
+        /// </summary>
+        internal static string Parser_MissingObjectEndChar {
+            get {
+                return ResourceManager.GetString("Parser_MissingObjectEndChar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected &apos;&quot;&apos;.
+        /// </summary>
+        internal static string Parser_MissingStringEndChar {
+            get {
+                return ResourceManager.GetString("Parser_MissingStringEndChar", resourceCulture);
             }
         }
         
@@ -210,6 +300,15 @@ namespace Rug.Osc {
         internal static string Parser_UnknownArgumentType {
             get {
                 return ResourceManager.GetString("Parser_UnknownArgumentType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown object type &apos;{0}&apos;.
+        /// </summary>
+        internal static string Parser_UnknownObjectType {
+            get {
+                return ResourceManager.GetString("Parser_UnknownObjectType", resourceCulture);
             }
         }
     }

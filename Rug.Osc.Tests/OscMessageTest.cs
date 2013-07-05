@@ -177,10 +177,10 @@ namespace Rug.Osc.Tests
 		#region Int
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Int_1()
+		public void WriteTest_Int_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Int();
 
@@ -188,7 +188,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Int; 
 			
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -196,27 +196,28 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Int_2()
+		public void WriteTest_Int_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Int();
 			byte[] expectedData = UnitTestHelper.MessageBody_Int; 
 
 			int actual;
 			byte[] data; 
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Int()
+		public void ReadTest_Int()
 		{
 			OscMessage expected = UnitTestHelper.Message_Int();
 			byte[] bytes = UnitTestHelper.MessageBody_Int; 
@@ -224,7 +225,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length; 			
 			OscMessage actual;
 			
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}		
@@ -239,15 +240,28 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Int.Length);
 		}
 
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Int()
+		{
+			string str = UnitTestHelper.MessageString_Int;
+			OscMessage expected = UnitTestHelper.Message_Int();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);	
+		}
+
 		#endregion
 
 		#region Long
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Long_1()
+		public void WriteTest_Long_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Long();
 
@@ -255,7 +269,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Long;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -263,27 +277,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Long_2()
+		public void WriteTest_Long_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Long();
 			byte[] expectedData = UnitTestHelper.MessageBody_Long;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Long()
+		public void ReadTest_Long()
 		{
 			OscMessage expected = UnitTestHelper.Message_Long();
 			byte[] bytes = UnitTestHelper.MessageBody_Long;
@@ -291,7 +307,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -306,15 +322,29 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Long.Length);
 		}
 
+
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Long()
+		{
+			string str = UnitTestHelper.MessageString_Long;
+			OscMessage expected = UnitTestHelper.Message_Long();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
 		#endregion
 
 		#region Float
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Float_1()
+		public void WriteTest_Float_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Float();
 
@@ -322,7 +352,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Float;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -330,27 +360,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Float_2()
+		public void WriteTest_Float_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Float();
 			byte[] expectedData = UnitTestHelper.MessageBody_Float;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Float()
+		public void ReadTest_Float()
 		{
 			OscMessage expected = UnitTestHelper.Message_Float();
 			byte[] bytes = UnitTestHelper.MessageBody_Float;
@@ -358,7 +390,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -373,15 +405,29 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Float.Length);
 		}
 
+
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Float()
+		{
+			string str = UnitTestHelper.MessageString_Float;
+			OscMessage expected = UnitTestHelper.Message_Float();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
 		#endregion
 
 		#region Double
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Double_1()
+		public void WriteTest_Double_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Double();
 
@@ -389,7 +435,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Double;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -397,27 +443,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Double_2()
+		public void WriteTest_Double_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Double();
 			byte[] expectedData = UnitTestHelper.MessageBody_Double;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Double()
+		public void ReadTest_Double()
 		{
 			OscMessage expected = UnitTestHelper.Message_Double();
 			byte[] bytes = UnitTestHelper.MessageBody_Double;
@@ -425,7 +473,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -440,15 +488,29 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Double.Length);
 		}
 
+
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Double()
+		{
+			string str = UnitTestHelper.MessageString_Double;
+			OscMessage expected = UnitTestHelper.Message_Double();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
 		#endregion
 
 		#region TimeTag
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_TimeTag_1()
+		public void WriteTest_TimeTag_1()
 		{
 			OscMessage target = UnitTestHelper.Message_TimeTag();
 
@@ -456,7 +518,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_TimeTag;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -464,27 +526,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_TimeTag_2()
+		public void WriteTest_TimeTag_2()
 		{
 			OscMessage target = UnitTestHelper.Message_TimeTag();
 			byte[] expectedData = UnitTestHelper.MessageBody_TimeTag;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_TimeTag()
+		public void ReadTest_TimeTag()
 		{
 			OscMessage expected = UnitTestHelper.Message_TimeTag();
 			byte[] bytes = UnitTestHelper.MessageBody_TimeTag;
@@ -492,7 +556,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -512,10 +576,10 @@ namespace Rug.Osc.Tests
 		#region Char
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Char_1()
+		public void WriteTest_Char_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Char();
 
@@ -523,7 +587,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Char;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -531,27 +595,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Char_2()
+		public void WriteTest_Char_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Char();
 			byte[] expectedData = UnitTestHelper.MessageBody_Char;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Char()
+		public void ReadTest_Char()
 		{
 			OscMessage expected = UnitTestHelper.Message_Char();
 			byte[] bytes = UnitTestHelper.MessageBody_Char;
@@ -559,7 +625,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -574,6 +640,20 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Char.Length);
 		}
 
+
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Char()
+		{
+			string str = UnitTestHelper.MessageString_Char;
+			OscMessage expected = UnitTestHelper.Message_Char();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
 		#endregion
 
 		#region Color
@@ -581,10 +661,10 @@ namespace Rug.Osc.Tests
 		#region Color Red
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Color_Red_1()
+		public void WriteTest_Color_Red_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Red();
 
@@ -592,7 +672,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Color_Red;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -600,27 +680,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Color_Red_2()
+		public void WriteTest_Color_Red_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Red();
 			byte[] expectedData = UnitTestHelper.MessageBody_Color_Red;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Color_Red()
+		public void ReadTest_Color_Red()
 		{
 			OscMessage expected = UnitTestHelper.Message_Color_Red();
 			byte[] bytes = UnitTestHelper.MessageBody_Color_Red;
@@ -628,7 +710,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -648,10 +730,10 @@ namespace Rug.Osc.Tests
 		#region Color Green
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Color_Green_1()
+		public void WriteTest_Color_Green_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Green();
 
@@ -659,7 +741,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Color_Green;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -667,27 +749,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Color_Green_2()
+		public void WriteTest_Color_Green_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Green();
 			byte[] expectedData = UnitTestHelper.MessageBody_Color_Green;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Color_Green()
+		public void ReadTest_Color_Green()
 		{
 			OscMessage expected = UnitTestHelper.Message_Color_Green();
 			byte[] bytes = UnitTestHelper.MessageBody_Color_Green;
@@ -695,7 +779,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -715,10 +799,10 @@ namespace Rug.Osc.Tests
 		#region Color Blue
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Color_Blue_1()
+		public void WriteTest_Color_Blue_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Blue();
 
@@ -726,7 +810,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Color_Blue;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -734,27 +818,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Color_Blue_2()
+		public void WriteTest_Color_Blue_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Blue();
 			byte[] expectedData = UnitTestHelper.MessageBody_Color_Blue;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Color_Blue()
+		public void ReadTest_Color_Blue()
 		{
 			OscMessage expected = UnitTestHelper.Message_Color_Blue();
 			byte[] bytes = UnitTestHelper.MessageBody_Color_Blue;
@@ -762,7 +848,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -782,10 +868,10 @@ namespace Rug.Osc.Tests
 		#region Color Transparent
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Color_Transparent_1()
+		public void WriteTest_Color_Transparent_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Transparent();
 
@@ -793,7 +879,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Color_Transparent;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -801,27 +887,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Color_Transparent_2()
+		public void WriteTest_Color_Transparent_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Transparent();
 			byte[] expectedData = UnitTestHelper.MessageBody_Color_Transparent;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Color_Transparent()
+		public void ReadTest_Color_Transparent()
 		{
 			OscMessage expected = UnitTestHelper.Message_Color_Transparent();
 			byte[] bytes = UnitTestHelper.MessageBody_Color_Transparent;
@@ -829,7 +917,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -851,10 +939,10 @@ namespace Rug.Osc.Tests
 		#region Midi
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Midi_1()
+		public void WriteTest_Midi_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Midi();
 
@@ -862,7 +950,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Midi;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -870,27 +958,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Midi_2()
+		public void WriteTest_Midi_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Midi();
 			byte[] expectedData = UnitTestHelper.MessageBody_Midi;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Midi()
+		public void ReadTest_Midi()
 		{
 			OscMessage expected = UnitTestHelper.Message_Midi();
 			byte[] bytes = UnitTestHelper.MessageBody_Midi;
@@ -898,7 +988,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -911,6 +1001,19 @@ namespace Rug.Osc.Tests
 		{
 			OscMessage target = UnitTestHelper.Message_Midi();
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Midi.Length);
+		}		
+
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Midi()
+		{
+			string str = UnitTestHelper.MessageString_Midi;
+			OscMessage expected = UnitTestHelper.Message_Midi();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
 		}
 
 		#endregion
@@ -918,10 +1021,10 @@ namespace Rug.Osc.Tests
 		#region True
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_True_1()
+		public void WriteTest_True_1()
 		{
 			OscMessage target = UnitTestHelper.Message_True();
 
@@ -929,7 +1032,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_True;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -937,27 +1040,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_True_2()
+		public void WriteTest_True_2()
 		{
 			OscMessage target = UnitTestHelper.Message_True();
 			byte[] expectedData = UnitTestHelper.MessageBody_True;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_True()
+		public void ReadTest_True()
 		{
 			OscMessage expected = UnitTestHelper.Message_True();
 			byte[] bytes = UnitTestHelper.MessageBody_True;
@@ -965,7 +1070,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -980,15 +1085,30 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_True.Length);
 		}
 
+
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_True()
+		{
+			string str = UnitTestHelper.MessageString_True;
+			OscMessage expected = UnitTestHelper.Message_True();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+
 		#endregion
 
 		#region False
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_False_1()
+		public void WriteTest_False_1()
 		{
 			OscMessage target = UnitTestHelper.Message_False();
 
@@ -996,7 +1116,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_False;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -1004,27 +1124,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_False_2()
+		public void WriteTest_False_2()
 		{
 			OscMessage target = UnitTestHelper.Message_False();
 			byte[] expectedData = UnitTestHelper.MessageBody_False;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_False()
+		public void ReadTest_False()
 		{
 			OscMessage expected = UnitTestHelper.Message_False();
 			byte[] bytes = UnitTestHelper.MessageBody_False;
@@ -1032,7 +1154,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -1047,59 +1169,76 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_False.Length);
 		}
 
-		#endregion
-
-		#region Nill
-
-		/// <summary>
-		///A test for GetDatagram
-		///</summary>
-		[TestMethod()]
-		public void GetDatagramTest_Nill_1()
-		{
-			OscMessage target = UnitTestHelper.Message_Nill();
-
-			byte[] data = new byte[UnitTestHelper.MessageBody_Nill.Length];
-			byte[] expectedData = UnitTestHelper.MessageBody_Nill;
-
-			int actual;
-			actual = target.GetDatagram(data);
-
-			Assert.AreEqual(expectedData.Length, actual);
-			UnitTestHelper.AreEqual(expectedData, data);
-		}
-
-
-		/// <summary>
-		///A test for GetDatagram
-		///</summary>
-		[TestMethod()]
-		public void GetDatagramTest_Nill_2()
-		{
-			OscMessage target = UnitTestHelper.Message_Nill();
-			byte[] expectedData = UnitTestHelper.MessageBody_Nill;
-
-			int actual;
-			byte[] data;
-			actual = target.GetDatagram(out data);
-
-			Assert.AreEqual(expectedData.Length, actual);
-			UnitTestHelper.AreEqual(expectedData, data);
-		}
 
 		/// <summary>
 		///A test for Parse
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Nill()
+		public void ParseTest_False()
 		{
-			OscMessage expected = UnitTestHelper.Message_Nill();
-			byte[] bytes = UnitTestHelper.MessageBody_Nill;
+			string str = UnitTestHelper.MessageString_False;
+			OscMessage expected = UnitTestHelper.Message_False();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+
+		#endregion
+
+		#region Nil
+
+		/// <summary>
+		///A test for Write
+		///</summary>
+		[TestMethod()]
+		public void WriteTest_Nil_1()
+		{
+			OscMessage target = UnitTestHelper.Message_Nil();
+
+			byte[] data = new byte[UnitTestHelper.MessageBody_Nil.Length];
+			byte[] expectedData = UnitTestHelper.MessageBody_Nil;
+
+			int actual;
+			actual = target.Write(data);
+
+			Assert.AreEqual(expectedData.Length, actual);
+			UnitTestHelper.AreEqual(expectedData, data);
+		}
+
+
+		/// <summary>
+		///A test for Write
+		///</summary>
+		[TestMethod()]
+		public void WriteTest_Nil_2()
+		{
+			OscMessage target = UnitTestHelper.Message_Nil();
+			byte[] expectedData = UnitTestHelper.MessageBody_Nil;
+
+			int actual;
+			byte[] data;
+			data = target.ToByteArray();
+			actual = data.Length;
+
+
+			Assert.AreEqual(expectedData.Length, actual);
+			UnitTestHelper.AreEqual(expectedData, data);
+		}
+
+		/// <summary>
+		///A test for Read
+		///</summary>
+		[TestMethod()]
+		public void ReadTest_Nil()
+		{
+			OscMessage expected = UnitTestHelper.Message_Nil();
+			byte[] bytes = UnitTestHelper.MessageBody_Nil;
 
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -1108,10 +1247,24 @@ namespace Rug.Osc.Tests
 		///A test for MessageSize
 		///</summary>
 		[TestMethod()]
-		public void MessageSizeTest_Nill()
+		public void MessageSizeTest_Nil()
 		{
-			OscMessage target = UnitTestHelper.Message_Nill();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Nill.Length);
+			OscMessage target = UnitTestHelper.Message_Nil();
+			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Nil.Length);
+		}
+
+
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Nil()
+		{
+			string str = UnitTestHelper.MessageString_Nil;
+			OscMessage expected = UnitTestHelper.Message_Nil();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
 		}
 
 		#endregion
@@ -1119,10 +1272,10 @@ namespace Rug.Osc.Tests
 		#region Infinitum
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Infinitum_1()
+		public void WriteTest_Infinitum_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Infinitum();
 
@@ -1130,7 +1283,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Infinitum;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -1138,27 +1291,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Infinitum_2()
+		public void WriteTest_Infinitum_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Infinitum();
 			byte[] expectedData = UnitTestHelper.MessageBody_Infinitum;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Infinitum()
+		public void ReadTest_Infinitum()
 		{
 			OscMessage expected = UnitTestHelper.Message_Infinitum();
 			byte[] bytes = UnitTestHelper.MessageBody_Infinitum;
@@ -1166,7 +1321,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -1181,15 +1336,28 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Infinitum.Length);
 		}
 
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Infinitum()
+		{
+			string str = UnitTestHelper.MessageString_Infinitum;
+			OscMessage expected = UnitTestHelper.Message_Infinitum();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
 		#endregion
 
 		#region String
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_String_1()
+		public void WriteTest_String_1()
 		{
 			OscMessage target = UnitTestHelper.Message_String();
 
@@ -1197,34 +1365,36 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_String;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_String_2()
+		public void WriteTest_String_2()
 		{
 			OscMessage target = UnitTestHelper.Message_String();
 			byte[] expectedData = UnitTestHelper.MessageBody_String;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_String()
+		public void ReadTest_String()
 		{
 			OscMessage expected = UnitTestHelper.Message_String();
 			byte[] bytes = UnitTestHelper.MessageBody_String;
@@ -1232,7 +1402,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -1247,15 +1417,29 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_String.Length);
 		}
 
+
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_String()
+		{
+			string str = UnitTestHelper.MessageString_String;
+			OscMessage expected = UnitTestHelper.Message_String();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
 		#endregion
 
 		#region Symbol
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Symbol_1()
+		public void WriteTest_Symbol_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Symbol();
 
@@ -1263,34 +1447,36 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Symbol;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Symbol_2()
+		public void WriteTest_Symbol_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Symbol();
 			byte[] expectedData = UnitTestHelper.MessageBody_Symbol;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Symbol()
+		public void ReadTest_Symbol()
 		{
 			OscMessage expected = UnitTestHelper.Message_Symbol();
 			byte[] bytes = UnitTestHelper.MessageBody_Symbol;
@@ -1298,7 +1484,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -1313,15 +1499,28 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Symbol.Length);
 		}
 
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Symbol()
+		{
+			string str = UnitTestHelper.MessageString_Symbol;
+			OscMessage expected = UnitTestHelper.Message_Symbol();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
 		#endregion
 
 		#region Blob
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Blob_1()
+		public void WriteTest_Blob_1()
 		{
 			OscMessage target = UnitTestHelper.Message_Blob();
 
@@ -1329,34 +1528,36 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Blob;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Blob_2()
+		public void WriteTest_Blob_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Blob();
 			byte[] expectedData = UnitTestHelper.MessageBody_Blob;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Blob()
+		public void ReadTest_Blob()
 		{
 			OscMessage expected = UnitTestHelper.Message_Blob();
 			byte[] bytes = UnitTestHelper.MessageBody_Blob;
@@ -1364,7 +1565,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -1386,27 +1587,29 @@ namespace Rug.Osc.Tests
 		#region MessageBody_Array_Ints
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Array_Ints()
+		public void WriteTest_Array_Ints()
 		{
 			OscMessage target = UnitTestHelper.Message_Array_Ints();
 			byte[] expectedData = UnitTestHelper.MessageBody_Array_Ints;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Array_Ints()
+		public void ReadTest_Array_Ints()
 		{
 			OscMessage expected = UnitTestHelper.Message_Array_Ints();
 			byte[] bytes = UnitTestHelper.MessageBody_Array_Ints;
@@ -1414,7 +1617,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -1430,29 +1633,43 @@ namespace Rug.Osc.Tests
 		}
 
 
-
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Parse
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Array_Ints2()
+		public void ParseTest_Array_Ints()
+		{
+			string str = UnitTestHelper.MessageString_Array_Ints;
+			OscMessage expected = UnitTestHelper.Message_Array_Ints();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+		/// <summary>
+		///A test for Write
+		///</summary>
+		[TestMethod()]
+		public void WriteTest_Array_Ints2()
 		{
 			OscMessage target = UnitTestHelper.Message_Array_Ints2();
 			byte[] expectedData = UnitTestHelper.MessageBody_Array_Ints2;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Array_Ints2()
+		public void ReadTest_Array_Ints2()
 		{
 			OscMessage expected = UnitTestHelper.Message_Array_Ints2();
 			byte[] bytes = UnitTestHelper.MessageBody_Array_Ints2;
@@ -1460,7 +1677,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -1475,29 +1692,43 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Array_Ints2.Length);
 		}
 
-
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Parse
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Array_NestedInts()
+		public void ParseTest_Array_Ints2()
+		{
+			string str = UnitTestHelper.MessageString_Array_Ints2;
+			OscMessage expected = UnitTestHelper.Message_Array_Ints2();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+		/// <summary>
+		///A test for Write
+		///</summary>
+		[TestMethod()]
+		public void WriteTest_Array_NestedInts()
 		{
 			OscMessage target = UnitTestHelper.Message_Array_NestedInts();
 			byte[] expectedData = UnitTestHelper.MessageBody_Array_NestedInts;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Array_NestedInts()
+		public void ReadTest_Array_NestedInts()
 		{
 			OscMessage expected = UnitTestHelper.Message_Array_NestedInts();
 			byte[] bytes = UnitTestHelper.MessageBody_Array_NestedInts;
@@ -1505,7 +1736,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -1520,6 +1751,19 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Array_NestedInts.Length);
 		}
 
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Array_NestedInts()
+		{
+			string str = UnitTestHelper.MessageString_Array_NestedInts;
+			OscMessage expected = UnitTestHelper.Message_Array_NestedInts();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
 		#endregion
 
 		#region Multiple Args
@@ -1527,10 +1771,10 @@ namespace Rug.Osc.Tests
 		#region Float 2
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Float2()
+		public void WriteTest_Float2()
 		{
 			OscMessage target = UnitTestHelper.Message_Float2();
 
@@ -1538,7 +1782,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Float2;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -1546,27 +1790,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Float2_2()
+		public void WriteTest_Float2_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Float2();
 			byte[] expectedData = UnitTestHelper.MessageBody_Float2;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Float2()
+		public void ReadTest_Float2()
 		{
 			OscMessage expected = UnitTestHelper.Message_Float2();
 			byte[] bytes = UnitTestHelper.MessageBody_Float2;
@@ -1574,7 +1820,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -1589,15 +1835,29 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Float2.Length);
 		}
 
+
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Float2()
+		{
+			string str = UnitTestHelper.MessageString_Float2;
+			OscMessage expected = UnitTestHelper.Message_Float2();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
 		#endregion
 
 		#region Float 3
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Float3()
+		public void WriteTest_Float3()
 		{
 			OscMessage target = UnitTestHelper.Message_Float3();
 
@@ -1605,7 +1865,7 @@ namespace Rug.Osc.Tests
 			byte[] expectedData = UnitTestHelper.MessageBody_Float3;
 
 			int actual;
-			actual = target.GetDatagram(data);
+			actual = target.Write(data);
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
@@ -1613,27 +1873,29 @@ namespace Rug.Osc.Tests
 
 
 		/// <summary>
-		///A test for GetDatagram
+		///A test for Write
 		///</summary>
 		[TestMethod()]
-		public void GetDatagramTest_Float3_2()
+		public void WriteTest_Float3_2()
 		{
 			OscMessage target = UnitTestHelper.Message_Float3();
 			byte[] expectedData = UnitTestHelper.MessageBody_Float3;
 
 			int actual;
 			byte[] data;
-			actual = target.GetDatagram(out data);
+			data = target.ToByteArray();
+			actual = data.Length;
+
 
 			Assert.AreEqual(expectedData.Length, actual);
 			UnitTestHelper.AreEqual(expectedData, data);
 		}
 
 		/// <summary>
-		///A test for Parse
+		///A test for Read
 		///</summary>
 		[TestMethod()]
-		public void ParseTest_Float3()
+		public void ReadTest_Float3()
 		{
 			OscMessage expected = UnitTestHelper.Message_Float3();
 			byte[] bytes = UnitTestHelper.MessageBody_Float3;
@@ -1641,7 +1903,7 @@ namespace Rug.Osc.Tests
 			int count = bytes.Length;
 			OscMessage actual;
 
-			actual = OscMessage.Parse(bytes, count);
+			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
 		}
@@ -1656,6 +1918,20 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Float3.Length);
 		}
 
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Float3()
+		{
+			string str = UnitTestHelper.MessageString_Float3;
+			OscMessage expected = UnitTestHelper.Message_Float3();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+
 		#endregion
 
 		#endregion
@@ -1669,7 +1945,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_PacketLength;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.InvalidSegmentLength); 
 			}
@@ -1686,7 +1962,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_Address1;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.MissingAddress);
 			}
@@ -1703,7 +1979,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_Address2;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.MissingAddress);
 			}
@@ -1720,7 +1996,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_MissingComma;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.MissingComma);
 			}
@@ -1737,7 +2013,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_MissingTypeTag;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.MissingTypeTag);
 			}
@@ -1757,7 +2033,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_MissingArgs;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.InvalidSegmentLength);
 			}
@@ -1775,7 +2051,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_ErrorParsingDouble;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingDouble);
 			}
@@ -1793,7 +2069,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_UnknownArguemntType;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.UnknownArguemntType);
 			}
@@ -1810,7 +2086,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_ErrorParsingBlob;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingBlob);
 			}
@@ -1827,7 +2103,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_ErrorParsingBlob2;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingBlob);
 			}
@@ -1844,7 +2120,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_ErrorParsingString;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingString);
 			}
@@ -1861,7 +2137,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_ErrorParsingString2;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingString);
 			}
@@ -1878,7 +2154,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_ErrorParsingInt;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingInt32);
 			}
@@ -1895,7 +2171,7 @@ namespace Rug.Osc.Tests
 			{
 				byte[] data = UnitTestHelper.BadlyFormedMessage_ErrorParsingFloat;
 
-				OscMessage actual = OscMessage.Parse(data, data.Length);
+				OscMessage actual = OscMessage.Read(data, data.Length);
 
 				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingSingle);
 			}

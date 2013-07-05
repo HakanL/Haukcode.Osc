@@ -150,9 +150,9 @@ namespace OscTester
 
                 for (int i = 0; i < 1000; i++)
                 {
-                    OscMessage msg = oscReceiver.Receive();
+					OscMessage msg;
 
-                    if (msg == null)
+                    if (oscReceiver.TryReceive(out msg) == false)
                     {
                         Thread.CurrentThread.Join(100); 
                         continue; 

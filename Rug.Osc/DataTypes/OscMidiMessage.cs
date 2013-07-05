@@ -1,5 +1,6 @@
-﻿using System.Runtime.InteropServices;
-using System;
+﻿using System;
+using System.Runtime.InteropServices;
+using System.Globalization;
 
 namespace Rug.Osc
 {
@@ -24,7 +25,7 @@ namespace Rug.Osc
 	System Reset 	 0xff
 	*/ 
 
-	public enum OscMidiMessageType : int
+	public enum OscMidiMessageType : byte
 	{
 		NoteOff = 0x80,
 		NoteOn = 0x90,
@@ -36,7 +37,7 @@ namespace Rug.Osc
 		SystemExclusive = 0xF0,
 	}
 
-	public enum OscMidiSystemMessageType : int
+	public enum OscMidiSystemMessageType : byte
 	{
 		SystemExclusive = 0x00,
 		TimeCode = 0x01,
@@ -84,8 +85,16 @@ namespace Rug.Osc
 
 		public int Channel { get { return StatusByte & 0x0F; } }
 
+		public ushort Data14BitValue { get { return (ushort)((Data1 & 0x7F) | ((Data2 & 0x7F) << 7)); } }
+
 		#endregion
 
+		#region Constructor
+
+		/// <summary>
+		/// Parse a midi message from a single 4 byte integer 
+		/// </summary>
+		/// <param name="value">4 byte integer portID | (type | channel) | data1 | data2</param>
 		public OscMidiMessage(uint value)
 		{
 			PortID = 0;
@@ -96,6 +105,14 @@ namespace Rug.Osc
 			FullMessage = value; 
 		}
 
+		/// <summary>
+		/// Create midi message
+		/// </summary>
+		/// <param name="portID">the id of the destination port</param>
+		/// <param name="type">the type of message</param>
+		/// <param name="channel">the channel</param>
+		/// <param name="data1">data argument 1</param>
+		/// <param name="data2">data argument 2</param>
 		public OscMidiMessage(byte portID, OscMidiMessageType type, byte channel, byte data1, byte data2)
 		{
 			if (channel >= 16)
@@ -107,13 +124,61 @@ namespace Rug.Osc
 
 			PortID = portID;
 			StatusByte = (byte)((int)type | (int)channel);
-			Data1 = data1;
-			Data2 = data2;
+			Data1 = (byte)(data1 & 0x7F);
+			Data2 = (byte)(data2 & 0x7F);
 		}
+
+		public OscMidiMessage(byte portID, byte statusByte, byte data1, byte data2)
+		{
+			FullMessage = 0;
+
+			PortID = portID;
+			StatusByte = statusByte;
+			Data1 = (byte)(data1 & 0x7F);
+			Data2 = (byte)(data2 & 0x7F);
+		}
+
+		public OscMidiMessage(byte portID, OscMidiMessageType type, byte channel, byte data1)
+			: this(portID, type, channel, data1, 0)
+		{
+
+		}
+
+		public OscMidiMessage(byte portID, OscMidiMessageType type, byte channel, ushort value)
+			: this(portID, type, channel, (byte)(value & 0x7F), (byte)((value & 0x3F80) >> 7))
+		{
+
+		}
+
+		public OscMidiMessage(byte portID, OscMidiSystemMessageType type, ushort value)
+			: this(portID, OscMidiMessageType.SystemExclusive, (byte)type, (byte)(value & 0x7F), (byte)((value & 0x3F80) >> 7))
+		{
+
+		}
+
+		public OscMidiMessage(byte portID, OscMidiSystemMessageType type, byte data1)
+			: this(portID, OscMidiMessageType.SystemExclusive, (byte)type, data1, 0)
+		{
+
+		}
+
+		public OscMidiMessage(byte portID, OscMidiSystemMessageType type, byte data1, byte data2)
+			: this(portID, OscMidiMessageType.SystemExclusive, (byte)type, data1, data2)
+		{
+
+		}
+
+		#endregion 
+
+		#region Standard Overrides
 
 		public override bool Equals(object obj)
 		{
-			if (obj is OscMidiMessage)
+			if (obj is uint)
+			{
+				return FullMessage.Equals((uint)obj); 
+			}
+			else if (obj is OscMidiMessage)
 			{
 				return FullMessage.Equals(((OscMidiMessage)obj).FullMessage); 
 			}
@@ -130,7 +195,143 @@ namespace Rug.Osc
 
 		public override string ToString()
 		{
-			return "0x" + FullMessage.ToString("X");
+			//return "0x" + FullMessage.ToString("X");
+			return ToString(CultureInfo.InvariantCulture); 
+		}
+
+		public string ToString(IFormatProvider provider)
+		{
+			if (MessageType != OscMidiMessageType.SystemExclusive)
+			{
+				return String.Format("{0}, {1}, {2}, {3}, {4}",
+					PortID.ToString(provider),
+					MessageType.ToString(),
+					Channel.ToString(provider),
+					Data1.ToString(provider),
+					Data2.ToString(provider));
+			}
+			else
+			{
+				return String.Format("{0}, {1}, {2}, {3}",
+					PortID.ToString(provider),
+					SystemMessageType.ToString(),
+					Data1.ToString(provider),
+					Data2.ToString(provider));
+			}
+		}
+
+		#endregion
+
+		public static OscMidiMessage Parse(string str, IFormatProvider provider)
+		{
+			if (String.IsNullOrWhiteSpace(str) == true)
+			{
+				throw new Exception(String.Format(Strings.MidiMessage_NotAMidiMessage, str));
+			}
+
+			string[] parts = str.Split(',');
+
+			if (parts.Length < 4)
+			{
+				throw new Exception(String.Format(Strings.MidiMessage_NotAMidiMessage, str));
+			}
+
+			int index = 0;
+			byte portID = byte.Parse(parts[index++].Trim(), provider);
+
+			byte statusByte;
+			OscMidiMessageType messageType;
+
+			if (byte.TryParse(parts[index].Trim(), NumberStyles.Integer, provider, out statusByte) == false)
+			{
+				OscMidiSystemMessageType systemMessage;
+				
+				if (Enum.TryParse<OscMidiSystemMessageType>(parts[index].Trim(), true, out systemMessage) == true)
+				{
+					messageType = OscMidiMessageType.SystemExclusive;
+					statusByte = (byte)((int)messageType | (int)systemMessage);
+					index++; 
+				}
+				else if (Enum.TryParse<OscMidiMessageType>(parts[index].Trim(), true, out messageType) == true)
+				{
+					index++;
+					byte channel = byte.Parse(parts[index++].Trim(), NumberStyles.Integer, provider);
+
+					if (channel > 15)
+					{
+						throw new ArgumentOutOfRangeException("channel"); 
+					}
+
+					statusByte = (byte)((int)messageType | (int)channel);
+
+					if (parts.Length < 5)
+					{
+						throw new Exception(String.Format(Strings.MidiMessage_NotAMidiMessage, str));
+					}
+				}
+				else
+				{
+					throw new Exception(String.Format(Strings.MidiMessage_NotAMidiMessage, str));
+				}				
+			}
+
+			byte data1 = byte.Parse(parts[index++].Trim(), NumberStyles.Integer, provider);
+
+			if (data1 > 0x7F)
+			{
+				throw new ArgumentOutOfRangeException("data1");
+			}
+
+			byte data2 = byte.Parse(parts[index++].Trim(), NumberStyles.Integer, provider);
+
+			if (data2 > 0x7F)
+			{
+				throw new ArgumentOutOfRangeException("data2");
+			}
+
+			if (index != parts.Length)
+			{
+				throw new Exception(String.Format(Strings.MidiMessage_NotAMidiMessage, str));
+			}
+
+			return new OscMidiMessage(portID, statusByte, data1, data2); 
+		}
+
+		public static OscMidiMessage Parse(string str)
+		{
+			return Parse(str, CultureInfo.InvariantCulture); 
+		}
+
+		public static bool TryParse(string str, IFormatProvider provider, out OscMidiMessage message)
+		{
+			try
+			{
+				message = Parse(str, provider);
+
+				return true;
+			}
+			catch
+			{
+				message = default(OscMidiMessage); 
+
+				return false;
+			}
+		}
+
+		public static bool TryParse(string str, out OscMidiMessage message)
+		{
+			try
+			{
+				message = Parse(str, CultureInfo.InvariantCulture);
+
+				return true;
+			}
+			catch
+			{
+				message = default(OscMidiMessage);
+
+				return false;
+			}
 		}
 	}
 }

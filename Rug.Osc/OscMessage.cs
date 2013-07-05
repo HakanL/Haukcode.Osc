@@ -6,6 +6,8 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Globalization;
+using System.Collections.Generic;
 
 namespace Rug.Osc
 {
@@ -230,6 +232,27 @@ namespace Rug.Osc
 
 		#region Get Argument Size
 
+		private int SizeOfObjectArray_TypeTag(object[] args)
+		{
+			int size = 0;
+
+			// typetag
+			foreach (object obj in args)
+			{
+				if (obj is object[])
+				{
+					size += SizeOfObjectArray_TypeTag(obj as object[]);
+					size += 2; // for the [ ] 
+				}
+				else
+				{
+					size++;
+				}
+			}
+
+			return size;
+		}
+
 		private int SizeOfObjectArray(object[] args)
 		{
 			int size = 0;
@@ -304,49 +327,33 @@ namespace Rug.Osc
 			return size;
 		}
 
-		private int SizeOfObjectArray_TypeTag(object[] args)
+		#endregion
+
+		#region To Byte Array
+
+		/// <summary>
+		/// Creates a byte array that contains the osc message
+		/// </summary>
+		/// <returns></returns>
+		public byte[] ToByteArray()
 		{
-			int size = 0;
+			byte[] data = new byte[MessageSize];
 
-			// typetag
-			foreach (object obj in args)
-			{
-				if (obj is object[])
-				{
-					size += SizeOfObjectArray_TypeTag(obj as object[]);
-					size += 2; // for the [ ] 
-				}
-				else
-				{
-					size++;
-				}
-			}
+			Write(data);
 
-			return size;
+			return data;
 		}
 
 		#endregion
 
-		#region Get Datagram
+		#region Write
 
 		/// <summary>
         /// Write the message body into a byte array 
         /// </summary>
-        /// <param name="data">an arraty ouf bytes that contains the message body</param>
+        /// <param name="data">an array ouf bytes to write the message body into</param>
         /// <returns>the number of bytes in the message</returns>
-		public int GetDatagram(out byte[] data)
-        {
-            data = new byte[MessageSize];
-
-            return GetDatagram(data); 
-        }
-
-        /// <summary>
-        /// Write the message body into a byte array 
-        /// </summary>
-        /// <param name="data">an arraty ouf bytes to write the message body into</param>
-        /// <returns>the number of bytes in the message</returns>
-        public int GetDatagram(byte[] data)
+        public int Write(byte[] data)
         {
             // is the a address string empty? 
             if (String.IsNullOrWhiteSpace(m_Address) == true)
@@ -383,23 +390,6 @@ namespace Rug.Osc
 				// Write the comma 
                 writer.Write((byte)',');
 
-
-				/* 
-					h	64 bit big-endian two's complement integer
-					t	OSC-timetag
-					d	64 bit ("double") IEEE 754 floating point number
-					S	Alternate type represented as an OSC-string (for example, for systems that differentiate "symbols" from "strings")
-					c	an ascii character, sent as 32 bits
-					r	32 bit RGBA color
-					m	4 byte MIDI message. Bytes from MSB to LSB are: port id, status byte, data1, data2
-					T	True. No bytes are allocated in the argument data.
-					F	False. No bytes are allocated in the argument data.
-					N	Nil. No bytes are allocated in the argument data.
-					I	Infinitum. No bytes are allocated in the argument data.
-					[	Indicates the beginning of an array. The tags following are for data in the Array until a close brace tag is reached.
-					]	Indicates the end of an array.
-				 */
-
 				// iterate through arguments and write their types
 				WriteTypeTag(writer, m_Arguments); 
  
@@ -420,6 +410,94 @@ namespace Rug.Osc
                 return (int)stream.Position;
             }
         }
+
+		#region Write Type Tag
+
+		private void WriteTypeTag(BinaryWriter writer, object[] args)
+		{
+			foreach (object obj in args)
+			{
+				if (obj is object[])
+				{
+					writer.Write((byte)'[');
+
+					WriteTypeTag(writer, obj as object[]);
+
+					writer.Write((byte)']');
+				}
+				else if (obj is int)
+				{
+					writer.Write((byte)'i');
+				}
+				else if (obj is long)
+				{
+					writer.Write((byte)'h');
+				}
+				else if (obj is float)
+				{
+					writer.Write((byte)'f');
+				}
+				else if (obj is double)
+				{
+					writer.Write((byte)'d');
+				}
+				else if (obj is byte)
+				{
+					writer.Write((byte)'c');
+				}
+				else if (obj is Color)
+				{
+					writer.Write((byte)'r');
+				}
+				else if (obj is OscTimeTag)
+				{
+					writer.Write((byte)'t');
+				}
+				else if (obj is OscMidiMessage)
+				{
+					writer.Write((byte)'m');
+				}
+				else if (obj is bool)
+				{
+					bool value = (bool)obj;
+
+					if (value == true)
+					{
+						writer.Write((byte)'T');
+					}
+					else
+					{
+						writer.Write((byte)'F');
+					}
+				}
+				else if (obj is OscNil)
+				{
+					writer.Write((byte)'N');
+				}
+				else if (obj is OscInfinitum)
+				{
+					writer.Write((byte)'I');
+				}
+				else if (obj is string)
+				{
+					writer.Write((byte)'s');
+				}
+				else if (obj is OscSymbol)
+				{
+					writer.Write((byte)'S');
+				}
+				else if (obj is byte[])
+				{
+					writer.Write((byte)'b');
+				}
+				else
+				{
+					throw new Exception(String.Format(Strings.Arguments_UnsupportedType, obj.GetType().ToString()));
+				}
+			}
+		}
+
+		#endregion
 
 		#region Write Values
 
@@ -514,110 +592,22 @@ namespace Rug.Osc
 					// padding
 					Helper.WritePadding(writer, stream.Position);
 				}
-			}       
-		}
-
-		#endregion
-
-		#region Write Type Tag
-
-		private void WriteTypeTag(BinaryWriter writer, object[] args)
-		{
-			foreach (object obj in args)
-			{
-				if (obj is object[])
-				{
-					writer.Write((byte)'[');
-
-					WriteTypeTag(writer, obj as object[]);
-
-					writer.Write((byte)']');
-				}
-				else if (obj is int)
-				{
-					writer.Write((byte)'i');
-				}
-				else if (obj is long)
-				{
-					writer.Write((byte)'h');
-				}
-				else if (obj is float)
-				{
-					writer.Write((byte)'f');
-				}
-				else if (obj is double)
-				{
-					writer.Write((byte)'d');
-				}
-				else if (obj is byte)
-				{
-					writer.Write((byte)'c');
-				}
-				else if (obj is Color)
-				{
-					writer.Write((byte)'r');
-				}
-				else if (obj is OscTimeTag)
-				{
-					writer.Write((byte)'t');
-				}
-				else if (obj is OscMidiMessage)
-				{
-					writer.Write((byte)'m');
-				}
-				else if (obj is bool)
-				{
-					bool value = (bool)obj;
-
-					if (value == true)
-					{
-						writer.Write((byte)'T');
-					}
-					else
-					{
-						writer.Write((byte)'F');
-					}
-				}
-				else if (obj is OscNil)
-				{
-					writer.Write((byte)'N');
-				}
-				else if (obj is OscInfinitum)
-				{
-					writer.Write((byte)'I');
-				}
-				else if (obj is string)
-				{
-					writer.Write((byte)'s');
-				}
-				else if (obj is OscSymbol)
-				{
-					writer.Write((byte)'S');
-				}
-				else if (obj is byte[])
-				{
-					writer.Write((byte)'b');
-				}
-				else
-				{
-					throw new Exception(String.Format(Strings.Arguments_UnsupportedType, obj.GetType().ToString()));
-				}
 			}
 		}
 
 		#endregion
-		
+
 		#endregion
 
-		#region Parse
+		#region Read
 
 		/// <summary>
-        /// Parse a OscMessage from a array of bytes
+        /// Read a OscMessage from a array of bytes
         /// </summary>
         /// <param name="bytes">the array that countains the message</param>
         /// <param name="count">the number of bytes in the message</param>
         /// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
-        public static OscMessage Parse(byte[] bytes, int count)
+        public static OscMessage Read(byte[] bytes, int count)
         {
 			OscMessage msg = new OscMessage(); 
 
@@ -796,7 +786,7 @@ namespace Rug.Osc
 
                 #endregion
 
-				if (ParseArguments(msg, bytes, stream, reader, ref typeTag_Start, typeTag_Count, msg.m_Arguments) == false)
+				if (ReadArguments(msg, bytes, stream, reader, ref typeTag_Start, typeTag_Count, msg.m_Arguments) == false)
 				{
 					msg.m_Arguments = new object[0];
 				}
@@ -805,9 +795,9 @@ namespace Rug.Osc
             }
         }
 
-		#region Parse Arguments
+		#region Read Arguments
 
-		private static bool ParseArguments(OscMessage msg, byte[] bytes, MemoryStream stream, BinaryReader reader, ref int tagIndex, int count, object[] args)
+		private static bool ReadArguments(OscMessage msg, byte[] bytes, MemoryStream stream, BinaryReader reader, ref int tagIndex, int count, object[] args)
 		{
 			for (int i = 0; i < count; i++)
 			{
@@ -1127,7 +1117,7 @@ namespace Rug.Osc
 							// alocate the arguments array 
 							object[] array = new object[typeTag_Count];
 
-							if (ParseArguments(msg, bytes, stream, reader, ref tagIndex, typeTag_Count, array) == false)
+							if (ReadArguments(msg, bytes, stream, reader, ref tagIndex, typeTag_Count, array) == false)
 							{
 								return false;
 							}
@@ -1149,6 +1139,546 @@ namespace Rug.Osc
 			}			
 
 			return true;
+		}
+
+		#endregion
+
+		#endregion
+
+		#region To String
+
+		public override string ToString()
+		{
+			return ToString(CultureInfo.InvariantCulture);
+		}
+
+		public string ToString(IFormatProvider provider)
+		{
+			StringBuilder sb = new StringBuilder();
+
+			sb.Append(Address);
+
+			if (IsEmpty == true)
+			{
+				return sb.ToString(); 
+			}
+
+			sb.Append(", ");
+
+			ArgumentsToString(sb, provider, m_Arguments);
+
+			return sb.ToString(); 
+		}
+
+		private void ArgumentsToString(StringBuilder sb, IFormatProvider provider, object[] args)
+		{
+			bool first = true;
+
+			foreach (object obj in args)
+			{
+				if (first == false)
+				{
+					sb.Append(", ");
+				}
+				else
+				{
+					first = false; 
+				}
+
+				if (obj is object[])
+				{
+					sb.Append('[');
+
+					ArgumentsToString(sb, provider, obj as object[]);
+
+					sb.Append(']');
+				}
+				else if (obj is int)
+				{
+					sb.Append(((int)obj).ToString(provider));
+				}
+				else if (obj is long)
+				{
+					sb.Append(((long)obj).ToString(provider));
+				}
+				else if (obj is float)
+				{
+					sb.Append(((float)obj).ToString(provider));
+				}
+				else if (obj is double)
+				{
+					sb.Append(((double)obj).ToString(provider) + "d");
+				}
+				else if (obj is byte)
+				{
+					sb.Append((char)obj); 
+				}
+				else if (obj is Color)
+				{
+					//sb.Append(((Color)obj).ToString());
+					sb.Append("Color!");
+				}
+				else if (obj is OscTimeTag)
+				{
+					//sb.Append(((OscTimeTag)obj).ToString());
+					sb.Append("OscTimeTag!");
+				}
+				else if (obj is OscMidiMessage)
+				{
+					sb.Append("{ Midi: " + ((OscMidiMessage)obj).ToString() + " }");
+				}
+				else if (obj is bool)
+				{
+					sb.Append(((bool)obj).ToString());
+				}
+				else if (obj is OscNil)
+				{
+					sb.Append(((OscNil)obj).ToString());
+				}
+				else if (obj is OscInfinitum)
+				{
+					sb.Append(((OscInfinitum)obj).ToString());
+				}
+				else if (obj is string)
+				{
+					sb.Append("\"" + obj.ToString() + "\"");
+				}
+				else if (obj is OscSymbol)
+				{
+					sb.Append(obj.ToString());
+				}
+				else if (obj is byte[])
+				{
+					sb.Append("BYTES!");
+				}
+				else
+				{
+					throw new Exception(String.Format(Strings.Arguments_UnsupportedType, obj.GetType().ToString()));
+				}
+			}
+		}
+
+		#endregion
+
+		#region Parse
+
+		/// <summary>
+		/// Try to parse a message from a string using the InvariantCulture
+		/// </summary>
+		/// <param name="str">the message as a string</param>
+		/// <param name="message">the parsed message</param>
+		/// <returns>true if the message could be parsed else false</returns>
+		public static bool TryParse(string str, out OscMessage message)
+		{
+			try
+			{
+				message = Parse(str, CultureInfo.InvariantCulture);
+
+				return true; 
+			}
+			catch
+			{
+				message = null;
+
+				return false; 
+			}
+		}
+
+		/// <summary>
+		/// Try to parse a message from a string using a supplied format provider
+		/// </summary>
+		/// <param name="str">the message as a string</param>
+		/// <param name="provider">the format provider to use</param>
+		/// <param name="message">the parsed message</param>
+		/// <returns>true if the message could be parsed else false</returns>
+		public static bool TryParse(string str, IFormatProvider provider, out OscMessage message)
+		{
+			try
+			{
+				message = Parse(str, provider);
+
+				return true; 
+			}
+			catch
+			{
+				message = null;
+
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Parse a message from a string using the InvariantCulture
+		/// </summary>
+		/// <param name="str">a string containing a message</param>
+		/// <returns>the parsed message</returns>
+		public static OscMessage Parse(string str)
+		{
+			return Parse(str, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		/// parse a message from a string using a supplied format provider
+		/// </summary>
+		/// <param name="str">a string containing a message</param>
+		/// <param name="provider">the format provider to use</param>
+		/// <returns>the parsed message</returns>
+		public static OscMessage Parse(string str, IFormatProvider provider)
+		{
+			if (String.IsNullOrWhiteSpace(str) == true)
+			{
+				throw new ArgumentNullException("str");
+			}
+
+			int index = str.IndexOf(',');
+
+			if (index <= 0)
+			{
+				// could be an argument less message				
+				index = str.Length;
+			}
+
+			string address = str.Substring(0, index).Trim();
+
+			if (String.IsNullOrWhiteSpace(address) == true)
+			{
+				throw new Exception(Strings.Parser_MissingAddressEmpty);
+			}
+
+			if (OscAddress.IsValidAddressPattern(address) == false)
+			{
+				throw new Exception(Strings.Parser_InvalidAddress);
+			}
+
+			List<object> arguments = new List<object>();
+
+			// parse arguments
+			ParseArguments(str, arguments, index + 1, provider);
+
+			return new OscMessage(address, arguments.ToArray());
+		}
+
+		#region Parse Arguments
+
+		private static void ParseArguments(string str, List<object> arguments, int index, IFormatProvider provider)
+		{
+			while (true)
+			{
+				if (index >= str.Length)
+				{
+					return;
+				}
+
+				// scan forward for the first control char ',', '[', '{'
+				int controlChar = str.IndexOfAny(new char[] { ',', '[', '{' }, index);
+
+				if (controlChar == -1)
+				{
+					// no control char found 
+					arguments.Add(ParseArgument(str.Substring(index, str.Length - index), provider));
+
+					return; 
+				}
+				else
+				{
+					char c = str[controlChar];
+
+					if (c == ',')
+					{
+						arguments.Add(ParseArgument(str.Substring(index, controlChar - index), provider));
+
+						index = controlChar + 1; 
+					}
+					else if (c == '[')
+					{
+						int end = ScanForward_Array(str, controlChar); 
+						
+						List<object> array = new List<object>(); 
+
+						ParseArguments(str.Substring(controlChar + 1, end - (controlChar + 1)), array, 0, provider); 
+
+						arguments.Add(array.ToArray());
+
+						end++;
+
+						if (end >= str.Length)
+						{
+							return;
+						}
+
+						if (str[end] != ',')
+						{
+							controlChar = str.IndexOfAny(new char[] { ',' }, end);
+
+							if (controlChar == -1)
+							{
+								return;
+							}
+
+							if (String.IsNullOrWhiteSpace(str.Substring(end, controlChar - end)) == false)
+							{
+								throw new Exception(String.Format(Strings.Parser_MalformedArrayArgument, str.Substring(index, controlChar - end)));
+							}
+
+							index = controlChar;
+						}
+						else
+						{
+							index = end + 1;
+						}
+					}
+					else if (c == '{')
+					{
+						int end = ScanForward_Object(str, controlChar);
+
+						arguments.Add(ParseObject(str.Substring(controlChar + 1, end - (controlChar + 1)), provider));
+						
+						end++;
+
+						if (end >= str.Length)
+						{
+							return;
+						}
+
+						if (str[end] != ',')
+						{
+							controlChar = str.IndexOfAny(new char[] { ',' }, end);
+
+							if (controlChar == -1)
+							{
+								return;
+							}
+
+							if (String.IsNullOrWhiteSpace(str.Substring(end, controlChar - end)) == false)
+							{
+								throw new Exception(String.Format(Strings.Parser_MalformedObjectArgument, str.Substring(index, controlChar - end)));
+							}
+
+							index = controlChar;
+						}
+						else
+						{
+							index = end + 1;
+						}
+					}				
+				}
+			}
+		}
+
+		#endregion
+
+		#region Scan Forward
+
+		private static int ScanForward_Array(string str, int controlChar)
+		{
+			return ScanForward(str, controlChar, '[', ']', Strings.Parser_MissingArrayEndChar);
+		}
+
+		private static int ScanForward_Object(string str, int controlChar)
+		{
+			return ScanForward(str, controlChar, '{', '}', Strings.Parser_MissingObjectEndChar);
+		}
+
+		private static int ScanForward(string str, int controlChar, char startChar, char endChar, string errorString)
+		{
+			int count = 0;
+
+			int index = controlChar + 1;
+
+			bool insideString = false;
+
+			while (index < str.Length)
+			{
+				if (str[index] == '"')
+				{
+					insideString = !insideString;
+				}
+				else
+				{
+					if (insideString == false)
+					{
+						if (str[index] == startChar)
+						{
+							count++;
+						}
+						else if (str[index] == endChar)
+						{
+							if (count == 0)
+							{
+								break;
+							}
+
+							count--;
+						}
+					}
+				}
+
+				index++;
+			}
+
+			if (count > 0)
+			{
+				throw new Exception(errorString);
+			}
+
+			if (insideString == true)
+			{
+				throw new Exception(Strings.Parser_MissingStringEndChar);
+			}
+
+			return index;
+		}
+
+		#endregion
+
+		#region Parse Argument
+
+		private static object ParseArgument(string str, IFormatProvider provider)
+		{
+			int value_Int32;
+			long value_Int64;
+			float value_Float;
+			double value_Double;
+			bool value_Bool; 
+
+			string argString = str.Trim();
+
+			if (argString.Length == 0)
+			{
+				throw new Exception(Strings.Parser_ArgumentEmpty);
+			}
+
+			if (argString.Length > 2 && argString.StartsWith("0x") == true)
+			{
+				string hexString = argString.Substring(2);
+
+				if (hexString.Length <= 8)
+				{
+					uint value_UInt32; 
+					if (uint.TryParse(hexString, NumberStyles.HexNumber, provider, out value_UInt32) == true)
+					{
+						return unchecked((int)value_UInt32);
+					}
+				}
+				else
+				{
+					ulong value_UInt64;
+					if (ulong.TryParse(hexString, NumberStyles.HexNumber, provider, out value_UInt64) == true)
+					{
+						return unchecked((long)value_UInt64);
+					}
+				}
+			}
+
+			if (int.TryParse(argString, NumberStyles.Integer, provider, out value_Int32) == true)
+			{
+				return value_Int32;
+			}
+
+			if (long.TryParse(argString, NumberStyles.Integer, provider, out value_Int64) == true)
+			{
+				return value_Int64;
+			}
+
+			if (argString.EndsWith("d") == true)
+			{
+				if (double.TryParse(argString.Substring(0, argString.Length - 1), NumberStyles.Float, provider, out value_Double) == true)
+				{
+					return value_Double;
+				}
+			}
+
+			if (argString.EndsWith("f") == true)
+			{
+				if (float.TryParse(argString.Substring(0, argString.Length - 1), NumberStyles.Float, provider, out value_Float) == true)
+				{
+					return value_Float;
+				}
+			}
+
+			if (float.TryParse(argString, NumberStyles.Float, provider, out value_Float) == true)
+			{
+				return value_Float;
+			}
+
+			if (double.TryParse(argString, NumberStyles.Float, provider, out value_Double) == true)
+			{
+				return value_Double;
+			}
+
+			if (bool.TryParse(argString, out value_Bool) == true)
+			{
+				return value_Bool; 
+			}
+
+			if (argString.Length == 1)
+			{
+				char c = str.Trim()[0];
+
+				return (byte)c;
+			}
+
+			if (argString.Equals(OscNil.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true)
+			{
+				return OscNil.Value;
+			}
+
+			if (OscInfinitum.IsInfinitum(argString) == true)
+			{
+				return OscInfinitum.Value;
+			}
+
+			if (argString[0] == '\"')
+			{
+				int end = argString.IndexOf('"', 1);
+
+				if (end < argString.Length - 1)
+				{
+					// some kind of other value tacked on the end of a string! 
+					throw new Exception(String.Format(Strings.Parser_MalformedStringArgument, argString)); 
+				}
+
+				return argString.Substring(1, argString.Length - 2); 
+			}
+
+			return new OscSymbol(argString); 
+		}
+
+		#endregion
+
+		#region  Parse Object
+
+		private static object ParseObject(string str, IFormatProvider provider)
+		{
+			string strTrimmed = str.Trim();
+
+			int colon = strTrimmed.IndexOf(':');
+
+			if (colon <= 0)
+			{
+				throw new Exception(String.Format(Strings.Parser_MalformedObjectArgument_MissingType, strTrimmed));
+			}
+
+			string name = strTrimmed.Substring(0, colon).Trim();
+			string nameLower = name.ToLowerInvariant(); 
+
+			if (name.Length == 0)
+			{
+				throw new Exception(String.Format(Strings.Parser_MalformedObjectArgument_MissingType, strTrimmed));
+			}
+
+			if (colon + 1 >= strTrimmed.Length)
+			{
+				throw new Exception(String.Format(Strings.Parser_MalformedObjectArgument, strTrimmed));
+			}
+
+			switch (nameLower)
+			{
+				case "midi":
+					return OscMidiMessage.Parse(strTrimmed.Substring(colon + 1).Trim(), provider); 
+				default:
+					throw new Exception(String.Format(Strings.Parser_UnknownObjectType, name)); 
+			}
 		}
 
 		#endregion

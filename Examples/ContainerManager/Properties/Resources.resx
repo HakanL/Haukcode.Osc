@@ -46,7 +46,7 @@
     
     mimetype: application/x-microsoft.net.object.binary.base64
     value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : System.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
     
     mimetype: application/x-microsoft.net.object.soap.base64
@@ -60,7 +60,6 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
@@ -69,10 +68,9 @@
               <xsd:sequence>
                 <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
               <xsd:attribute name="type" type="xsd:string" />
               <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
@@ -87,10 +85,9 @@
                 <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
                 <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
               <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
               <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
@@ -112,93 +109,9 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Address_NullOrEmpty" xml:space="preserve">
-    <value>Address string may not be null or empty</value>
-  </data>
-  <data name="Arguments_UnsupportedType" xml:space="preserve">
-    <value>Unsupported arguemnt type '{0}'</value>
-  </data>
-  <data name="Container_IsValidContainerAddress" xml:space="preserve">
-    <value>Invalid container address '{0}'</value>
-  </data>
-  <data name="MidiMessage_NotAMidiMessage" xml:space="preserve">
-    <value>Not a midi message '{0}'</value>
-  </data>
-  <data name="OscAddress_CannotMatch2AddressPatterns" xml:space="preserve">
-    <value>Cannot match 2 address patterns</value>
-  </data>
-  <data name="OscAddress_CannotMatchNonLiteral" xml:space="preserve">
-    <value>{0} cannot match non literal address parts</value>
-  </data>
-  <data name="OscAddress_NotAValidOscAddress" xml:space="preserve">
-    <value>The address '{0}' is not a valid osc address</value>
-  </data>
-  <data name="OscAddress_UnknownAddressPart" xml:space="preserve">
-    <value>Unknown address part '{0}'</value>
-  </data>
-  <data name="Parser_ArgumentEmpty" xml:space="preserve">
-    <value>Argument is empty</value>
-  </data>
-  <data name="Parser_ArgumentUnexpectedEndOfMessage" xml:space="preserve">
-    <value>Unexpected end of message while parsing argument '{0}'</value>
-  </data>
-  <data name="Parser_InvalidAddress" xml:space="preserve">
-    <value>Invalid address</value>
-  </data>
-  <data name="Parser_InvalidSegmentLength" xml:space="preserve">
-    <value>The packet length is not the correct size</value>
-  </data>
-  <data name="Parser_MalformedArrayArgument" xml:space="preserve">
-    <value>Malformed array '{0}'</value>
-  </data>
-  <data name="Parser_MalformedObjectArgument" xml:space="preserve">
-    <value>Malformed object '{0}'</value>
-  </data>
-  <data name="Parser_MalformedObjectArgument_MissingType" xml:space="preserve">
-    <value>Malformed object '{0}', missing type name</value>
-  </data>
-  <data name="Parser_MalformedStringArgument" xml:space="preserve">
-    <value>Malformed string argument '{0}' </value>
-  </data>
-  <data name="Parser_MalformedTypeTag" xml:space="preserve">
-    <value>Malformed type tag</value>
-  </data>
-  <data name="Parser_MissingAddressEmpty" xml:space="preserve">
-    <value>Address was empty</value>
-  </data>
-  <data name="Parser_MissingAddressTerminator" xml:space="preserve">
-    <value>Address terminator could not be found</value>
-  </data>
-  <data name="Parser_MissingArgumentTerminator" xml:space="preserve">
-    <value>Terminator could not be found while parsing argument '{0}'</value>
-  </data>
-  <data name="Parser_MissingArrayEndChar" xml:space="preserve">
-    <value>Expected ']'</value>
-  </data>
-  <data name="Parser_MissingComma" xml:space="preserve">
-    <value>No comma found</value>
-  </data>
-  <data name="Parser_MissingObjectEndChar" xml:space="preserve">
-    <value>Expected '}}'</value>
-  </data>
-  <data name="Parser_MissingStringEndChar" xml:space="preserve">
-    <value>Expected '"'</value>
-  </data>
-  <data name="Parser_MissingTypeTag" xml:space="preserve">
-    <value>Type tag terminator could not be found</value>
-  </data>
-  <data name="Parser_UnexpectedEndOfMessage" xml:space="preserve">
-    <value>Unexpected end of message</value>
-  </data>
-  <data name="Parser_UnknownArgumentType" xml:space="preserve">
-    <value>Unknown argument type '{0}' on argument '{1}'</value>
-  </data>
-  <data name="Parser_UnknownObjectType" xml:space="preserve">
-    <value>Unknown object type '{0}'</value>
-  </data>
 </root>

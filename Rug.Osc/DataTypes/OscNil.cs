@@ -9,5 +9,10 @@ namespace Rug.Osc
 		public static readonly OscNil Value = new OscNil();
 
 		private OscNil() { }
+
+		public override string ToString()
+		{
+			return "nil";
+		}
 	}
 }

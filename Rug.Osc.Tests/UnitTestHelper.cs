@@ -28,6 +28,8 @@ namespace Rug.Osc.Tests
 			return new OscMessage("/test", 42);
 		}
 
+		internal static string MessageString_Int = "/test, 42";
+
 		#endregion
 
 		#region Message Single Arg (Long)
@@ -46,6 +48,8 @@ namespace Rug.Osc.Tests
 		{
 			return new OscMessage("/test", unchecked((long)0xA1C2E3F4A5C6E7F8));
 		}
+
+		internal static string MessageString_Long = "/test, 0xA1C2E3F4A5C6E7F8";
 
 		#endregion
 
@@ -66,6 +70,8 @@ namespace Rug.Osc.Tests
 			return new OscMessage("/test", 25.25f);
 		}
 
+		internal static string MessageString_Float = "/test, 25.25";
+
 		#endregion
 
 		#region Message Single Arg (Double)
@@ -84,6 +90,8 @@ namespace Rug.Osc.Tests
 		{
 			return new OscMessage("/test", 12.4234);
 		}
+
+		internal static string MessageString_Double = "/test, 12.4234d";
 
 		#endregion
 
@@ -122,6 +130,8 @@ namespace Rug.Osc.Tests
 		{
 			return new OscMessage("/test", (byte)'p');
 		}
+
+		internal static string MessageString_Char = "/test, p";
 
 		#endregion
 
@@ -198,13 +208,15 @@ namespace Rug.Osc.Tests
 				// Typetag
 				(byte)',', (byte)'m', 0, 0, 
 				// value				
-				0x01, 0x94, 0x22, 0x01
+				0x03, 0xF3, 0x56, 0x26
 			};
 
 		internal static OscMessage Message_Midi()
 		{
-			return new OscMessage("/test", new OscMidiMessage(1, OscMidiMessageType.NoteOn, 4, 34, 1));
+			return new OscMessage("/test", new OscMidiMessage(3, OscMidiSystemMessageType.SongSelect, 0x1356));
 		}
+
+		internal static string MessageString_Midi = "/test, { Midi: 3, SongSelect, 86, 38 }";
 
 		#endregion
 
@@ -223,6 +235,8 @@ namespace Rug.Osc.Tests
 			return new OscMessage("/test", true);
 		}
 
+		internal static string MessageString_True = "/test, true";
+
 		#endregion
 
 		#region Message Single Arg (False)
@@ -240,11 +254,13 @@ namespace Rug.Osc.Tests
 			return new OscMessage("/test", false);
 		}
 
+		internal static string MessageString_False = "/test, false";
+
 		#endregion
 
-		#region Message Single Arg (Nill)
+		#region Message Single Arg (Nil)
 
-		internal static byte[] MessageBody_Nill = new byte[] 
+		internal static byte[] MessageBody_Nil = new byte[] 
 			{ 
 				// Address 
 				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 
@@ -252,10 +268,12 @@ namespace Rug.Osc.Tests
 				(byte)',', (byte)'N', 0, 0, 				
 			};
 
-		internal static OscMessage Message_Nill()
+		internal static OscMessage Message_Nil()
 		{
 			return new OscMessage("/test", OscNil.Value);
 		}
+
+		internal static string MessageString_Nil = "/test, nil";
 
 		#endregion
 
@@ -273,6 +291,8 @@ namespace Rug.Osc.Tests
 		{
 			return new OscMessage("/test", OscInfinitum.Value);
 		}
+
+		internal static string MessageString_Infinitum = "/test, inf";
 
 		#endregion
 
@@ -294,6 +314,8 @@ namespace Rug.Osc.Tests
 		{
 			return new OscMessage("/test", 25.25f, 25.25f);
 		}
+
+		internal static string MessageString_Float2 = "/test, 25.25f, 25.25f";
 
 		#endregion
 
@@ -318,6 +340,8 @@ namespace Rug.Osc.Tests
 			return new OscMessage("/test", 25.25f, 25.25f, 25.25f);
 		}
 
+		internal static string MessageString_Float3 = "/test, 25.25f, 25.25f, 25.25f";
+
 		#endregion
 
 		#region Message Single Arg (String)
@@ -337,6 +361,8 @@ namespace Rug.Osc.Tests
 			return new OscMessage("/test", "hello!");
 		}
 
+		internal static string MessageString_String = "/test, \"hello!\"";
+
 		#endregion
 
 		#region Message Single Arg (Symbol)
@@ -355,6 +381,8 @@ namespace Rug.Osc.Tests
 		{
 			return new OscMessage("/test", new OscSymbol("hello!"));
 		}
+
+		internal static string MessageString_Symbol = "/test, hello!";
 
 		#endregion
 
@@ -407,6 +435,8 @@ namespace Rug.Osc.Tests
 				});
 		}
 
+		internal static string MessageString_Array_Ints = "/test, 0x1A2A3A4A, [0x1A2A3A4A, 0x5A6A7A8A, 0x9AAABACA]";
+
 		internal static byte[] MessageBody_Array_Ints2 = new byte[] 
 			{ 
 				// Address 
@@ -434,6 +464,8 @@ namespace Rug.Osc.Tests
 				},
 				unchecked((int)0x1A2A3A4A));
 		}
+
+		internal static string MessageString_Array_Ints2 = "/test, [0x1A2A3A4A, 0x5A6A7A8A, 0x9AAABACA], 0x1A2A3A4A";
 
 		#endregion
 
@@ -479,6 +511,8 @@ namespace Rug.Osc.Tests
 					
 				});
 		}
+
+		internal static string MessageString_Array_NestedInts = "/test, 0x1A2A3A4A, [0x1A2A3A4A, 0x5A6A7A8A, [0x1A2A3A4A, 0x5A6A7A8A, 0x9AAABACA], 0x9AAABACA]";
 
 		#endregion
 
