@@ -107,7 +107,7 @@ namespace Rug.Osc
         }
 
         /// <summary>
-        /// 
+		/// Create a new Osc receiver
         /// </summary>
         /// <param name="port">the port to listen on</param>
         /// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
@@ -120,7 +120,7 @@ namespace Rug.Osc
         }
 
         /// <summary>
-        /// 
+		/// Create a new Osc receiver
         /// </summary>
         /// <param name="port">the port to listen on</param>
         public OscReceiver(int port)

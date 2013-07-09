@@ -222,10 +222,10 @@ namespace Rug.Osc
 					!(obj is bool) &&
 					!(obj is Color) &&
 					!(obj is OscSymbol) &&
-					!(obj is OscNil) &&
+					!(obj is OscNull) &&
 					!(obj is OscTimeTag) &&
 					!(obj is OscMidiMessage) &&
-					!(obj is OscInfinitum) &&
+					!(obj is OscImpulse) &&
 					!(obj is byte) &&
 					!(obj is byte[]))
 				{
@@ -240,6 +240,11 @@ namespace Rug.Osc
 
 		#region Get Argument Size
 
+		/// <summary>
+		/// Calculate the size of the type tag of an object array 
+		/// </summary>
+		/// <param name="args">the array</param>
+		/// <returns>the size of the type tag for the array</returns>
 		private int SizeOfObjectArray_TypeTag(object[] args)
 		{
 			int size = 0;
@@ -261,6 +266,11 @@ namespace Rug.Osc
 			return size;
 		}
 
+		/// <summary>
+		/// Calculate the size of the an object array in bytes
+		/// </summary>
+		/// <param name="args">the array</param>
+		/// <returns>the size of the array in bytes</returns>
 		private int SizeOfObjectArray(object[] args)
 		{
 			int size = 0;
@@ -325,8 +335,8 @@ namespace Rug.Osc
 				}
 				else if (
 					(obj is bool) ||
-					(obj is OscNil) ||
-					(obj is OscInfinitum))
+					(obj is OscNull) ||
+					(obj is OscImpulse))
 				{
 					size += 0;
 				}
@@ -478,11 +488,11 @@ namespace Rug.Osc
 						writer.Write((byte)'F');
 					}
 				}
-				else if (obj is OscNil)
+				else if (obj is OscNull)
 				{
 					writer.Write((byte)'N');
 				}
-				else if (obj is OscInfinitum)
+				else if (obj is OscImpulse)
 				{
 					writer.Write((byte)'I');
 				}
@@ -1072,12 +1082,12 @@ namespace Rug.Osc
 						break;
 					case 'N':
 						#region Nill
-						args[i] = OscNil.Value;
+						args[i] = OscNull.Value;
 						#endregion
 						break;
 					case 'I':
 						#region Infinitum
-						args[i] = OscInfinitum.Value;
+						args[i] = OscImpulse.Value;
 						#endregion
 						break;
 					case '[':
@@ -1223,13 +1233,11 @@ namespace Rug.Osc
 				}
 				else if (obj is Color)
 				{
-					//sb.Append(((Color)obj).ToString());
-					sb.Append("Color!");
+					sb.Append("{ Color: " + Helper.ToStringColor((Color)obj) + " }");
 				}
 				else if (obj is OscTimeTag)
 				{
-					//sb.Append(((OscTimeTag)obj).ToString());
-					sb.Append("OscTimeTag!");
+					sb.Append("{ Time: " + ((OscTimeTag)obj).ToString() + " }");
 				}
 				else if (obj is OscMidiMessage)
 				{
@@ -1239,13 +1247,13 @@ namespace Rug.Osc
 				{
 					sb.Append(((bool)obj).ToString());
 				}
-				else if (obj is OscNil)
+				else if (obj is OscNull)
 				{
-					sb.Append(((OscNil)obj).ToString());
+					sb.Append(((OscNull)obj).ToString());
 				}
-				else if (obj is OscInfinitum)
+				else if (obj is OscImpulse)
 				{
-					sb.Append(((OscInfinitum)obj).ToString());
+					sb.Append(((OscImpulse)obj).ToString());
 				}
 				else if (obj is string)
 				{
@@ -1257,7 +1265,7 @@ namespace Rug.Osc
 				}
 				else if (obj is byte[])
 				{
-					sb.Append("BYTES!");
+					sb.Append("BYTES");
 				}
 				else
 				{
@@ -1368,6 +1376,13 @@ namespace Rug.Osc
 
 		#region Parse Arguments
 
+		/// <summary>
+		/// Parse arguments
+		/// </summary>
+		/// <param name="str">string to parse</param>
+		/// <param name="arguments">the list to put the parsed arguments into</param>
+		/// <param name="index">the current index within the string</param>
+		/// <param name="provider">the format to use</param>
 		private static void ParseArguments(string str, List<object> arguments, int index, IFormatProvider provider)
 		{
 			while (true)
@@ -1477,16 +1492,37 @@ namespace Rug.Osc
 
 		#region Scan Forward
 		
+		/// <summary>
+		/// Scan for array start and end control chars
+		/// </summary>
+		/// <param name="str">the string to scan</param>
+		/// <param name="controlChar">the index of the starting control char</param>
+		/// <returns>the index of the end char</returns>
 		private static int ScanForward_Array(string str, int controlChar)
 		{
 			return ScanForward(str, controlChar, '[', ']', Strings.Parser_MissingArrayEndChar);
 		}
 
+		/// <summary>
+		/// Scan for object start and end control chars
+		/// </summary>
+		/// <param name="str">the string to scan</param>
+		/// <param name="controlChar">the index of the starting control char</param>
+		/// <returns>the index of the end char</returns>
 		private static int ScanForward_Object(string str, int controlChar)
 		{
 			return ScanForward(str, controlChar, '{', '}', Strings.Parser_MissingObjectEndChar);
 		}
 
+		/// <summary>
+		/// Scan for start and end control chars
+		/// </summary>
+		/// <param name="str">the string to scan</param>
+		/// <param name="controlChar">the index of the starting control char</param>
+		/// <param name="startChar">start control char</param>
+		/// <param name="endChar">end control char</param>
+		/// <param name="errorString">string to use in the case of an error</param>
+		/// <returns>the index of the end char</returns>
 		private static int ScanForward(string str, int controlChar, char startChar, char endChar, string errorString)
 		{
 			bool found = false; 
@@ -1551,6 +1587,12 @@ namespace Rug.Osc
 
 		#region Parse Argument
 
+		/// <summary>
+		/// Parse a single argument
+		/// </summary>
+		/// <param name="str">string contain the argument to parse</param>
+		/// <param name="provider">format provider to use</param>
+		/// <returns>the parsed argument</returns>
 		private static object ParseArgument(string str, IFormatProvider provider)
 		{
 			int value_Int32;
@@ -1566,10 +1608,12 @@ namespace Rug.Osc
 				throw new Exception(Strings.Parser_ArgumentEmpty);
 			}
 
+			// try to parse a hex value
 			if (argString.Length > 2 && argString.StartsWith("0x") == true)
 			{
 				string hexString = argString.Substring(2);
 
+				// parse a int32
 				if (hexString.Length <= 8)
 				{
 					uint value_UInt32; 
@@ -1578,6 +1622,7 @@ namespace Rug.Osc
 						return unchecked((int)value_UInt32);
 					}
 				}
+				// parse a int64
 				else
 				{
 					ulong value_UInt64;
@@ -1588,16 +1633,19 @@ namespace Rug.Osc
 				}
 			}
 
+			// parse int32
 			if (int.TryParse(argString, NumberStyles.Integer, provider, out value_Int32) == true)
 			{
 				return value_Int32;
 			}
 
+			// parse int64
 			if (long.TryParse(argString, NumberStyles.Integer, provider, out value_Int64) == true)
 			{
 				return value_Int64;
 			}
 
+			// parse double
 			if (argString.EndsWith("d") == true)
 			{
 				if (double.TryParse(argString.Substring(0, argString.Length - 1), NumberStyles.Float, provider, out value_Double) == true)
@@ -1606,6 +1654,7 @@ namespace Rug.Osc
 				}
 			}
 
+			// parse float
 			if (argString.EndsWith("f") == true)
 			{
 				if (float.TryParse(argString.Substring(0, argString.Length - 1), NumberStyles.Float, provider, out value_Float) == true)
@@ -1614,21 +1663,25 @@ namespace Rug.Osc
 				}
 			}
 
+			// parse float 
 			if (float.TryParse(argString, NumberStyles.Float, provider, out value_Float) == true)
 			{
 				return value_Float;
 			}
 
+			// parse double
 			if (double.TryParse(argString, NumberStyles.Float, provider, out value_Double) == true)
 			{
 				return value_Double;
 			}
 
+			// parse bool
 			if (bool.TryParse(argString, out value_Bool) == true)
 			{
 				return value_Bool; 
 			}
 
+			// parse char
 			if (argString.Length == 1)
 			{
 				char c = str.Trim()[0];
@@ -1636,16 +1689,19 @@ namespace Rug.Osc
 				return (byte)c;
 			}
 
-			if (argString.Equals(OscNil.Value.ToString(), StringComparison.InvariantCultureIgnoreCase) == true)
+			// parse null 
+			if (OscNull.IsNull(argString) == true)
 			{
-				return OscNil.Value;
+				return OscNull.Value;
 			}
 
-			if (OscInfinitum.IsInfinitum(argString) == true)
+			// parse impulse/bang
+			if (OscImpulse.IsImpulse(argString) == true)
 			{
-				return OscInfinitum.Value;
+				return OscImpulse.Value;
 			}
 
+			// parse string
 			if (argString[0] == '\"')
 			{
 				int end = argString.IndexOf('"', 1);
@@ -1659,6 +1715,7 @@ namespace Rug.Osc
 				return argString.Substring(1, argString.Length - 2); 
 			}
 
+			// if all else fails then its a symbol i guess (?!?) 
 			return new OscSymbol(argString); 
 		}
 
@@ -1666,6 +1723,12 @@ namespace Rug.Osc
 
 		#region  Parse Object
 
+		/// <summary>
+		/// Parse an object
+		/// </summary>
+		/// <param name="str">string contain the object to parse</param>
+		/// <param name="provider">format provider to use</param>
+		/// <returns>the parsed argument</returns>
 		private static object ParseObject(string str, IFormatProvider provider)
 		{
 			string strTrimmed = str.Trim();
@@ -1693,7 +1756,11 @@ namespace Rug.Osc
 			switch (nameLower)
 			{
 				case "midi":
-					return OscMidiMessage.Parse(strTrimmed.Substring(colon + 1).Trim(), provider); 
+					return OscMidiMessage.Parse(strTrimmed.Substring(colon + 1).Trim(), provider);
+				case "time":
+					return OscTimeTag.Parse(strTrimmed.Substring(colon + 1).Trim(), provider);
+				case "color":
+					return Helper.ParseColor(strTrimmed.Substring(colon + 1).Trim(), provider);
 				default:
 					throw new Exception(String.Format(Strings.Parser_UnknownObjectType, name)); 
 			}

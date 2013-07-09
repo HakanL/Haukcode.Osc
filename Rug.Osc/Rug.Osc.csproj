@@ -37,12 +37,12 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTypes\OscNil.cs" />
+    <Compile Include="DataTypes\OscNull.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="OscAddress.cs" />
     <Compile Include="OscListenerManager.cs" />
-    <Compile Include="DataTypes\OscInfinitum.cs" />
+    <Compile Include="DataTypes\OscImpulse.cs" />
     <Compile Include="OscMessage.cs" />
     <Compile Include="DataTypes\OscMidiMessage.cs" />
     <Compile Include="Comms\OscReceiver.cs" />

@@ -270,7 +270,7 @@ namespace Rug.Osc.Tests
 
 		internal static OscMessage Message_Nil()
 		{
-			return new OscMessage("/test", OscNil.Value);
+			return new OscMessage("/test", OscNull.Value);
 		}
 
 		internal static string MessageString_Nil = "/test, nil";
@@ -289,7 +289,7 @@ namespace Rug.Osc.Tests
 
 		internal static OscMessage Message_Infinitum()
 		{
-			return new OscMessage("/test", OscInfinitum.Value);
+			return new OscMessage("/test", OscImpulse.Value);
 		}
 
 		internal static string MessageString_Infinitum = "/test, inf";

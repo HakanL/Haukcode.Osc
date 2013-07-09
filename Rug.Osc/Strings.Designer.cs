@@ -160,6 +160,15 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid color &apos;{0}&apos;.
+        /// </summary>
+        internal static string Parser_InvalidColor {
+            get {
+                return ResourceManager.GetString("Parser_InvalidColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The packet length is not the correct size.
         /// </summary>
         internal static string Parser_InvalidSegmentLength {

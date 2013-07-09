@@ -11,6 +11,7 @@
  */
 
 using System;
+using System.Globalization;
 
 namespace Rug.Osc
 {
@@ -95,5 +96,85 @@ namespace Rug.Osc
 
 			return new OscTimeTag(((ulong)(seconds_UInt & 0xFFFFFFFF) << 32) | ((ulong)fraction & 0xFFFFFFFF));
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="str"></param>
+		/// <param name="provider"></param>
+		/// <returns></returns>
+		public static OscTimeTag Parse(string str, IFormatProvider provider)
+		{
+			string[] formats = new string[] 
+			{	
+				"dd-MM-yy", 
+				"dd-MM-yyyy",
+ 				"HH:mm",
+				"HH:mm:ss",
+				"HH:mm:ss.ffff",
+				"dd-MM-yyyy HH:mm:ss",
+				"dd-MM-yyyy HH:mm",
+				"dd-MM-yyyy HH:mm:ss.ffff" 
+			}; 
+
+			DateTime datetime = DateTime.ParseExact(str, formats, provider, DateTimeStyles.None);
+
+			return FromDataTime(datetime); 
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="str"></param>
+		/// <returns></returns>
+		public static OscTimeTag Parse(string str)
+		{
+			return Parse(str, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="str"></param>
+		/// <param name="provider"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static bool TryParse(string str, IFormatProvider provider, out OscTimeTag value)
+		{
+			try
+			{
+				value = Parse(str, provider);
+
+				return true;
+			}
+			catch
+			{
+				value = default(OscTimeTag);
+
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="str"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static bool TryParse(string str, out OscTimeTag value)
+		{
+			try
+			{
+				value = Parse(str, CultureInfo.InvariantCulture);
+
+				return true;
+			}
+			catch
+			{
+				value = default(OscTimeTag);
+
+				return false;
+			}
+		}		
 	}
 }

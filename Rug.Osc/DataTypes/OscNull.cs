@@ -12,28 +12,28 @@
 namespace Rug.Osc
 {
 	/// <summary>
-	/// Osc Infinitum Singleton
+	/// Osc Null Singleton
 	/// </summary>
-	public sealed class OscInfinitum
+	public sealed class OscNull
 	{
-		public static readonly OscInfinitum Value = new OscInfinitum();
+		public static readonly OscNull Value = new OscNull();
 
-		private OscInfinitum() { }
+		private OscNull() { }
 
 		public override string ToString()
 		{
-			return "inf";
+			return "null";
 		}
 
-		public static bool IsInfinitum(string str)
+		public static bool IsNull(string str)
 		{
 			bool isTrue = false;
 
-			isTrue |= "Infinitum".Equals(str, System.StringComparison.InvariantCultureIgnoreCase);
+			isTrue |= "Null".Equals(str, System.StringComparison.InvariantCultureIgnoreCase);
 
-			isTrue |= "Inf".Equals(str, System.StringComparison.InvariantCultureIgnoreCase);
+			isTrue |= "Nil".Equals(str, System.StringComparison.InvariantCultureIgnoreCase);
 
-			return isTrue; 
+			return isTrue;
 		}
 	}
 }
