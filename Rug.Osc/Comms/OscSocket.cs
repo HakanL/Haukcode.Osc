@@ -86,15 +86,15 @@ namespace Rug.Osc
         /// </summary>
         public OscSocketState State { get { return m_State; } protected set { m_State = value; } }
 
+		/// <summary>
+		/// The socket type
+		/// </summary>
+		public abstract OscSocketType OscSocketType { get; }
+
         /// <summary>
         /// The instance of the socket 
         /// </summary>
         protected Socket Socket { get { return m_Socket; } }
-
-        /// <summary>
-        /// The socket type
-        /// </summary>
-        protected abstract OscSocketType OscSocketType { get; }
 
         /// <summary>
         /// Flags for the socket

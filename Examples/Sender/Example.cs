@@ -14,6 +14,8 @@ namespace Sender
 		public Example()
 		{
 			InitializeComponent();
+
+			m_MessageBox.BackColor = Color.LightGreen;
 		}
 
 		/// <summary>

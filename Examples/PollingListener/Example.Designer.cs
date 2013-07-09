@@ -41,7 +41,7 @@
 			// m_PortBox
 			// 
 			this.m_PortBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_PortBox.Location = new System.Drawing.Point(455, 10);
+			this.m_PortBox.Location = new System.Drawing.Point(357, 10);
 			this.m_PortBox.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -62,14 +62,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_AddressBox.Location = new System.Drawing.Point(12, 10);
 			this.m_AddressBox.Name = "m_AddressBox";
-			this.m_AddressBox.Size = new System.Drawing.Size(437, 20);
+			this.m_AddressBox.Size = new System.Drawing.Size(339, 20);
 			this.m_AddressBox.TabIndex = 8;
 			this.m_AddressBox.Text = "Any";
 			// 
 			// m_Connect
 			// 
 			this.m_Connect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_Connect.Location = new System.Drawing.Point(581, 8);
+			this.m_Connect.Location = new System.Drawing.Point(483, 8);
 			this.m_Connect.Name = "m_Connect";
 			this.m_Connect.Size = new System.Drawing.Size(75, 23);
 			this.m_Connect.TabIndex = 7;
@@ -81,9 +81,9 @@
 			// 
 			this.m_Clear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_Clear.Location = new System.Drawing.Point(12, 299);
+			this.m_Clear.Location = new System.Drawing.Point(12, 333);
 			this.m_Clear.Name = "m_Clear";
-			this.m_Clear.Size = new System.Drawing.Size(644, 23);
+			this.m_Clear.Size = new System.Drawing.Size(546, 23);
 			this.m_Clear.TabIndex = 10;
 			this.m_Clear.Text = "Clear";
 			this.m_Clear.UseVisualStyleBackColor = true;
@@ -96,7 +96,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_Output.Location = new System.Drawing.Point(12, 36);
 			this.m_Output.Name = "m_Output";
-			this.m_Output.Size = new System.Drawing.Size(644, 257);
+			this.m_Output.Size = new System.Drawing.Size(546, 291);
 			this.m_Output.TabIndex = 11;
 			this.m_Output.Text = "";
 			// 
@@ -109,12 +109,13 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(668, 334);
+			this.ClientSize = new System.Drawing.Size(570, 368);
 			this.Controls.Add(this.m_Output);
 			this.Controls.Add(this.m_Clear);
 			this.Controls.Add(this.m_PortBox);
 			this.Controls.Add(this.m_AddressBox);
 			this.Controls.Add(this.m_Connect);
+			this.MinimumSize = new System.Drawing.Size(410, 273);
 			this.Name = "Example";
 			this.Text = "Polling Listener Example";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Example_FormClosing);

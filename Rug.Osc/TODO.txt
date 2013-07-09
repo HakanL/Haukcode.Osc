@@ -5,15 +5,13 @@ X Implement Other Data Types
 
 Demos: 
 
-Send / Recive demo (sends to itself) 
+X Polling Listener Demo
 
-Polling Listener Demo
+X Blocking listener Demo
 
-Blocking listener Demo
+X Container Manager Demo
 
-Container Manager Demo
-
-Sender Demo
+X Sender Demo
 
 Bundles
 

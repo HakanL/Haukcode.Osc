@@ -224,7 +224,7 @@ namespace Rug.Osc
 
 		public static OscMidiMessage Parse(string str, IFormatProvider provider)
 		{
-			if (String.IsNullOrWhiteSpace(str) == true)
+			if (Helper.IsNullOrWhiteSpace(str) == true)
 			{
 				throw new Exception(String.Format(Strings.MidiMessage_NotAMidiMessage, str));
 			}
@@ -245,14 +245,14 @@ namespace Rug.Osc
 			if (byte.TryParse(parts[index].Trim(), NumberStyles.Integer, provider, out statusByte) == false)
 			{
 				OscMidiSystemMessageType systemMessage;
-				
-				if (Enum.TryParse<OscMidiSystemMessageType>(parts[index].Trim(), true, out systemMessage) == true)
+
+				if (EnumHelper.TryParse<OscMidiSystemMessageType>(parts[index].Trim(), true, out systemMessage) == true)
 				{
 					messageType = OscMidiMessageType.SystemExclusive;
 					statusByte = (byte)((int)messageType | (int)systemMessage);
 					index++; 
 				}
-				else if (Enum.TryParse<OscMidiMessageType>(parts[index].Trim(), true, out messageType) == true)
+				else if (EnumHelper.TryParse<OscMidiMessageType>(parts[index].Trim(), true, out messageType) == true)
 				{
 					index++;
 					byte channel = byte.Parse(parts[index++].Trim(), NumberStyles.Integer, provider);

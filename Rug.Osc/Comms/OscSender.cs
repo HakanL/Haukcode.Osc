@@ -26,6 +26,11 @@ namespace Rug.Osc
 
         #region Properties
 
+		public override OscSocketType OscSocketType
+		{
+			get { return Osc.OscSocketType.Send; }
+		}
+
         /// <summary>
         /// The next queue index to write messages to 
         /// </summary>
@@ -60,11 +65,6 @@ namespace Rug.Osc
 
                 return index;
             }
-        }
-
-        protected override OscSocketType OscSocketType
-        {
-            get { return Osc.OscSocketType.Send; }
         }
 
         #endregion

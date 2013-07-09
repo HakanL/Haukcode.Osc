@@ -10,11 +10,11 @@ namespace BlockingListener
 	{
 		// for messages
 		delegate void StringEvent(string str); 
-
-		OscReceiver m_Reciever;
 		
 		// listen thread
 		Thread m_Thread;
+
+		OscReceiver m_Reciever;
 		
 		public Example()
 		{

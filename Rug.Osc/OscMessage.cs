@@ -172,7 +172,7 @@ namespace Rug.Osc
             m_Address = address; 
             m_Arguments = args;
 
-			if (String.IsNullOrWhiteSpace(m_Address) == true)
+			if (Helper.IsNullOrWhiteSpace(m_Address) == true)
 			{
 				throw new ArgumentNullException("address"); 
 			}
@@ -356,7 +356,7 @@ namespace Rug.Osc
         public int Write(byte[] data)
         {
             // is the a address string empty? 
-            if (String.IsNullOrWhiteSpace(m_Address) == true)
+			if (Helper.IsNullOrWhiteSpace(m_Address) == true)
             {
                 throw new Exception(Strings.Address_NullOrEmpty); 
             }
@@ -1325,7 +1325,7 @@ namespace Rug.Osc
 		/// <returns>the parsed message</returns>
 		public static OscMessage Parse(string str, IFormatProvider provider)
 		{
-			if (String.IsNullOrWhiteSpace(str) == true)
+			if (Helper.IsNullOrWhiteSpace(str) == true)
 			{
 				throw new ArgumentNullException("str");
 			}
@@ -1340,7 +1340,7 @@ namespace Rug.Osc
 
 			string address = str.Substring(0, index).Trim();
 
-			if (String.IsNullOrWhiteSpace(address) == true)
+			if (Helper.IsNullOrWhiteSpace(address) == true)
 			{
 				throw new Exception(Strings.Parser_MissingAddressEmpty);
 			}
@@ -1415,7 +1415,7 @@ namespace Rug.Osc
 								return;
 							}
 
-							if (String.IsNullOrWhiteSpace(str.Substring(end, controlChar - end)) == false)
+							if (Helper.IsNullOrWhiteSpace(str.Substring(end, controlChar - end)) == false)
 							{
 								throw new Exception(String.Format(Strings.Parser_MalformedArrayArgument, str.Substring(index, controlChar - end)));
 							}
@@ -1449,7 +1449,7 @@ namespace Rug.Osc
 								return;
 							}
 
-							if (String.IsNullOrWhiteSpace(str.Substring(end, controlChar - end)) == false)
+							if (Helper.IsNullOrWhiteSpace(str.Substring(end, controlChar - end)) == false)
 							{
 								throw new Exception(String.Format(Strings.Parser_MalformedObjectArgument, str.Substring(index, controlChar - end)));
 							}
@@ -1481,6 +1481,8 @@ namespace Rug.Osc
 
 		private static int ScanForward(string str, int controlChar, char startChar, char endChar, string errorString)
 		{
+			bool found = false; 
+
 			int count = 0;
 
 			int index = controlChar + 1;
@@ -1505,6 +1507,8 @@ namespace Rug.Osc
 						{
 							if (count == 0)
 							{
+								found = true; 
+
 								break;
 							}
 
@@ -1516,14 +1520,20 @@ namespace Rug.Osc
 				index++;
 			}
 
+
+			if (insideString == true)
+			{
+				throw new Exception(Strings.Parser_MissingStringEndChar);
+			}
+
 			if (count > 0)
 			{
 				throw new Exception(errorString);
 			}
 
-			if (insideString == true)
+			if (found == false)
 			{
-				throw new Exception(Strings.Parser_MissingStringEndChar);
+				throw new Exception(errorString);
 			}
 
 			return index;

@@ -13,6 +13,25 @@ namespace Rug.Osc
 
 		#endregion
 
+		#region Is Null Or White Space
+
+		public static bool IsNullOrWhiteSpace(string str) 
+		{
+			if (str == null)
+			{
+				return true; 
+			}
+
+			if (String.IsNullOrEmpty(str.Trim()) == true)
+			{
+				return true; 
+			}
+
+			return false; 
+		}
+
+		#endregion
+
 		#region UInt to Float Conversion Helper
 
 		/// <summary>

@@ -352,6 +352,10 @@ namespace Rug.Osc
 
 		#region Constructor
 
+		/// <summary>
+		/// Create an osc address from a string, must follow the rules set out in http://opensoundcontrol.org/spec-1_0
+		/// </summary>
+		/// <param name="address">the address string</param>
 		public OscAddress(string address)
 		{
 			// Ensure address is valid
@@ -360,20 +364,28 @@ namespace Rug.Osc
 				throw new ArgumentException(String.Format(Strings.OscAddress_NotAValidOscAddress, address), "address"); 
 			}
 
+			// stash the original string
 			m_OrigialString = address; 
 
+			// create a list for the parsed parts
 			List<OscAddressPart> addressParts = new List<OscAddressPart>(); 
 			
+			// the the bits of the path, split by the '/' char
 			string[] parts = address.Split(AddressSeperatorChar, StringSplitOptions.RemoveEmptyEntries);
 
+			// is this address non-literal (an address pattern)
 			bool nonLiteral = false;
 
+			// loop through all the parts
 			foreach (string part in parts)
 			{
+				// add a separator
 				addressParts.Add(OscAddressPart.AddressSeparator());
 
+				// get the matches within the part 
 				MatchCollection matches = PatternAddressPartExtractor.Matches(part);								
 				
+				// loop through all matches
 				foreach (Match match in matches) 
 				{
 					if (match.Groups["Literal"].Success == true)
@@ -407,24 +419,30 @@ namespace Rug.Osc
 				}
 			}
 
+			// set the type
 			m_Type = nonLiteral ? OscAddressType.Pattern : OscAddressType.Literal;
 
+			// set the parts array
 			m_Parts = addressParts.ToArray();
 
+			// build the regex if one is needed
 			if (m_Type != OscAddressType.Literal)
-			{
-				
+			{				
 				StringBuilder regex = new StringBuilder(); 
 
+				// match the start of the string 
 				regex.Append("^(");
 				
 				foreach (OscAddressPart part in m_Parts) 
 				{
+					// match the part
 					regex.Append(part.PartRegex); 
 				}
  
+				// match the end of the string
 				regex.Append(")$");
 
+				// build the regex (do not compile)
 				m_Regex = new Regex(regex.ToString(), RegexOptions.None);
 			}
 		}
@@ -433,31 +451,53 @@ namespace Rug.Osc
 
 		#region Match
 
+		/// <summary>
+		/// Match this address against an address string
+		/// </summary>
+		/// <param name="address">the address string to match against</param>
+		/// <returns>true if the addresses match, otherwise false</returns>
 		public bool Match(string address) 
 		{
+			// if this address in a literal 
 			if (m_Type == OscAddressType.Literal)
 			{
+				// if the original string is the same then we are good
 				return m_OrigialString.Equals(address); 
 			}
 			else
 			{
+				// use the pattern regex to determin a match
 				return m_Regex.IsMatch(address);
 			}
 		}
 
+		/// <summary>
+		/// Match this address against another
+		/// </summary>
+		/// <param name="address">the address to match against</param>
+		/// <returns>true if the addresses match, otherwise false</returns>
 		public bool Match(OscAddress address) 
 		{
-			if (m_Type == OscAddressType.Literal && address.m_Type == OscAddressType.Literal)
+			// if both addresses are literals then we can match on original string 			 
+			if (m_Type == OscAddressType.Literal && 
+				address.m_Type == OscAddressType.Literal)
 			{
 				return m_OrigialString.Equals(address);
 			}
+			// if this address is a literal then use the others regex 
 			else if (m_Type == OscAddressType.Literal)
 			{
 				return address.m_Regex.IsMatch(m_OrigialString);
 			}
+			// if the other is a literal use this ones regex 
+			else if (address.m_Type == OscAddressType.Literal)
+			{
+				return m_Regex.IsMatch(address.m_OrigialString);
+			}
+			// if both are patterns then we have a problem
 			else
 			{
-				throw new Exception(Strings.OscAddress_CannotMatch2AddressPatterns); 
+				throw new Exception(Strings.OscAddress_CannotMatch2AddressPatterns);
 			}
 		}
 
@@ -473,7 +513,7 @@ namespace Rug.Osc
 		/// <summary>
 		/// Only used for testing
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>a string that would produce the same address pattern but not a copy of the original string</returns>
 		internal string ToString_Rebuild()
 		{
 			StringBuilder sb = new StringBuilder(); 			
@@ -511,7 +551,7 @@ namespace Rug.Osc
 		/// <returns>true if the address is valid</returns>
 		public static bool IsValidAddressLiteral(string address)
 		{
-			if (String.IsNullOrWhiteSpace(address) == true)
+			if (Helper.IsNullOrWhiteSpace(address) == true)
 			{
 				return false;
 			}
@@ -526,7 +566,7 @@ namespace Rug.Osc
 		/// <returns>true if the address pattern is valid</returns>
 		public static bool IsValidAddressPattern(string addressPattern)
 		{
-			if (String.IsNullOrWhiteSpace(addressPattern) == true) 
+			if (Helper.IsNullOrWhiteSpace(addressPattern) == true) 
 			{
 				return false; 
 			}

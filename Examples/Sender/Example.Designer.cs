@@ -41,7 +41,7 @@
 			// m_Send
 			// 
 			this.m_Send.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_Send.Location = new System.Drawing.Point(412, 39);
+			this.m_Send.Location = new System.Drawing.Point(483, 39);
 			this.m_Send.Name = "m_Send";
 			this.m_Send.Size = new System.Drawing.Size(75, 23);
 			this.m_Send.TabIndex = 0;
@@ -55,7 +55,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_MessageBox.Location = new System.Drawing.Point(13, 41);
 			this.m_MessageBox.Name = "m_MessageBox";
-			this.m_MessageBox.Size = new System.Drawing.Size(393, 20);
+			this.m_MessageBox.Size = new System.Drawing.Size(464, 20);
 			this.m_MessageBox.TabIndex = 1;
 			this.m_MessageBox.Text = "/test, 1, 2, 3";
 			this.m_MessageBox.TextChanged += new System.EventHandler(this.MessageBox_TextChanged);
@@ -67,7 +67,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_Output.Location = new System.Drawing.Point(13, 67);
 			this.m_Output.Name = "m_Output";
-			this.m_Output.Size = new System.Drawing.Size(474, 257);
+			this.m_Output.Size = new System.Drawing.Size(545, 260);
 			this.m_Output.TabIndex = 2;
 			this.m_Output.Text = "";
 			// 
@@ -75,9 +75,9 @@
 			// 
 			this.m_Clear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_Clear.Location = new System.Drawing.Point(12, 330);
+			this.m_Clear.Location = new System.Drawing.Point(12, 333);
 			this.m_Clear.Name = "m_Clear";
-			this.m_Clear.Size = new System.Drawing.Size(475, 23);
+			this.m_Clear.Size = new System.Drawing.Size(546, 23);
 			this.m_Clear.TabIndex = 3;
 			this.m_Clear.Text = "Clear";
 			this.m_Clear.UseVisualStyleBackColor = true;
@@ -86,7 +86,7 @@
 			// m_Connect
 			// 
 			this.m_Connect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_Connect.Location = new System.Drawing.Point(412, 10);
+			this.m_Connect.Location = new System.Drawing.Point(483, 10);
 			this.m_Connect.Name = "m_Connect";
 			this.m_Connect.Size = new System.Drawing.Size(75, 23);
 			this.m_Connect.TabIndex = 4;
@@ -100,14 +100,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_AddressBox.Location = new System.Drawing.Point(13, 12);
 			this.m_AddressBox.Name = "m_AddressBox";
-			this.m_AddressBox.Size = new System.Drawing.Size(267, 20);
+			this.m_AddressBox.Size = new System.Drawing.Size(338, 20);
 			this.m_AddressBox.TabIndex = 5;
 			this.m_AddressBox.Text = "127.0.0.1";
 			// 
 			// m_PortBox
 			// 
 			this.m_PortBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_PortBox.Location = new System.Drawing.Point(286, 12);
+			this.m_PortBox.Location = new System.Drawing.Point(357, 12);
 			this.m_PortBox.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -126,7 +126,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(499, 365);
+			this.ClientSize = new System.Drawing.Size(570, 368);
 			this.Controls.Add(this.m_PortBox);
 			this.Controls.Add(this.m_AddressBox);
 			this.Controls.Add(this.m_Connect);
@@ -134,7 +134,7 @@
 			this.Controls.Add(this.m_Output);
 			this.Controls.Add(this.m_MessageBox);
 			this.Controls.Add(this.m_Send);
-			this.MinimumSize = new System.Drawing.Size(343, 300);
+			this.MinimumSize = new System.Drawing.Size(410, 273);
 			this.Name = "Example";
 			this.Text = "Osc Sender Example";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Example_FormClosing);

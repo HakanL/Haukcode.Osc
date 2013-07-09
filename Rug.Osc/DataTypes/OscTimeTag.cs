@@ -14,6 +14,10 @@ namespace Rug.Osc
 		/// </summary>
 		public ulong Value;
 
+		/// <summary>
+		/// Build a osc timetag from a Ntp 64 bit integer 
+		/// </summary>
+		/// <param name="value">the 64 bit integer containing the time stamp</param>
 		public OscTimeTag(ulong value)
 		{
 			Value = value;
@@ -41,6 +45,10 @@ namespace Rug.Osc
 			return ToDataTime().ToString("dd/MM/yyyy HH:mm:ss.fff");
 		}
 
+		/// <summary>
+		/// Get the equivient datetime value from the osc timetag 
+		/// </summary>
+		/// <returns>the equivilent value as a datetime</returns>
 		public DateTime ToDataTime()
 		{
 			// http://stackoverflow.com/questions/5206857/convert-ntp-timestamp-to-utc
@@ -56,6 +64,11 @@ namespace Rug.Osc
 			return datetime;
 		}
 
+		/// <summary>
+		/// Get a Osc timstamp from a datetime value
+		/// </summary>
+		/// <param name="datetime">datetime value</param>
+		/// <returns>the equivilent value as an osc timetag</returns>
 		public static OscTimeTag FromDataTime(DateTime datetime)
 		{
 			TimeSpan span = datetime.Subtract(BaseDate);

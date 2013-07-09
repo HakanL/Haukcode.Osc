@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rug.Osc</RootNamespace>
     <AssemblyName>Rug.Osc</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,9 +39,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTypes\OscNil.cs" />
+    <Compile Include="EnumHelper.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="OscAddress.cs" />
-    <Compile Include="OscContainerManager.cs" />
+    <Compile Include="OscListenerManager.cs" />
     <Compile Include="DataTypes\OscInfinitum.cs" />
     <Compile Include="OscMessage.cs" />
     <Compile Include="DataTypes\OscMidiMessage.cs" />

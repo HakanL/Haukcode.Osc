@@ -46,12 +46,12 @@ namespace Rug.Osc
 
 	#endregion
 
-	#region Osc Container Manager
+	#region Osc Listener Manager
 
 	/// <summary>
 	/// Manages osc address event listening
 	/// </summary>
-	public class OscContainerManager : IDisposable
+	public class OscListenerManager : IDisposable
 	{
 		#region Private Members
 
@@ -62,14 +62,14 @@ namespace Rug.Osc
 
 		#endregion
 
-		#region Register
+		#region Attach
 
 		/// <summary>
-		/// Attach an event to the container at the given address
+		/// Attach an event listener on to the given address
 		/// </summary>
 		/// <param name="address">the address of the contianer</param>
 		/// <param name="event">the event to attach</param>
-		public void Register(string address, OscMessageEvent @event)
+		public void Attach(string address, OscMessageEvent @event)
 		{
 			if (@event == null)
 			{
@@ -98,14 +98,14 @@ namespace Rug.Osc
 
 		#endregion
 
-		#region Unregister
+		#region Detach
 
 		/// <summary>
-		/// Unregiser an event from a container address
+		/// Detach an event listener 
 		/// </summary>
 		/// <param name="address">the address of the container</param>
 		/// <param name="event">the event to remove</param>
-		public void Unregister(string address, OscMessageEvent @event)
+		public void Detach(string address, OscMessageEvent @event)
 		{
 			if (@event == null)
 			{
@@ -137,14 +137,17 @@ namespace Rug.Osc
 
 		#endregion
 
-		#region Process
+		#region Invoke
 
 		/// <summary>
 		/// Invoke any event that matches the address on the message
 		/// </summary>
-		/// <param name="message"></param>
-		public void Process(OscMessage message)
-		{			
+		/// <param name="message">the message argument</param>
+		/// <returns>true if there was a listener to invoke otherwise false</returns>
+		public bool Invoke(OscMessage message)
+		{
+			bool invoked = false; 
+
 			if (OscAddress.IsValidAddressLiteral(message.Address) == true)
 			{
 				OscListener container;
@@ -152,6 +155,7 @@ namespace Rug.Osc
 				if (m_Lookup.TryGetValue(message.Address, out container) == true)
 				{
 					container.Invoke(message);
+					invoked = true; 
 				}
 			}
 			else
@@ -163,15 +167,21 @@ namespace Rug.Osc
 					if (address.Match(value.Key) == true)
 					{
 						value.Value.Invoke(message);
+						invoked = true; 
 					}
 				}
 			}
+
+			return invoked; 
 		}
 
 		#endregion
 
 		#region IDisposable Members
 
+		/// <summary>
+		/// Disposes of any resources and releases all events 
+		/// </summary>
 		public void Dispose()
 		{
 			foreach (KeyValuePair<string, OscListener> value in m_Lookup)
