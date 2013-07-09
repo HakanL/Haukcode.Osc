@@ -1,5 +1,13 @@
 ﻿/* 
- * OscMessage based on Osc parsing code witten by Tom Mitchell teamaxe.co.uk 
+ * Rug.Osc 
+ * 
+ * THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+ * EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED 
+ * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+ * 
+ * Copyright (C) 2013 Phill Tew. All rights reserved.
+ * 
+ * Based on Osc parsing code witten by Tom Mitchell teamaxe.co.uk 
  */
 
 using System;
@@ -1468,7 +1476,7 @@ namespace Rug.Osc
 		#endregion
 
 		#region Scan Forward
-
+		
 		private static int ScanForward_Array(string str, int controlChar)
 		{
 			return ScanForward(str, controlChar, '[', ']', Strings.Parser_MissingArrayEndChar);

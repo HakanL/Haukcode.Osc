@@ -8,8 +8,8 @@
     <ProjectGuid>{761FEB78-7F98-42A4-8277-8A840ECFE176}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ContainerManager</RootNamespace>
-    <AssemblyName>ContainerManager</AssemblyName>
+    <RootNamespace>ListenerManager</RootNamespace>
+    <AssemblyName>ListenerManager</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

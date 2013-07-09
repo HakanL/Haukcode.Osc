@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PollingListener")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Polling Listener Example")]
+[assembly: AssemblyDescription("An example using a OscReciver in non-blocking mode")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("PollingListener")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2013")]
+[assembly: AssemblyCompany("Rugland Digital Systems")]
+[assembly: AssemblyProduct("Rug.Osc")]
+[assembly: AssemblyCopyright("Copyright © Phill Tew 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

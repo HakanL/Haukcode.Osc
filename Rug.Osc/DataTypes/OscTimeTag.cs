@@ -1,4 +1,16 @@
-﻿using System;
+﻿/* 
+ * Rug.Osc 
+ * 
+ * THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+ * EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED 
+ * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+ * 
+ * Copyright (C) 2013 Phill Tew. All rights reserved.
+ * 
+ * Based on code by Kas http://stackoverflow.com/questions/5206857/convert-ntp-timestamp-to-utc
+ */
+
+using System;
 
 namespace Rug.Osc
 {
@@ -51,7 +63,7 @@ namespace Rug.Osc
 		/// <returns>the equivilent value as a datetime</returns>
 		public DateTime ToDataTime()
 		{
-			// http://stackoverflow.com/questions/5206857/convert-ntp-timestamp-to-utc
+			// Kas: http://stackoverflow.com/questions/5206857/convert-ntp-timestamp-to-utc
 
 			uint seconds = (uint)((Value & 0xFFFFFFFF00000000) >> 32);
 

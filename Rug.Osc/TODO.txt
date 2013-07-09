@@ -3,18 +3,5 @@ Implement Non-literal to Non-literal pattern matching?
 
 X Implement Other Data Types
 
-Demos: 
-
-X Polling Listener Demo
-
-X Blocking listener Demo
-
-X Container Manager Demo
-
-X Sender Demo
-
 Bundles
-
 MessageBuilder? 
-
-X MidiMessage tests

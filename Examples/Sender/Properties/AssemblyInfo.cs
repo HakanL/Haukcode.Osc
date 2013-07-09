@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Sender")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Sender Example")]
+[assembly: AssemblyDescription("An example using a OscSender")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Sender")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2013")]
+[assembly: AssemblyCompany("Rugland Digital Systems")]
+[assembly: AssemblyProduct("Rug.Osc")]
+[assembly: AssemblyCopyright("Copyright © Phill Tew 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

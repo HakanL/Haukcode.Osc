@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Rug.Osc;
 
-namespace ContainerManager
+namespace ListenerManager
 {
 	public partial class Example : Form
 	{

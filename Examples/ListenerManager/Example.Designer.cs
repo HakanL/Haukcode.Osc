@@ -1,4 +1,4 @@
-﻿namespace ContainerManager
+﻿namespace ListenerManager
 {
 	partial class Example
 	{

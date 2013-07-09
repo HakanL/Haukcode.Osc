@@ -1,11 +1,29 @@
-﻿using System;
+﻿/* 
+ * Rug.Osc 
+ * 
+ * THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+ * EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED 
+ * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+ * 
+ * Copyright (C) 2013 Phill Tew. All rights reserved.
+ * 
+ * Based on orginal code by Simon Mourier codefluententities.com
+ * http://stackoverflow.com/questions/1082532/how-to-tryparse-for-enum-value
+ */
+
+using System;
 using System.Globalization;
 
 namespace Rug.Osc
 {
-	// http://stackoverflow.com/questions/1082532/how-to-tryparse-for-enum-value
+	/// <summary>
+	/// Enum Helper class orginal code by Simon Mourier codefluententities.com
+	/// http://stackoverflow.com/questions/1082532/how-to-tryparse-for-enum-value
+	/// </summary>
 	internal static class EnumHelper
 	{
+		private static char[] m_EnumSeperators = new char[] { ',', ';', '+', '|', ' ' };
+
 		/// <summary>
 		/// Converts the string representation of an enum to its Enum equivalent value. A return value indicates whether the operation succeeded.
 		/// This method does not rely on Enum.Parse and therefore will never raise any first or second chance exception.
@@ -109,13 +127,13 @@ namespace Rug.Osc
 			Type underlyingType = Enum.GetUnderlyingType(type);
 			Array values = Enum.GetValues(type);
 			// some enums like System.CodeDom.MemberAttributes *are* flags but are not declared with Flags...
-			if ((!type.IsDefined(typeof(FlagsAttribute), true)) && (input.IndexOfAny(_enumSeperators) < 0))
+			if ((!type.IsDefined(typeof(FlagsAttribute), true)) && (input.IndexOfAny(m_EnumSeperators) < 0))
 			{
 				return ToObject(type, underlyingType, names, values, input, ignoreCase, out value);
 			}
 
 			// multi value enum
-			string[] tokens = input.Split(_enumSeperators, StringSplitOptions.RemoveEmptyEntries);
+			string[] tokens = input.Split(m_EnumSeperators, StringSplitOptions.RemoveEmptyEntries);
 			if (tokens.Length == 0)
 			{
 				value = Activator.CreateInstance(type);
@@ -148,11 +166,6 @@ namespace Rug.Osc
 					case TypeCode.SByte:
 						tokenUl = (ulong)Convert.ToInt64(tokenValue, CultureInfo.InvariantCulture);
 						break;
-
-					//case TypeCode.Byte:
-					//case TypeCode.UInt16:
-					//case TypeCode.UInt32:
-					//case TypeCode.UInt64:
 					default:
 						tokenUl = Convert.ToUInt64(tokenValue, CultureInfo.InvariantCulture);
 						break;
@@ -165,8 +178,6 @@ namespace Rug.Osc
 
 			return true;
 		}
-
-		private static char[] _enumSeperators = new char[] { ',', ';', '+', '|', ' ' };
 
 		private static object ToObject(Type underlyingType, string input)
 		{
