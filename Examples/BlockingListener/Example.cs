@@ -70,8 +70,21 @@ namespace BlockingListener
 			// tell the user
 			AppendLine(String.Format("Listening on: {0}:{1}", ipAddress, (int)m_PortBox.Value));
 
-			// connect to the socket 
-			m_Reciever.Connect();
+			try
+			{
+				// connect to the socket 
+				m_Reciever.Connect();
+			}
+			catch (Exception ex)
+			{
+				this.Invoke(new StringEvent(AppendLine), "Exception while connecting");
+				this.Invoke(new StringEvent(AppendLine), ex.Message);
+
+				m_Reciever.Dispose();
+				m_Reciever = null;
+				
+				return;
+			}
 
 			// create the listen thread
 			m_Thread = new Thread(ListenLoop);

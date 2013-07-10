@@ -1,7 +1,5 @@
 ﻿
 Implement Non-literal to Non-literal pattern matching?
 
-X Implement Other Data Types
-
 Bundles
 MessageBuilder? 

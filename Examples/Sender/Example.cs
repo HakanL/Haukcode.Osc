@@ -58,8 +58,19 @@ namespace Sender
 			// tell the user
 			AppendLine(String.Format("Connecting to: {0}:{1}", ipAddress, (int)m_PortBox.Value));
 
-			// connect to the socket 
-			m_Sender.Connect(); 
+			try
+			{
+				// connect to the socket 
+				m_Sender.Connect();
+			}			
+			catch (Exception ex)
+			{
+				AppendLine("Exception while connecting");
+				AppendLine(ex.Message);
+
+				m_Sender.Dispose();
+				m_Sender = null; 
+			}
 		}
 		
 		private void MessageBox_TextChanged(object sender, EventArgs e)

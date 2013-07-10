@@ -58,6 +58,8 @@ namespace Rug.Osc
 			return ToDataTime().ToString("dd-MM-yyyy HH:mm:ss.ffff");
 		}
 
+		#region To Date Time 
+
 		/// <summary>
 		/// Get the equivient datetime value from the osc timetag 
 		/// </summary>
@@ -76,6 +78,10 @@ namespace Rug.Osc
 
 			return datetime;
 		}
+
+		#endregion
+
+		#region From Data Time
 
 		/// <summary>
 		/// Get a Osc timstamp from a datetime value
@@ -96,6 +102,10 @@ namespace Rug.Osc
 
 			return new OscTimeTag(((ulong)(seconds_UInt & 0xFFFFFFFF) << 32) | ((ulong)fraction & 0xFFFFFFFF));
 		}
+
+		#endregion
+
+		#region Parse
 
 		/// <summary>
 		/// Parse a osc time tag from datetime string
@@ -175,6 +185,8 @@ namespace Rug.Osc
 
 				return false;
 			}
-		}		
+		}
+
+		#endregion
 	}
 }

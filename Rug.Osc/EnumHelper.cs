@@ -63,9 +63,7 @@ namespace Rug.Osc
 
 			return result; 
 		}
-
-		
-
+	
 		/// <summary>
 		/// Converts the string representation of an enum to its Enum equivalent value. A return value indicates whether the operation succeeded.
 		/// This method does not rely on Enum.Parse and therefore will never raise any first or second chance exception.
@@ -126,6 +124,7 @@ namespace Rug.Osc
 
 			Type underlyingType = Enum.GetUnderlyingType(type);
 			Array values = Enum.GetValues(type);
+
 			// some enums like System.CodeDom.MemberAttributes *are* flags but are not declared with Flags...
 			if ((!type.IsDefined(typeof(FlagsAttribute), true)) && (input.IndexOfAny(m_EnumSeperators) < 0))
 			{
@@ -272,11 +271,13 @@ namespace Rug.Osc
 			if ((char.IsDigit(input[0]) || (input[0] == '-')) || (input[0] == '+'))
 			{
 				object obj = ToObject(underlyingType, input);
+
 				if (obj == null)
 				{
 					value = Activator.CreateInstance(type);
 					return false;
 				}
+
 				value = obj;
 				return true;
 			}

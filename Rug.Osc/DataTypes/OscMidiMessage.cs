@@ -64,7 +64,7 @@ namespace Rug.Osc
 	}
 
 	/// <summary>
-	/// 
+	/// Midi Message
 	/// </summary>
 	[StructLayout(LayoutKind.Explicit)]
 	public struct OscMidiMessage
@@ -256,6 +256,10 @@ namespace Rug.Osc
 			return FullMessage.GetHashCode();
 		}
 
+		#endregion 
+
+		#region To String
+
 		public override string ToString()
 		{
 			return ToString(CultureInfo.InvariantCulture); 
@@ -283,6 +287,8 @@ namespace Rug.Osc
 		}
 
 		#endregion
+
+		#region Parse
 
 		public static OscMidiMessage Parse(string str, IFormatProvider provider)
 		{
@@ -395,5 +401,7 @@ namespace Rug.Osc
 				return false;
 			}
 		}
+
+		#endregion
 	}
 }

@@ -245,6 +245,47 @@ namespace Rug.Osc
 			return Color.FromArgb(a, r, g, b);
 		}
 
+		#region Color Helpers
+
+		public static object ParseColor(string str, IFormatProvider provider)
+		{
+			string[] pieces = str.Split(',');
+
+			if (pieces.Length == 1)
+			{
+				return Color.FromName(str.Trim());
+			}
+			else if (pieces.Length == 4)
+			{
+				byte a, r, g, b;
+
+				r = byte.Parse(pieces[0].Trim(), System.Globalization.NumberStyles.None, provider);
+				g = byte.Parse(pieces[1].Trim(), System.Globalization.NumberStyles.None, provider);
+				b = byte.Parse(pieces[2].Trim(), System.Globalization.NumberStyles.None, provider);
+				a = byte.Parse(pieces[3].Trim(), System.Globalization.NumberStyles.None, provider);
+
+				return Color.FromArgb(a, r, g, b);
+			}
+			else
+			{
+				throw new Exception(String.Format(Strings.Parser_InvalidColor, str));
+			}
+		}
+
+		public static string ToStringColor(Color color)
+		{
+			if (color.IsNamedColor == true)
+			{
+				return String.Format("{0}", color.Name);
+			}
+			else
+			{
+				return String.Format("{0}, {1}, {2}, {3}", color.R, color.G, color.B, color.A);
+			}
+		}
+
+		#endregion
+
 		#endregion
 
 		#region OscTimeTag
@@ -309,47 +350,6 @@ namespace Rug.Osc
 			return true;
 		}
 
-		#endregion
-
-		#region Color Helpers
-
-		public static object ParseColor(string str, IFormatProvider provider)
-		{		
-			string[] pieces = str.Split(',');
-
-			if (pieces.Length == 1) 
-			{
-				return Color.FromName(str.Trim());
-			}
-			else if (pieces.Length == 4)
-			{
-				byte a, r, g, b;
-
-				r = byte.Parse(pieces[0].Trim(), System.Globalization.NumberStyles.None, provider);
-				g = byte.Parse(pieces[1].Trim(), System.Globalization.NumberStyles.None, provider);
-				b = byte.Parse(pieces[2].Trim(), System.Globalization.NumberStyles.None, provider);
-				a = byte.Parse(pieces[3].Trim(), System.Globalization.NumberStyles.None, provider);
-
-				return Color.FromArgb(a, r, g, b);
-			}
-			else
-			{
-				throw new Exception(String.Format(Strings.Parser_InvalidColor, str));
-			}			
-		}
-
-		public static string ToStringColor(Color color)
-		{
-			if (color.IsNamedColor == true)
-			{
-				return String.Format("{0}", color.Name);
-			}
-			else
-			{
-				return String.Format("{0}, {1}, {2}, {3}", color.R, color.G, color.B, color.A);
-			}
-		}
-
-		#endregion
+		#endregion	
 	}
 }

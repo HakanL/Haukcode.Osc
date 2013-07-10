@@ -9,7 +9,6 @@ namespace PollingListener
 	{
 		OscReceiver m_Reciever; 
 		
-
 		public Example()
 		{
 			InitializeComponent();
@@ -63,8 +62,21 @@ namespace PollingListener
 			// tell the user
 			AppendLine(String.Format("Listening on: {0}:{1}", ipAddress, (int)m_PortBox.Value));
 
-			// connect to the socket 
-			m_Reciever.Connect();
+			try
+			{
+				// connect to the socket 
+				m_Reciever.Connect();
+			}	
+			catch (Exception ex)
+			{
+				AppendLine("Exception while connecting");
+				AppendLine(ex.Message);
+
+				m_Reciever.Dispose();
+				m_Reciever = null;
+
+				return;
+			}
 
 			// enable the timer
 			m_MessageCheckTimer.Enabled = true; 
