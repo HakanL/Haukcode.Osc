@@ -375,7 +375,7 @@ namespace Rug.Osc
 		#region Constructor
 
 		/// <summary>
-		/// Create an osc address from a string, must follow the rules set out in http://opensoundcontrol.org/spec-1_0
+		/// Create an osc address from a string, must follow the rules set out in http://opensoundcontrol.org/spec-1_0 and http://opensoundcontrol.org/spec-1_1
 		/// </summary>
 		/// <param name="address">the address string</param>
 		public OscAddress(string address)
@@ -398,10 +398,16 @@ namespace Rug.Osc
 
 			if (address.StartsWith("//") == true)
 			{
+				// add the wildcard
 				addressParts.Add(OscAddressPart.AddressWildcard());
+				
+				// strip off the "//" from the address 
 				address = address.Substring(2);
 
+				// this address in not a literal
 				nonLiteral = true;
+
+				// do not add a Separator before the next token 
 				skipNextSeparator = true; 					 
 			}
 
@@ -418,6 +424,7 @@ namespace Rug.Osc
 				}
 				else
 				{
+					// we dont want to skip the next one
 					skipNextSeparator = false; 
 				}
 
