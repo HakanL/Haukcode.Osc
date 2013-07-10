@@ -728,7 +728,7 @@ namespace Rug.Osc.Tests
 
 		#endregion
 
-		#region Address Test Data 
+		#region Address Test Data
 
 		internal static string[] Good_AddressPatterns = new string[] 
 		{

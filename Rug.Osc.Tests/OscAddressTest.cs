@@ -63,7 +63,7 @@ namespace Rug.Osc.Tests
 		//
 		#endregion
 
-		#region Match 
+		#region Match
 
 		/// <summary>
 		///A test for IsMatch

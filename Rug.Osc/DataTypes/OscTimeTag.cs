@@ -58,7 +58,7 @@ namespace Rug.Osc
 			return ToDataTime().ToString("dd-MM-yyyy HH:mm:ss.ffff");
 		}
 
-		#region To Date Time 
+		#region To Date Time
 
 		/// <summary>
 		/// Get the equivient datetime value from the osc timetag 

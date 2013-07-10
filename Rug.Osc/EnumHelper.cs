@@ -22,7 +22,13 @@ namespace Rug.Osc
 	/// </summary>
 	internal static class EnumHelper
 	{
+		#region Private Static Members
+
 		private static char[] m_EnumSeperators = new char[] { ',', ';', '+', '|', ' ' };
+
+		#endregion
+
+		#region Parse
 
 		/// <summary>
 		/// Converts the string representation of an enum to its Enum equivalent value. A return value indicates whether the operation succeeded.
@@ -178,6 +184,10 @@ namespace Rug.Osc
 			return true;
 		}
 
+		#endregion 
+
+		#region To Object
+
 		private static object ToObject(Type underlyingType, string input)
 		{
 			if (underlyingType == typeof(int))
@@ -285,5 +295,7 @@ namespace Rug.Osc
 			value = Activator.CreateInstance(type);
 			return false;
 		}
+
+		#endregion
 	}
 }

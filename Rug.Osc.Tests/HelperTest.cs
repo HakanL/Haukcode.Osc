@@ -64,6 +64,7 @@ namespace Rug.Osc.Tests
 		//
 		#endregion
 
+		#region Float
 
 		/// <summary>
 		///A test for Write
@@ -101,6 +102,10 @@ namespace Rug.Osc.Tests
 			}
 		}
 
+		#endregion
+
+		#region Int32
+
 		/// <summary>
 		///A test for Write
 		///</summary>
@@ -115,7 +120,7 @@ namespace Rug.Osc.Tests
 			{
 				Helper.Write(writer, value);
 
-				UnitTestHelper.AreEqual(expected, stream.GetBuffer(), stream.Length); 
+				UnitTestHelper.AreEqual(expected, stream.GetBuffer(), stream.Length);
 			}
 		}
 
@@ -134,8 +139,11 @@ namespace Rug.Osc.Tests
 				int actual;
 				actual = Helper.ReadInt32(reader);
 				Assert.AreEqual(expected, actual);
-			} 
-		}
+			}
+		} 
+		#endregion
+
+		#region UInt32
 
 		/// <summary>
 		///A test for Write
@@ -144,7 +152,7 @@ namespace Rug.Osc.Tests
 		public void WriteTest_UInt32()
 		{
 			byte[] expected = new byte[] { 0xAB, 0xCD, 0xEF, 0xF2 };
-			uint value = 0xABCDEFF2;			
+			uint value = 0xABCDEFF2;
 
 			using (MemoryStream stream = new MemoryStream())
 			using (BinaryWriter writer = new BinaryWriter(stream))
@@ -162,7 +170,7 @@ namespace Rug.Osc.Tests
 		public void ReadUInt32Test()
 		{
 			byte[] data = new byte[] { 0xAB, 0xCD, 0xEF, 0xF2 };
-			uint expected = 0xABCDEFF2;			
+			uint expected = 0xABCDEFF2;
 
 			using (MemoryStream stream = new MemoryStream(data))
 			using (BinaryReader reader = new BinaryReader(stream))
@@ -171,8 +179,11 @@ namespace Rug.Osc.Tests
 				actual = Helper.ReadUInt32(reader);
 				Assert.AreEqual(expected, actual);
 			}
-		}
-		
+		} 
+		#endregion
+
+		#region Int64
+
 		/// <summary>
 		///A test for Write
 		///</summary>
@@ -207,7 +218,11 @@ namespace Rug.Osc.Tests
 				actual = Helper.ReadInt64(reader);
 				Assert.AreEqual(expected, actual);
 			}
-		}
+		} 
+
+		#endregion
+
+		#region UInt64
 
 		/// <summary>
 		///A test for Write
@@ -243,7 +258,11 @@ namespace Rug.Osc.Tests
 				actual = Helper.ReadUInt64(reader);
 				Assert.AreEqual(expected, actual);
 			}
-		}
+		} 
+
+		#endregion
+
+		#region Double
 
 		/// <summary>
 		///A test for Write
@@ -281,7 +300,11 @@ namespace Rug.Osc.Tests
 				actual = Helper.ReadDouble(reader);
 				Assert.AreEqual(expected, actual);
 			}
-		}
+		} 
+
+		#endregion
+
+		#region Padding
 
 		/// <summary>
 		///A test for WritePadding
@@ -295,7 +318,7 @@ namespace Rug.Osc.Tests
 			using (BinaryWriter writer = new BinaryWriter(stream))
 			{
 				Helper.WritePadding(writer, stream.Position);
-				Assert.AreEqual(stream.Position, expected); 
+				Assert.AreEqual(stream.Position, expected);
 			}
 		}
 
@@ -310,7 +333,7 @@ namespace Rug.Osc.Tests
 			using (MemoryStream stream = new MemoryStream())
 			using (BinaryWriter writer = new BinaryWriter(stream))
 			{
-				writer.Write((byte)23); 
+				writer.Write((byte)23);
 
 				Helper.WritePadding(writer, stream.Position);
 
@@ -379,6 +402,8 @@ namespace Rug.Osc.Tests
 
 				Assert.AreEqual(stream.Position, expected);
 			}
-		}		
+		}	 
+
+		#endregion	
 	}
 }
