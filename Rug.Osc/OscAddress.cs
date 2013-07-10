@@ -31,6 +31,7 @@ namespace Rug.Osc
 	public enum OscAddressPartType
 	{
 		AddressSeparator,
+		AddressWildcard,
 		Literal,
 		Wildcard,
 		CharSpan,
@@ -152,6 +153,15 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
+		/// Create a address wildcard part "//" 
+		/// </summary>
+		/// <returns>the part</returns>
+		internal static OscAddressPart AddressWildcard()
+		{
+			return new OscAddressPart(OscAddressPartType.AddressWildcard, "//", "//", "/"); 
+		}
+
+		/// <summary>
 		/// Create a literal address part
 		/// </summary>
 		/// <param name="value">the literal</param>
@@ -201,11 +211,12 @@ namespace Rug.Osc
 			return new OscAddressPart(OscAddressPartType.Wildcard, value, value, sb.ToString());
 		}
 
+		
 		/// <summary>
-		/// 
+		/// Character span e.g. [a-e] 
 		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">the original string</param>
+		/// <returns>the part</returns>
 		internal static OscAddressPart CharSpan(string value)
 		{
 			bool isNot = false;
@@ -228,10 +239,10 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// 
+		/// Character list e.g. [abcde]
 		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">the original string</param>
+		/// <returns>the part</returns>
 		internal static OscAddressPart CharList(string value)
 		{
 			bool isNot = false;
@@ -252,10 +263,10 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// 
+		/// Literal list e.g. {thing1,THING1}
 		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">the original string</param>
+		/// <returns>the part</returns>
 		internal static OscAddressPart List(string value)
 		{
 			string[] list = value.Substring(1, value.Length - 2).Split(',');
@@ -286,7 +297,7 @@ namespace Rug.Osc
 
 		#endregion 
 	}
-
+	
 	#endregion
 
 	#region Osc Address
@@ -300,7 +311,7 @@ namespace Rug.Osc
 
 		public static readonly Regex LiteralAddressValidator = new Regex(@"^/[^\s#\*,/\?\[\]\{}]+((/[^\s#\*,/\?\[\]\{}]+)*)$", RegexOptions.Compiled);
 
-		public static readonly Regex PatternAddressValidator = new Regex(@"^/[^\s#/]+((/[^\s#/]+)*)$", RegexOptions.Compiled);
+		public static readonly Regex PatternAddressValidator = new Regex(@"^(//|/)[^\s#/]+((/[^\s#/]+)*)$", RegexOptions.Compiled);
 
 		public static readonly Regex PatternAddressPartValidator = new Regex(
 			@"^((
@@ -376,22 +387,39 @@ namespace Rug.Osc
 			}
 
 			// stash the original string
-			m_OrigialString = address; 
-
-			// create a list for the parsed parts
-			List<OscAddressPart> addressParts = new List<OscAddressPart>(); 
-			
-			// the the bits of the path, split by the '/' char
-			string[] parts = address.Split(AddressSeperatorChar, StringSplitOptions.RemoveEmptyEntries);
+			m_OrigialString = address;
 
 			// is this address non-literal (an address pattern)
 			bool nonLiteral = false;
+			bool skipNextSeparator = false; 
+
+			// create a list for the parsed parts
+			List<OscAddressPart> addressParts = new List<OscAddressPart>();
+
+			if (address.StartsWith("//") == true)
+			{
+				addressParts.Add(OscAddressPart.AddressWildcard());
+				address = address.Substring(2);
+
+				nonLiteral = true;
+				skipNextSeparator = true; 					 
+			}
+
+			// the the bits of the path, split by the '/' char
+			string[] parts = address.Split(AddressSeperatorChar, StringSplitOptions.RemoveEmptyEntries);
 
 			// loop through all the parts
 			foreach (string part in parts)
 			{
-				// add a separator
-				addressParts.Add(OscAddressPart.AddressSeparator());
+				if (skipNextSeparator == false)
+				{
+					// add a separator
+					addressParts.Add(OscAddressPart.AddressSeparator());
+				}
+				else
+				{
+					skipNextSeparator = false; 
+				}
 
 				// get the matches within the part 
 				MatchCollection matches = PatternAddressPartExtractor.Matches(part);								
@@ -439,11 +467,19 @@ namespace Rug.Osc
 			// build the regex if one is needed
 			if (m_Type != OscAddressType.Literal)
 			{				
-				StringBuilder regex = new StringBuilder(); 
+				StringBuilder regex = new StringBuilder();
 
-				// match the start of the string 
-				regex.Append("^(");
-				
+				if (m_Parts[0].Type == OscAddressPartType.AddressWildcard)
+				{
+					// dont care where the start is 
+					regex.Append("(");
+				}
+				else
+				{
+					// match the start of the string 
+					regex.Append("^(");
+				}
+
 				foreach (OscAddressPart part in m_Parts) 
 				{
 					// match the part

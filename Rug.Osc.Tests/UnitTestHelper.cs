@@ -752,6 +752,7 @@ namespace Rug.Osc.Tests
 			"/container_A/[method]_[A-Z]", 
 			"/container_A/[!string]_[0-9]", 
 			"/container_A/{method,container}_[A-Z]", 
+			"//{method,container}_[A-Z]", 
 		};
 
 		internal static string[] Good_AddressPatternMatches = new string[] 
@@ -776,19 +777,21 @@ namespace Rug.Osc.Tests
 			"/container_A/method_B", 
 			"/container_A/me_hod_3", 
 			"/container_A/method_B", 
+			"/container_A/container_B/container_C/method_B", 
 		};
 
 		internal static string[] Bad_AddressPatterns = new string[] 
 		{
 			"/", 
-			"//1", 
+			"/0//1", 
 			"/0/1/", 
 			"/ /1/", 
+			"///1/2", 
 			"/container A/1/", 
 			"/container_A/[0-9]]", 
 			"/container_A/[[!0-9]", 
 			"/container_A/{{method_A,method_B}", 
-			"/container_A/{method_A,method_B}}", 			
+			"/container_A/{method_A,method_B}}", 
 		};
 
 		#endregion

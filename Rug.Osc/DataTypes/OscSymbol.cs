@@ -12,7 +12,7 @@
 namespace Rug.Osc
 {
 	/// <summary>
-	/// 
+	/// Osc symbol 
 	/// </summary>
 	public struct OscSymbol
 	{
