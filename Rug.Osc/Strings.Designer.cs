@@ -320,5 +320,23 @@ namespace Rug.Osc {
                 return ResourceManager.GetString("Parser_UnknownObjectType", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occured while waiting for a message.
+        /// </summary>
+        internal static string Receiver_ErrorWhileWaitingForMessage {
+            get {
+                return ResourceManager.GetString("Receiver_ErrorWhileWaitingForMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The socket is already open or is not fully closed.
+        /// </summary>
+        internal static string Socket_AlreadyOpenOrNotClosed {
+            get {
+                return ResourceManager.GetString("Socket_AlreadyOpenOrNotClosed", resourceCulture);
+            }
+        }
     }
 }

@@ -16,7 +16,7 @@ using System.Globalization;
 namespace Rug.Osc
 {
 	/// <summary>
-	/// 
+	/// Osc time tag
 	/// </summary>
 	public struct OscTimeTag
 	{
@@ -55,7 +55,7 @@ namespace Rug.Osc
 
 		public override string ToString()
 		{
-			return ToDataTime().ToString("dd/MM/yyyy HH:mm:ss.fff");
+			return ToDataTime().ToString("dd-MM-yyyy HH:mm:ss.ffff");
 		}
 
 		/// <summary>
@@ -98,11 +98,11 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// 
+		/// Parse a osc time tag from datetime string
 		/// </summary>
-		/// <param name="str"></param>
-		/// <param name="provider"></param>
-		/// <returns></returns>
+		/// <param name="str">string to parse</param>
+		/// <param name="provider">format provider</param>
+		/// <returns>the parsed time tag</returns>
 		public static OscTimeTag Parse(string str, IFormatProvider provider)
 		{
 			string[] formats = new string[] 
@@ -123,22 +123,22 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// 
+		/// Parse a osc time tag from datetime string
 		/// </summary>
-		/// <param name="str"></param>
-		/// <returns></returns>
+		/// <param name="str">string to parse</param>
+		/// <returns>the parsed time tag</returns>
 		public static OscTimeTag Parse(string str)
 		{
 			return Parse(str, CultureInfo.InvariantCulture);
 		}
 
 		/// <summary>
-		/// 
+		/// Try to parse a osc time tag from datetime string
 		/// </summary>
-		/// <param name="str"></param>
-		/// <param name="provider"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="str">string to parse</param>
+		/// <param name="provider">format provider</param>
+		/// <param name="value">the parsed time tag</param>
+		/// <returns>true if parsed else false</returns>
 		public static bool TryParse(string str, IFormatProvider provider, out OscTimeTag value)
 		{
 			try
@@ -156,11 +156,11 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// 
+		/// Try to parse a osc time tag from datetime string
 		/// </summary>
-		/// <param name="str"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="str">string to parse</param>
+		/// <param name="value">the parsed time tag</param>
+		/// <returns>true if parsed else false</returns>
 		public static bool TryParse(string str, out OscTimeTag value)
 		{
 			try

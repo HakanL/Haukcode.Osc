@@ -155,7 +155,7 @@ namespace Rug.Osc
                 if (m_State != OscSocketState.NotConnected &&
                     m_State != OscSocketState.Closed)
                 {
-                    throw new Exception("The socket is allready open or is not fully closed"); 
+                    throw new Exception(Strings.Socket_AlreadyOpenOrNotClosed); 
                 }
 
                 // create the instance of the socket

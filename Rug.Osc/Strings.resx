@@ -204,4 +204,10 @@
   <data name="Parser_UnknownObjectType" xml:space="preserve">
     <value>Unknown object type '{0}'</value>
   </data>
+  <data name="Receiver_ErrorWhileWaitingForMessage" xml:space="preserve">
+    <value>An error occured while waiting for a message</value>
+  </data>
+  <data name="Socket_AlreadyOpenOrNotClosed" xml:space="preserve">
+    <value>The socket is already open or is not fully closed</value>
+  </data>
 </root>

@@ -238,7 +238,7 @@ namespace Rug.Osc
                 }                
             }
 
-            throw new Exception("An error occured while waiting for a message");
+            throw new Exception(Strings.Receiver_ErrorWhileWaitingForMessage);
         }
 
         #endregion

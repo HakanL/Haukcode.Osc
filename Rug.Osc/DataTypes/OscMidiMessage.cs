@@ -90,12 +90,24 @@ namespace Rug.Osc
 
 		#region Properties
 
+		/// <summary>
+		/// The midi message type
+		/// </summary>
 		public OscMidiMessageType MessageType { get { return (OscMidiMessageType)(StatusByte & 0xF0); } }
 
+		/// <summary>
+		/// The system message type, only valid when MessageType is SystemExclusive
+		/// </summary>
 		public OscMidiSystemMessageType SystemMessageType { get { return (OscMidiSystemMessageType)(StatusByte & 0x0F); } }
 
+		/// <summary>
+		/// The channel, only valid when MessageType is not SystemExclusive
+		/// </summary>
 		public int Channel { get { return StatusByte & 0x0F; } }
 
+		/// <summary>
+		/// 14 bit data value, for pitch bend messages
+		/// </summary>
 		public ushort Data14BitValue { get { return (ushort)((Data1 & 0x7F) | ((Data2 & 0x7F) << 7)); } }
 
 		#endregion
@@ -114,6 +126,23 @@ namespace Rug.Osc
 			Data2 = 0;
 
 			FullMessage = value; 
+		}
+
+		/// <summary>
+		/// Create midi message
+		/// </summary>
+		/// <param name="portID">port id</param>
+		/// <param name="statusByte">status byte</param>
+		/// <param name="data1">data 1</param>
+		/// <param name="data2">data 2</param>
+		public OscMidiMessage(byte portID, byte statusByte, byte data1, byte data2)
+		{
+			FullMessage = 0;
+
+			PortID = portID;
+			StatusByte = statusByte;
+			Data1 = (byte)(data1 & 0x7F);
+			Data2 = (byte)(data2 & 0x7F);
 		}
 
 		/// <summary>
@@ -139,40 +168,63 @@ namespace Rug.Osc
 			Data2 = (byte)(data2 & 0x7F);
 		}
 
-		public OscMidiMessage(byte portID, byte statusByte, byte data1, byte data2)
-		{
-			FullMessage = 0;
-
-			PortID = portID;
-			StatusByte = statusByte;
-			Data1 = (byte)(data1 & 0x7F);
-			Data2 = (byte)(data2 & 0x7F);
-		}
-
+		/// <summary>
+		/// Create midi message
+		/// </summary>
+		/// <param name="portID">port id</param>
+		/// <param name="type">midi message type</param>
+		/// <param name="channel">midi channel</param>
+		/// <param name="data1">data 1</param>
 		public OscMidiMessage(byte portID, OscMidiMessageType type, byte channel, byte data1)
 			: this(portID, type, channel, data1, 0)
 		{
 
 		}
 
+		/// <summary>
+		/// Create midi message
+		/// </summary>
+		/// <param name="portID">port id</param>
+		/// <param name="type">midi message type</param>
+		/// <param name="channel">midi channel</param>
+		/// <param name="value">14 bit data value</param>
 		public OscMidiMessage(byte portID, OscMidiMessageType type, byte channel, ushort value)
 			: this(portID, type, channel, (byte)(value & 0x7F), (byte)((value & 0x3F80) >> 7))
 		{
 
 		}
 
+		/// <summary>
+		/// Create midi message
+		/// </summary>
+		/// <param name="portID">port id</param>
+		/// <param name="type">midi system message type</param>
+		/// <param name="value">14 bit data value</param>
 		public OscMidiMessage(byte portID, OscMidiSystemMessageType type, ushort value)
 			: this(portID, OscMidiMessageType.SystemExclusive, (byte)type, (byte)(value & 0x7F), (byte)((value & 0x3F80) >> 7))
 		{
 
 		}
 
+		/// <summary>
+		/// Create midi message
+		/// </summary>
+		/// <param name="portID">port id</param>
+		/// <param name="type">midi system message type</param>
+		/// <param name="data1">data 1</param>
 		public OscMidiMessage(byte portID, OscMidiSystemMessageType type, byte data1)
 			: this(portID, OscMidiMessageType.SystemExclusive, (byte)type, data1, 0)
 		{
 
 		}
 
+		/// <summary>
+		/// Create midi message
+		/// </summary>
+		/// <param name="portID">port id</param>
+		/// <param name="type">midi system message type</param>
+		/// <param name="data1">data 1</param>
+		/// <param name="data2">data 2</param>
 		public OscMidiMessage(byte portID, OscMidiSystemMessageType type, byte data1, byte data2)
 			: this(portID, OscMidiMessageType.SystemExclusive, (byte)type, data1, data2)
 		{
@@ -206,7 +258,6 @@ namespace Rug.Osc
 
 		public override string ToString()
 		{
-			//return "0x" + FullMessage.ToString("X");
 			return ToString(CultureInfo.InvariantCulture); 
 		}
 
