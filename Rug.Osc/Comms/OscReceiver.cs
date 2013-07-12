@@ -288,6 +288,7 @@ namespace Rug.Osc
 
                         m_Count++;
 
+						// if this was the first message then signal
 						if (m_Count == 1)
 						{
 							m_MessageReceived.Set();

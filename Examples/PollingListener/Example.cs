@@ -93,8 +93,16 @@ namespace PollingListener
 				// try and get the next message
 				while (m_Reciever.TryReceive(out message) == true)
 				{
-					// write the message to the output
-					AppendLine(message.ToString());				
+					if (message.Error == OscMessageError.None)
+					{
+						// write the message to the output
+						AppendLine(message.ToString());
+					}
+					else
+					{
+						AppendLine("Error reading message, " + message.Error);
+						AppendLine(message.ErrorMessage);
+					}
 				}
 			}
 		}

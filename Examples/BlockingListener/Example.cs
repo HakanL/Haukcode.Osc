@@ -106,7 +106,15 @@ namespace BlockingListener
 						// this will block until one arrives or the socket is closed
 						OscMessage message = m_Reciever.Receive();
 
-						this.Invoke(new StringEvent(AppendLine), message.ToString());
+						if (message.Error == OscMessageError.None)
+						{
+							this.Invoke(new StringEvent(AppendLine), message.ToString());
+						}
+						else
+						{
+							this.Invoke(new StringEvent(AppendLine), "Error reading message, " + message.Error);
+							this.Invoke(new StringEvent(AppendLine), message.ErrorMessage);
+						}
 					}
 				}
 			}
