@@ -35,7 +35,9 @@
 			this.m_Connect = new System.Windows.Forms.Button();
 			this.m_AddressBox = new System.Windows.Forms.TextBox();
 			this.m_PortBox = new System.Windows.Forms.NumericUpDown();
+			this.m_SendCount = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.m_PortBox)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.m_SendCount)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// m_Send
@@ -55,7 +57,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_MessageBox.Location = new System.Drawing.Point(13, 41);
 			this.m_MessageBox.Name = "m_MessageBox";
-			this.m_MessageBox.Size = new System.Drawing.Size(464, 20);
+			this.m_MessageBox.Size = new System.Drawing.Size(398, 20);
 			this.m_MessageBox.TabIndex = 1;
 			this.m_MessageBox.Text = "/test, 1, 2, 3";
 			this.m_MessageBox.TextChanged += new System.EventHandler(this.MessageBox_TextChanged);
@@ -100,24 +102,47 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_AddressBox.Location = new System.Drawing.Point(13, 12);
 			this.m_AddressBox.Name = "m_AddressBox";
-			this.m_AddressBox.Size = new System.Drawing.Size(338, 20);
+			this.m_AddressBox.Size = new System.Drawing.Size(398, 20);
 			this.m_AddressBox.TabIndex = 5;
 			this.m_AddressBox.Text = "127.0.0.1";
 			// 
 			// m_PortBox
 			// 
 			this.m_PortBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_PortBox.Location = new System.Drawing.Point(357, 12);
+			this.m_PortBox.Location = new System.Drawing.Point(417, 12);
 			this.m_PortBox.Maximum = new decimal(new int[] {
             65535,
             0,
             0,
             0});
 			this.m_PortBox.Name = "m_PortBox";
-			this.m_PortBox.Size = new System.Drawing.Size(120, 20);
+			this.m_PortBox.Size = new System.Drawing.Size(60, 20);
 			this.m_PortBox.TabIndex = 6;
 			this.m_PortBox.Value = new decimal(new int[] {
             5000,
+            0,
+            0,
+            0});
+			// 
+			// m_SendCount
+			// 
+			this.m_SendCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.m_SendCount.Location = new System.Drawing.Point(417, 41);
+			this.m_SendCount.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+			this.m_SendCount.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.m_SendCount.Name = "m_SendCount";
+			this.m_SendCount.Size = new System.Drawing.Size(60, 20);
+			this.m_SendCount.TabIndex = 7;
+			this.m_SendCount.Value = new decimal(new int[] {
+            1,
             0,
             0,
             0});
@@ -127,6 +152,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(570, 368);
+			this.Controls.Add(this.m_SendCount);
 			this.Controls.Add(this.m_PortBox);
 			this.Controls.Add(this.m_AddressBox);
 			this.Controls.Add(this.m_Connect);
@@ -139,6 +165,7 @@
 			this.Text = "Osc Sender Example";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Example_FormClosing);
 			((System.ComponentModel.ISupportInitialize)(this.m_PortBox)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.m_SendCount)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -153,6 +180,7 @@
 		private System.Windows.Forms.Button m_Connect;
 		private System.Windows.Forms.TextBox m_AddressBox;
 		private System.Windows.Forms.NumericUpDown m_PortBox;
+		private System.Windows.Forms.NumericUpDown m_SendCount;
 	}
 }
 

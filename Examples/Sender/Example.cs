@@ -103,8 +103,11 @@ namespace Sender
 				// if the sender exists
 				if (m_Sender != null)
 				{
-					// send 
-					m_Sender.Send(msg);
+					for (int i = 0, j = (int)m_SendCount.Value; i < j; i++)
+					{
+						// send 
+						m_Sender.Send(msg);
+					}
 				}
 				else
 				{

@@ -190,55 +190,74 @@ namespace Rug.Osc
         /// Receive a osc message, this method is blocking and will only return once a message is recived
         /// </summary>
         /// <returns>an osc message</returns>
-        public OscMessage Received()
+        public OscMessage Receive()
         {
-            if (State == OscSocketState.Connected)
-            {
-                // if we are not receiving then start
-                if (m_IsReceiving == false)
-                {
-                    lock (m_Lock)
-                    {
-                        if (m_IsReceiving == false && State == OscSocketState.Connected)
-                        {
-                            BeginReceiving();
-                        }
-                    }
-                }
+			try
+			{
+				if (State == OscSocketState.Connected)
+				{
+					// if we are not receiving then start
+					if (m_IsReceiving == false)
+					{
+						lock (m_Lock)
+						{
+							if (m_IsReceiving == false && State == OscSocketState.Connected)
+							{
+								BeginReceiving();
+							}
+						}
+					}
 
-                if (m_Count > 0)
-                {
-                    lock (m_Lock)
-                    {
-                        OscMessage message = m_ReceiveQueue[m_ReadIndex];
+					if (m_Count > 0)
+					{
+						lock (m_Lock)
+						{
+							OscMessage message = m_ReceiveQueue[m_ReadIndex];
 
-                        m_ReadIndex = NextReadIndex;
+							m_ReadIndex = NextReadIndex;
 
-                        m_Count--;
+							m_Count--;
 
-                        return message;
-                    }
-                }
+							// if we have eaten all the messages then reset the signal
+							if (m_Count == 0)
+							{
+								m_MessageReceived.Reset();
+							}
 
-                m_MessageReceived.WaitOne();
-                m_MessageReceived.Reset(); 
+							return message;
+						}
+					}
 
-                if (m_Count > 0)
-                {
-                    lock (m_Lock)
-                    {
-                        OscMessage message = m_ReceiveQueue[m_ReadIndex];
+					// wait for a new message
+					m_MessageReceived.WaitOne();
+					m_MessageReceived.Reset();
 
-                        m_ReadIndex = NextReadIndex;
+					if (m_Count > 0)
+					{
+						lock (m_Lock)
+						{
+							OscMessage message = m_ReceiveQueue[m_ReadIndex];
 
-                        m_Count--;                        
+							m_ReadIndex = NextReadIndex;
 
-                        return message;
-                    }
-                }                
-            }
+							m_Count--;
 
-            throw new Exception(Strings.Receiver_ErrorWhileWaitingForMessage);
+							return message;
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new Exception(Strings.Receiver_ErrorWhileWaitingForMessage, ex);
+			}
+
+			if (State == OscSocketState.Connected)
+			{
+				throw new Exception(Strings.Receiver_ErrorWhileWaitingForMessage);
+			}
+
+			throw new Exception(Strings.Receiver_SocketIsClosed);
         }
 
         #endregion
@@ -269,7 +288,10 @@ namespace Rug.Osc
 
                         m_Count++;
 
-                        m_MessageReceived.Set(); 
+						if (m_Count == 1)
+						{
+							m_MessageReceived.Set();
+						}
                     }
                 }
             }

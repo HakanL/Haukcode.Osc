@@ -104,7 +104,7 @@ namespace BlockingListener
 					{
 						// get the next message 
 						// this will block until one arrives or the socket is closed
-						OscMessage message = m_Reciever.Received();
+						OscMessage message = m_Reciever.Receive();
 
 						this.Invoke(new StringEvent(AppendLine), message.ToString());
 					}
