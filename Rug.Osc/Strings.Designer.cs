@@ -124,6 +124,15 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected match.
+        /// </summary>
+        internal static string OscAddress_UnexpectedMatch {
+            get {
+                return ResourceManager.GetString("OscAddress_UnexpectedMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown address part &apos;{0}&apos;.
         /// </summary>
         internal static string OscAddress_UnknownAddressPart {

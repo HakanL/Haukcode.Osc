@@ -50,50 +50,46 @@ namespace Rug.Osc
 	{
 		#region Regex Char Escape Helpers
 
+		private static Regex CharMatcher = new Regex(@"[\.\$\^\{\[\(\|\)\*\+\?\\]", RegexOptions.Compiled); 
+
 		private static string EscapeString(string str)
 		{
-			StringBuilder sb = new StringBuilder();
-
-			foreach (char c in str)
+			return CharMatcher.Replace(str, match =>
 			{
-				sb.Append(EscapeChar(c));
-			}
-
-			return sb.ToString(); 
+				switch (match.Value)
+				{
+					case ".":
+						return @"\.";
+					case "$":
+						return @"\$";
+					case "^":
+						return @"\^";
+					case "{":
+						return @"\{";
+					case "[":
+						return @"\[";
+					case "(":
+						return @"\(";
+					case "|":
+						return @"\|";
+					case ")":
+						return @"\)";
+					case "*":
+						return @"\*";
+					case "+":
+						return @"\+";
+					case "?":
+						return @"\?";
+					case "\\":
+						return @"\\";
+					default: throw new Exception(Strings.OscAddress_UnexpectedMatch);
+				}
+			});
 		}
 
 		private static string EscapeChar(char c) 
 		{
-			// . $ ^ { [ ( | ) * + ? \
-			switch (c)
-			{
-				case '.': 
-					return @"\.";
-				case '$':
-					return @"\$";
-				case '^':
-					return @"\^";
-				case '{':
-					return @"\{";
-				case '[':
-					return @"\[";
-				case '(':
-					return @"\(";
-				case '|':
-					return @"\|";
-				case ')':
-					return @"\)";
-				case '*':
-					return @"\*";
-				case '+':
-					return @"\+";
-				case '?':
-					return @"\?";
-				case '\\':
-					return @"\\";
-				default:
-					return c.ToString(); 
-			}			
+			return EscapeString(c.ToString());
 		}
 
 		#endregion
@@ -473,32 +469,37 @@ namespace Rug.Osc
 
 			// build the regex if one is needed
 			if (m_Type != OscAddressType.Literal)
-			{				
-				StringBuilder regex = new StringBuilder();
-
-				if (m_Parts[0].Type == OscAddressPartType.AddressWildcard)
-				{
-					// dont care where the start is 
-					regex.Append("(");
-				}
-				else
-				{
-					// match the start of the string 
-					regex.Append("^(");
-				}
-
-				foreach (OscAddressPart part in m_Parts) 
-				{
-					// match the part
-					regex.Append(part.PartRegex); 
-				}
- 
-				// match the end of the string
-				regex.Append(")$");
-
-				// build the regex (do not compile)
-				m_Regex = new Regex(regex.ToString(), RegexOptions.None);
+			{
+				BuildRegex(); 
 			}
+		}
+
+		private void BuildRegex()
+		{
+			StringBuilder regex = new StringBuilder();
+
+			if (m_Parts[0].Type == OscAddressPartType.AddressWildcard)
+			{
+				// dont care where the start is 
+				regex.Append("(");
+			}
+			else
+			{
+				// match the start of the string 
+				regex.Append("^(");
+			}
+
+			foreach (OscAddressPart part in m_Parts)
+			{
+				// match the part
+				regex.Append(part.PartRegex);
+			}
+
+			// match the end of the string
+			regex.Append(")$");
+
+			// aquire the regex
+			m_Regex = OscAddressRegexCache.Aquire(regex.ToString()); // new Regex(regex.ToString(), RegexOptions.None);
 		}
 
 		#endregion
@@ -536,7 +537,7 @@ namespace Rug.Osc
 			if (m_Type == OscAddressType.Literal && 
 				address.m_Type == OscAddressType.Literal)
 			{
-				return m_OrigialString.Equals(address);
+				return m_OrigialString.Equals(address.m_OrigialString);
 			}
 			// if this address is a literal then use the others regex 
 			else if (m_Type == OscAddressType.Literal)
@@ -548,10 +549,10 @@ namespace Rug.Osc
 			{
 				return m_Regex.IsMatch(address.m_OrigialString);
 			}
-			// if both are patterns then we have a problem
+			// if both are patterns then we just match on pattern original strings
 			else
 			{
-				throw new Exception(Strings.OscAddress_CannotMatch2AddressPatterns);
+				return m_OrigialString.Equals(address.m_OrigialString);
 			}
 		}
 

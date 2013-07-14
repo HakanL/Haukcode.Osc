@@ -114,7 +114,7 @@ namespace ListenerManager
 		private void m_ListenerAddress_TextChanged(object sender, EventArgs e)
 		{			
 			// try to parse the osc address literal
-			if (OscAddress.IsValidAddressLiteral(m_ListenerAddress.Text) == true)
+			if (OscAddress.IsValidAddressPattern(m_ListenerAddress.Text) == true)
 			{
 				// if it parsed ok then green 
 				m_ListenerAddress.BackColor = Color.LightGreen;
