@@ -44,7 +44,7 @@ namespace Rug.Osc.Tests
 
 			OscMessage target = new OscMessage(address);
 
-			UnitTestHelper.AreEqual(target, address, 8); 
+			UnitTestHelper.AreEqual(target, address, 12); 
 		}
 
 		/// <summary>

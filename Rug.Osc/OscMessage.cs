@@ -134,7 +134,8 @@ namespace Rug.Osc
 
 				if (m_Arguments.Length == 0)
 				{
-					return size;
+					// return the size plus the comma and padding
+					return size + 4; 
 				}
 
 				#endregion
@@ -393,15 +394,25 @@ namespace Rug.Osc
 				Helper.WritePadding(writer, stream.Position);
 
                 #endregion 
-
+				
 				#region Zero Arguments
 
 				if (m_Arguments.Length == 0)
 				{
+					// Write the comma 
+					writer.Write((byte)',');
+
+					// write null terminator
+					writer.Write((byte)0);
+
+					// padding
+					Helper.WritePadding(writer, stream.Position); 
+
 					return (int)stream.Position;
 				}
 
 				#endregion
+				
 
 				#region Type Tag
 

@@ -46,6 +46,9 @@ namespace ListenerManager
 				}
 			}
 
+			AddEvent("/test/*/thing_[0-9]");
+			AddEvent("//thing_[0-9]");
+
 			m_DataView.DataSource = m_Data; 
 		}
 
