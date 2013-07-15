@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
 using System.Windows.Forms;
 using Rug.Osc;
-using System.Threading;
 
 namespace BlockingListener
 {
@@ -14,7 +14,7 @@ namespace BlockingListener
 		// listen thread
 		Thread m_Thread;
 
-		OscReceiver m_Reciever;
+		OscReceiver m_Receiver;
 		
 		public Example()
 		{
@@ -35,16 +35,16 @@ namespace BlockingListener
 		private void Connect_Click(object sender, EventArgs e)
 		{
 			// if there is already an instace dispose of it
-			if (m_Reciever != null)
+			if (m_Receiver != null)
 			{				
 				// dispose of the reciever
 				AppendLine("Disconnecting");
-				m_Reciever.Dispose();
+				m_Receiver.Dispose();
 		
 				// wait for the thread to exit (IMPORTANT!) 
 				m_Thread.Join(); 
 
-				m_Reciever = null;
+				m_Receiver = null;
 			}
 
 			// get the ip address from the address box 
@@ -65,7 +65,7 @@ namespace BlockingListener
 			}
 
 			// create the reciever instance
-			m_Reciever = new OscReceiver(ipAddress, (int)m_PortBox.Value);
+			m_Receiver = new OscReceiver(ipAddress, (int)m_PortBox.Value);
 
 			// tell the user
 			AppendLine(String.Format("Listening on: {0}:{1}", ipAddress, (int)m_PortBox.Value));
@@ -73,15 +73,15 @@ namespace BlockingListener
 			try
 			{
 				// connect to the socket 
-				m_Reciever.Connect();
+				m_Receiver.Connect();
 			}
 			catch (Exception ex)
 			{
 				this.Invoke(new StringEvent(AppendLine), "Exception while connecting");
 				this.Invoke(new StringEvent(AppendLine), ex.Message);
 
-				m_Reciever.Dispose();
-				m_Reciever = null;
+				m_Receiver.Dispose();
+				m_Receiver = null;
 				
 				return;
 			}
@@ -97,14 +97,14 @@ namespace BlockingListener
 		{
 			try
 			{
-				while (m_Reciever.State != OscSocketState.Closed)
+				while (m_Receiver.State != OscSocketState.Closed)
 				{
 					// if we are in a state to recieve
-					if (m_Reciever.State == OscSocketState.Connected)
+					if (m_Receiver.State == OscSocketState.Connected)
 					{
 						// get the next message 
 						// this will block until one arrives or the socket is closed
-						OscMessage message = m_Reciever.Receive();
+						OscMessage message = m_Receiver.Receive();
 
 						if (message.Error == OscMessageError.None)
 						{
@@ -122,7 +122,7 @@ namespace BlockingListener
 			{
 				// if the socket was connected when this happens
 				// then tell the user
-				if (m_Reciever.State == OscSocketState.Connected) 
+				if (m_Receiver.State == OscSocketState.Connected) 
 				{
 					this.Invoke(new StringEvent(AppendLine), "Exception in listen loop");
 					this.Invoke(new StringEvent(AppendLine), ex.Message);
@@ -138,15 +138,15 @@ namespace BlockingListener
 
 		private void Example_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (m_Reciever != null)
+			if (m_Receiver != null)
 			{				
 				// dispose of the reciever
-				m_Reciever.Dispose();
+				m_Receiver.Dispose();
 
 				// wait for the thread to exit
 				m_Thread.Join(); 
 
-				m_Reciever = null; 
+				m_Receiver = null; 
 			}
 		}
 	}

@@ -7,7 +7,7 @@ namespace PollingListener
 {
 	public partial class Example : Form
 	{
-		OscReceiver m_Reciever; 
+		OscReceiver m_Receiver; 
 		
 		public Example()
 		{
@@ -28,15 +28,15 @@ namespace PollingListener
 		private void Connect_Click(object sender, EventArgs e)
 		{
 			// if there is already an instace dispose of it
-			if (m_Reciever != null)
+			if (m_Receiver != null)
 			{
 				// disable the timer
 				m_MessageCheckTimer.Enabled = false;
 
 				// dispose of the reciever
 				AppendLine("Disconnecting");
-				m_Reciever.Dispose();
-				m_Reciever = null;
+				m_Receiver.Dispose();
+				m_Receiver = null;
 			}
 
 			// get the ip address from the address box 
@@ -57,7 +57,7 @@ namespace PollingListener
 			}
 
 			// create the reciever instance
-			m_Reciever = new OscReceiver(ipAddress, (int)m_PortBox.Value);
+			m_Receiver = new OscReceiver(ipAddress, (int)m_PortBox.Value);
 
 			// tell the user
 			AppendLine(String.Format("Listening on: {0}:{1}", ipAddress, (int)m_PortBox.Value));
@@ -65,15 +65,15 @@ namespace PollingListener
 			try
 			{
 				// connect to the socket 
-				m_Reciever.Connect();
+				m_Receiver.Connect();
 			}	
 			catch (Exception ex)
 			{
 				AppendLine("Exception while connecting");
 				AppendLine(ex.Message);
 
-				m_Reciever.Dispose();
-				m_Reciever = null;
+				m_Receiver.Dispose();
+				m_Receiver = null;
 
 				return;
 			}
@@ -85,13 +85,13 @@ namespace PollingListener
 		private void Listen_Tick(object sender, EventArgs e)
 		{
 			// if we are in a state to recieve
-			if (m_Reciever != null &&
-				m_Reciever.State == OscSocketState.Connected)
+			if (m_Receiver != null &&
+				m_Receiver.State == OscSocketState.Connected)
 			{				
 				OscMessage message;
 
 				// try and get the next message
-				while (m_Reciever.TryReceive(out message) == true)
+				while (m_Receiver.TryReceive(out message) == true)
 				{
 					if (message.Error == OscMessageError.None)
 					{
@@ -115,11 +115,11 @@ namespace PollingListener
 
 		private void Example_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (m_Reciever != null)
+			if (m_Receiver != null)
 			{
 				// dispose of the reciever
-				m_Reciever.Dispose();
-				m_Reciever = null; 
+				m_Receiver.Dispose();
+				m_Receiver = null; 
 			}
 		}
 	}
