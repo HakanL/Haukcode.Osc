@@ -237,7 +237,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Int()
 		{
 			OscMessage target = UnitTestHelper.Message_Int();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Int.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Int.Length);
 		}
 
 		/// <summary>
@@ -319,7 +319,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Long()
 		{
 			OscMessage target = UnitTestHelper.Message_Long();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Long.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Long.Length);
 		}
 
 
@@ -402,7 +402,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Float()
 		{
 			OscMessage target = UnitTestHelper.Message_Float();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Float.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Float.Length);
 		}
 
 
@@ -485,7 +485,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Double()
 		{
 			OscMessage target = UnitTestHelper.Message_Double();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Double.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Double.Length);
 		}
 
 
@@ -568,7 +568,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_TimeTag()
 		{
 			OscMessage target = UnitTestHelper.Message_TimeTag();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_TimeTag.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_TimeTag.Length);
 		}
 
 		#endregion
@@ -637,7 +637,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Char()
 		{
 			OscMessage target = UnitTestHelper.Message_Char();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Char.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Char.Length);
 		}
 
 
@@ -722,7 +722,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Color_Red()
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Red();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Color_Red.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Color_Red.Length);
 		}
 
 		#endregion
@@ -791,7 +791,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Color_Green()
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Green();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Color_Green.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Color_Green.Length);
 		}
 
 		#endregion
@@ -860,7 +860,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Color_Blue()
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Blue();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Color_Blue.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Color_Blue.Length);
 		}
 
 		#endregion
@@ -929,7 +929,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Color_Transparent()
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Transparent();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Color_Transparent.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Color_Transparent.Length);
 		}
 
 		#endregion
@@ -1000,7 +1000,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Midi()
 		{
 			OscMessage target = UnitTestHelper.Message_Midi();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Midi.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Midi.Length);
 		}		
 
 		/// <summary>
@@ -1082,7 +1082,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_True()
 		{
 			OscMessage target = UnitTestHelper.Message_True();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_True.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_True.Length);
 		}
 
 
@@ -1166,7 +1166,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_False()
 		{
 			OscMessage target = UnitTestHelper.Message_False();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_False.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_False.Length);
 		}
 
 
@@ -1250,7 +1250,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Nil()
 		{
 			OscMessage target = UnitTestHelper.Message_Nil();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Nil.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Nil.Length);
 		}
 
 
@@ -1333,7 +1333,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Infinitum()
 		{
 			OscMessage target = UnitTestHelper.Message_Infinitum();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Infinitum.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Infinitum.Length);
 		}
 
 		/// <summary>
@@ -1414,7 +1414,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_String()
 		{
 			OscMessage target = UnitTestHelper.Message_String();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_String.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_String.Length);
 		}
 
 
@@ -1496,7 +1496,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Symbol()
 		{
 			OscMessage target = UnitTestHelper.Message_Symbol();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Symbol.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Symbol.Length);
 		}
 
 		/// <summary>
@@ -1577,7 +1577,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Blob()
 		{
 			OscMessage target = UnitTestHelper.Message_Blob();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Blob.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Blob.Length);
 		}
 
 		#endregion
@@ -1629,7 +1629,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Array_Ints()
 		{
 			OscMessage target = UnitTestHelper.Message_Array_Ints();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Array_Ints.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Array_Ints.Length);
 		}
 
 
@@ -1689,7 +1689,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Array_Ints2()
 		{
 			OscMessage target = UnitTestHelper.Message_Array_Ints2();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Array_Ints2.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Array_Ints2.Length);
 		}
 
 		/// <summary>
@@ -1748,7 +1748,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Array_NestedInts()
 		{
 			OscMessage target = UnitTestHelper.Message_Array_NestedInts();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Array_NestedInts.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Array_NestedInts.Length);
 		}
 
 		/// <summary>
@@ -1832,7 +1832,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Float2()
 		{
 			OscMessage target = UnitTestHelper.Message_Float2();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Float2.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Float2.Length);
 		}
 
 
@@ -1915,7 +1915,7 @@ namespace Rug.Osc.Tests
 		public void MessageSizeTest_Float3()
 		{
 			OscMessage target = UnitTestHelper.Message_Float3();
-			Assert.AreEqual(target.MessageSize, UnitTestHelper.MessageBody_Float3.Length);
+			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Float3.Length);
 		}
 
 		/// <summary>
@@ -1947,7 +1947,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.InvalidSegmentLength); 
+				Assert.AreEqual(actual.Error, OscPacketError.InvalidSegmentLength); 
 			}
 			catch (Exception ex)
 			{
@@ -1964,7 +1964,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.MissingAddress);
+				Assert.AreEqual(actual.Error, OscPacketError.MissingAddress);
 			}
 			catch (Exception ex)
 			{
@@ -1981,7 +1981,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.MissingAddress);
+				Assert.AreEqual(actual.Error, OscPacketError.MissingAddress);
 			}
 			catch (Exception ex)
 			{
@@ -1998,7 +1998,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.MissingComma);
+				Assert.AreEqual(actual.Error, OscPacketError.MissingComma);
 			}
 			catch (Exception ex)
 			{
@@ -2015,7 +2015,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.MissingTypeTag);
+				Assert.AreEqual(actual.Error, OscPacketError.MissingTypeTag);
 			}
 			catch (Exception ex)
 			{
@@ -2053,7 +2053,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingDouble);
+				Assert.AreEqual(actual.Error, OscPacketError.ErrorParsingDouble);
 			}
 			catch (Exception ex)
 			{
@@ -2071,7 +2071,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.UnknownArguemntType);
+				Assert.AreEqual(actual.Error, OscPacketError.UnknownArguemntType);
 			}
 			catch (Exception ex)
 			{
@@ -2088,7 +2088,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingBlob);
+				Assert.AreEqual(actual.Error, OscPacketError.ErrorParsingBlob);
 			}
 			catch (Exception ex)
 			{
@@ -2105,7 +2105,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingBlob);
+				Assert.AreEqual(actual.Error, OscPacketError.ErrorParsingBlob);
 			}
 			catch (Exception ex)
 			{
@@ -2122,7 +2122,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingString);
+				Assert.AreEqual(actual.Error, OscPacketError.ErrorParsingString);
 			}
 			catch (Exception ex)
 			{
@@ -2139,7 +2139,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingString);
+				Assert.AreEqual(actual.Error, OscPacketError.ErrorParsingString);
 			}
 			catch (Exception ex)
 			{
@@ -2156,7 +2156,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingInt32);
+				Assert.AreEqual(actual.Error, OscPacketError.ErrorParsingInt32);
 			}
 			catch (Exception ex)
 			{
@@ -2173,7 +2173,7 @@ namespace Rug.Osc.Tests
 
 				OscMessage actual = OscMessage.Read(data, data.Length);
 
-				Assert.AreEqual(actual.Error, OscMessageError.ErrorParsingSingle);
+				Assert.AreEqual(actual.Error, OscPacketError.ErrorParsingSingle);
 			}
 			catch (Exception ex)
 			{

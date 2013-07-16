@@ -28,7 +28,7 @@ namespace Rug.Osc
 
         private byte[] m_Bytes;
 
-        private OscMessage[] m_SendQueue;
+        private OscPacket[] m_SendQueue;
         private int m_WriteIndex = 0;
         private int m_ReadIndex = 0;
         private int m_Count = 0;
@@ -128,7 +128,7 @@ namespace Rug.Osc
         /// Add a osc message to the send queue
         /// </summary>
         /// <param name="message">message to send</param>
-        public void Send(OscMessage message)
+		public void Send(OscPacket message)
         {
             if (State == OscSocketState.Connected)
             {                
@@ -182,7 +182,7 @@ namespace Rug.Osc
 
                     Socket.EndSend(ar, out error);
 
-                    if (m_SendQueue[m_ReadIndex] != ar.AsyncState as OscMessage)
+					if (m_SendQueue[m_ReadIndex] != ar.AsyncState as OscPacket)
                     {
                         Debug.WriteLine("Objects do not match at index " + m_ReadIndex);
                     }
@@ -192,11 +192,11 @@ namespace Rug.Osc
 
                     if (m_Count > 0 && State == OscSocketState.Connected)
                     {
-                        OscMessage message = m_SendQueue[m_ReadIndex];
+						OscPacket packet = m_SendQueue[m_ReadIndex];
 
-                        int size = message.Write(m_Bytes);
+						int size = packet.Write(m_Bytes);
 
-                        Socket.BeginSend(m_Bytes, 0, size, SocketFlags, Send_Callback, message);
+						Socket.BeginSend(m_Bytes, 0, size, SocketFlags, Send_Callback, packet);
                     }
                     else
                     {

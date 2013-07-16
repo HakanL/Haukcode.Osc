@@ -42,6 +42,8 @@
     <Compile Include="EnumHelper.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="OscAddress.cs" />
+    <Compile Include="OscBundle.cs" />
+    <Compile Include="OscPacket.cs" />
     <Compile Include="OscListenerManager.cs" />
     <Compile Include="DataTypes\OscImpulse.cs" />
     <Compile Include="OscMessage.cs" />

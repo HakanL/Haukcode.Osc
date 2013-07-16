@@ -123,6 +123,15 @@
   <data name="Arguments_UnsupportedType" xml:space="preserve">
     <value>Unsupported arguemnt type '{0}'</value>
   </data>
+  <data name="Bundle_InvalidBundleIdent" xml:space="preserve">
+    <value>Invalid bundle ident '{0}'</value>
+  </data>
+  <data name="Bundle_InvalidBundleMessageHeader" xml:space="preserve">
+    <value>Invalid bundle message header</value>
+  </data>
+  <data name="Bundle_MissingBundleIdent" xml:space="preserve">
+    <value>Missing bundle ident</value>
+  </data>
   <data name="Container_IsValidContainerAddress" xml:space="preserve">
     <value>Invalid container address '{0}'</value>
   </data>

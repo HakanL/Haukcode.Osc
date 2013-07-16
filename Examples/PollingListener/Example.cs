@@ -87,22 +87,22 @@ namespace PollingListener
 			// if we are in a state to recieve
 			if (m_Receiver != null &&
 				m_Receiver.State == OscSocketState.Connected)
-			{				
-				OscMessage message;
+			{
+				OscPacket packet;
 
 				// try and get the next message
-				while (m_Receiver.TryReceive(out message) == true)
+				while (m_Receiver.TryReceive(out packet) == true)
 				{
-					if (message.Error == OscMessageError.None)
+					if (packet.Error == OscPacketError.None)
 					{
 						// write the message to the output
-						AppendLine(message.ToString());
+						AppendLine(packet.ToString());
 					}
 					else
 					{
-						AppendLine("Error reading message, " + message.Error);
-						AppendLine(message.ErrorMessage);
-					}
+						AppendLine("Error reading packet, " + packet.Error);
+						AppendLine(packet.ErrorMessage);
+					}					
 				}
 			}
 		}

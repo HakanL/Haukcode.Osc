@@ -79,6 +79,33 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid bundle ident &apos;{0}&apos;.
+        /// </summary>
+        internal static string Bundle_InvalidBundleIdent {
+            get {
+                return ResourceManager.GetString("Bundle_InvalidBundleIdent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid bundle message header.
+        /// </summary>
+        internal static string Bundle_InvalidBundleMessageHeader {
+            get {
+                return ResourceManager.GetString("Bundle_InvalidBundleMessageHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing bundle ident.
+        /// </summary>
+        internal static string Bundle_MissingBundleIdent {
+            get {
+                return ResourceManager.GetString("Bundle_MissingBundleIdent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid container address &apos;{0}&apos;.
         /// </summary>
         internal static string Container_IsValidContainerAddress {

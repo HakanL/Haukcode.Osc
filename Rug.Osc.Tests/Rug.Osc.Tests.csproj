@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="HelperTest.cs" />
     <Compile Include="OscAddressTest.cs" />
+    <Compile Include="OscBundleTest.cs" />
     <Compile Include="OscMessageTest.cs" />
     <Compile Include="OscMidiMessageTest.cs" />
     <Compile Include="OscTimeTagTest.cs" />

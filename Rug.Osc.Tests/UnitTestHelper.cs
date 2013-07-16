@@ -628,9 +628,28 @@ namespace Rug.Osc.Tests
 
 		#endregion
 
-		#endregion
+		#endregion		
 
 		#region Are Equal
+
+		internal static void AreEqual(OscBundle expected, OscBundle actual)
+		{
+			Assert.AreEqual(expected.Error, actual.Error, "Error states do not match");
+			Assert.AreEqual(expected.ErrorMessage, actual.ErrorMessage, "Error messages do not match");
+			Assert.AreEqual(expected.Timestamp, actual.Timestamp, "Message timestamps do not match");
+
+			AreEqual(expected.ToArray(), actual.ToArray());
+		}
+
+		internal static void AreEqual(OscMessage[] expected, OscMessage[] actual)
+		{
+			Assert.AreEqual(expected.Length, actual.Length, "Number of arguments do not match");
+
+			for (int i = 0; i < actual.Length; i++)
+			{
+				AreEqual(expected[i], actual[i]); 
+			}
+		}
 
 		internal static void AreEqual(OscMessage expected, OscMessage actual)
 		{
@@ -638,7 +657,7 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(expected.ErrorMessage, actual.ErrorMessage, "Error messages do not match");
 			Assert.AreEqual(expected.Address, actual.Address, "Message addresses do not match");
 
-			AreEqual(expected.Arguments, actual.Arguments);
+			AreEqual(expected.ToArray(), actual.ToArray());
 		}
 
 		internal static void AreEqual(object[] expected, object[] actual)
@@ -702,10 +721,10 @@ namespace Rug.Osc.Tests
 
 		internal static void AreEqual(OscMessage target, string address, int sizeInBytes, params object[] values)
 		{
-			Assert.AreEqual(target.Error, OscMessageError.None, "Error state is not None");
+			Assert.AreEqual(target.Error, OscPacketError.None, "Error state is not None");
 			Assert.AreEqual(target.ErrorMessage, String.Empty, "Error message is not empty");
 			Assert.AreEqual(target.Address, address, "Addresses do not match");
-			Assert.IsNotNull(target.Arguments, "Arguments are null");
+			Assert.IsNotNull(target.ToArray(), "Arguments are null");
 
 			if (values.Length == 0)
 			{
@@ -715,15 +734,15 @@ namespace Rug.Osc.Tests
 			{
 				Assert.IsFalse(target.IsEmpty, "Arguments are empty");
 
-				Assert.AreEqual(target.Arguments.Length, values.Length, "Does not have {0} argument", values.Length);
+				Assert.AreEqual(target.Count, values.Length, "Does not have {0} argument", values.Length);
 
 				for (int i = 0; i < values.Length; i++)
 				{
-					Assert.AreEqual(target.Arguments[i], values[i], "Argument at index {0} value does not match", i);
+					Assert.AreEqual(target[i], values[i], "Argument at index {0} value does not match", i);
 				}
 			}
 
-			Assert.AreEqual(target.MessageSize, sizeInBytes, "Message size is not correct");
+			Assert.AreEqual(target.SizeInBytes, sizeInBytes, "Message size is not correct");
 		}
 
 		#endregion

@@ -104,16 +104,16 @@ namespace BlockingListener
 					{
 						// get the next message 
 						// this will block until one arrives or the socket is closed
-						OscMessage message = m_Receiver.Receive();
+						OscPacket packet = m_Receiver.Receive();
 
-						if (message.Error == OscMessageError.None)
+						if (packet.Error == OscPacketError.None)
 						{
-							this.Invoke(new StringEvent(AppendLine), message.ToString());
+							this.Invoke(new StringEvent(AppendLine), packet.ToString());
 						}
 						else
 						{
-							this.Invoke(new StringEvent(AppendLine), "Error reading message, " + message.Error);
-							this.Invoke(new StringEvent(AppendLine), message.ErrorMessage);
+							this.Invoke(new StringEvent(AppendLine), "Error reading packet, " + packet.Error);
+							this.Invoke(new StringEvent(AppendLine), packet.ErrorMessage);
 						}
 					}
 				}

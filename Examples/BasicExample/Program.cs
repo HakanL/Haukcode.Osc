@@ -75,12 +75,12 @@ namespace BasicExample
 
 		static void TestMethodA(OscMessage message)
 		{
-			Console.WriteLine("Test method A called!: " + message.Arguments[0].ToString()); 
+			Console.WriteLine("Test method A called!: " + message[0].ToString()); 
 		}
 
 		static void TestMethodB(OscMessage message)
 		{
-			Console.WriteLine("Test method B called!: " + message.Arguments[0].ToString());
+			Console.WriteLine("Test method B called!: " + message[0].ToString());
 		}
 
 		static void ListenLoop()
@@ -94,18 +94,18 @@ namespace BasicExample
 					{
 						// get the next message 
 						// this will block until one arrives or the socket is closed
-						OscMessage message = m_Receiver.Receive();
+						OscPacket packet = m_Receiver.Receive();
 
-						if (message.Error == OscMessageError.None)
+						if (packet.Error == OscPacketError.None)
 						{
-							Console.WriteLine("Received message"); 
-							m_Listener.Invoke(message);
+							Console.WriteLine("Received message");
+							m_Listener.Invoke(packet);
 						}
 						else
 						{
-							Console.WriteLine("Error reading message, " + message.Error);
-							Console.WriteLine(message.ErrorMessage);
-						}
+							Console.WriteLine("Error reading osc packet, " + packet.Error);
+							Console.WriteLine(packet.ErrorMessage);
+						}						
 					}
 				}
 			}

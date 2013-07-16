@@ -252,6 +252,41 @@ namespace Rug.Osc
 
 		#region Invoke
 
+		public bool Invoke(OscPacket packet)
+		{
+			if (packet is OscMessage)
+			{
+				return Invoke(packet as OscMessage); 
+			}
+			else if (packet is OscBundle)
+			{
+				return Invoke(packet as OscBundle); 
+			}
+			else
+			{
+				// TODO: EXCEPTION HERE! 
+				throw new NotImplementedException(); 
+			}
+		}
+
+		public bool Invoke(OscBundle bundle)
+		{
+			// TODO: TIME FILTER HERE 
+			bool result = false; 
+
+			foreach (OscMessage message in bundle)
+			{
+				if (message.Error != OscPacketError.None)
+				{
+					continue;
+				}
+
+				result |= Invoke(message); 
+			}
+
+			return result;
+		}
+
 		/// <summary>
 		/// Invoke any event that matches the address on the message
 		/// </summary>

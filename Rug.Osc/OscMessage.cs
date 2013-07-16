@@ -21,7 +21,7 @@ namespace Rug.Osc
 {
 	#region Osc Message Error
 
-	public enum OscMessageError
+	public enum OscPacketError
 	{
 		None,
 
@@ -30,7 +30,7 @@ namespace Rug.Osc
 		MissingAddress,
 		MissingComma,
 		MissingTypeTag,
-		MalformedTypeTag,		
+		MalformedTypeTag,
 
 		ErrorParsingArgument,
 		ErrorParsingBlob,
@@ -46,8 +46,11 @@ namespace Rug.Osc
 		ErrorParsingMidiMessage,
 		ErrorParsingOscTimeTag,
 
-		UnknownArguemntType,
+		MissingBundleIdent,
+		InvalidBundleIdent,
+		InvalidBundleMessageHeader,
 
+		UnknownArguemntType,
 
 	}
 
@@ -58,7 +61,7 @@ namespace Rug.Osc
 	/// <summary>
     /// Any osc message
     /// </summary>
-    public class OscMessage
+	public sealed class OscMessage : OscPacket, IEnumerable<object>
     {
         #region Private Members
         
@@ -66,7 +69,7 @@ namespace Rug.Osc
 
         private string m_Address;
         
-        private OscMessageError m_Error = OscMessageError.None;
+        private OscPacketError m_Error = OscPacketError.None;
         private string m_ErrorMessage = String.Empty;    
 
 	    #endregion
@@ -83,27 +86,34 @@ namespace Rug.Osc
         /// </summary>
         public bool IsEmpty { get { return m_Arguments.Length == 0; } }
 
-        /// <summary>
-        /// Array of arguemnts
-        /// </summary>
-        public object[] Arguments { get { return m_Arguments; } }
+		public int Count { get { return m_Arguments.Length; } } 
+
+		/// <summary>
+		/// Arguemnts
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public object this[int index]
+		{
+			get { return m_Arguments[index]; }
+		}
 
         /// <summary>
         /// The error accosiated with the message
         /// </summary>
-        public OscMessageError Error { get { return m_Error; } }
+        public override OscPacketError Error { get { return m_Error; } }
 
         /// <summary>
         ///  Error message 
         /// </summary>
-        public string ErrorMessage { get { return m_ErrorMessage; } }
+		public override string ErrorMessage { get { return m_ErrorMessage; } }
 
-		#region Message Size
+		#region Packet Size
 
 		/// <summary>
 		/// The size of the message in bytes
 		/// </summary>
-        public int MessageSize
+		public override int SizeInBytes
         {
             get
             {
@@ -348,15 +358,34 @@ namespace Rug.Osc
 
 		#endregion
 
+		#region IEnumerable<object> Members
+
+		public IEnumerator<object> GetEnumerator()
+		{
+			return (m_Arguments as IEnumerable<object>).GetEnumerator();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return m_Arguments.GetEnumerator();
+		}
+
+		#endregion
+
+		public object[] ToArray()
+		{
+			return m_Arguments;
+		}
+
 		#region To Byte Array
 
 		/// <summary>
 		/// Creates a byte array that contains the osc message
 		/// </summary>
 		/// <returns></returns>
-		public byte[] ToByteArray()
+		public override byte[] ToByteArray()
 		{
-			byte[] data = new byte[MessageSize];
+			byte[] data = new byte[SizeInBytes];
 
 			Write(data);
 
@@ -372,7 +401,18 @@ namespace Rug.Osc
         /// </summary>
         /// <param name="data">an array ouf bytes to write the message body into</param>
         /// <returns>the number of bytes in the message</returns>
-        public int Write(byte[] data)
+		public override int Write(byte[] data)
+		{
+			return Write(data, 0); 
+		}
+
+		/// <summary>
+		/// Write the message body into a byte array 
+		/// </summary>
+		/// <param name="data">an array ouf bytes to write the message body into</param>
+		/// <param name="index">the index within the array where writing should begin</param>
+		/// <returns>the number of bytes in the message</returns>
+		public override int Write(byte[] data, int index)
         {
             // is the a address string empty? 
 			if (Helper.IsNullOrWhiteSpace(m_Address) == true)
@@ -380,9 +420,11 @@ namespace Rug.Osc
                 throw new Exception(Strings.Address_NullOrEmpty); 
             }
 
-            using (MemoryStream stream = new MemoryStream(data))
+			using (MemoryStream stream = new MemoryStream(data))
             using (BinaryWriter writer = new BinaryWriter(stream))
-            {                
+            {
+				stream.Position = index; 
+
                 #region Address
 
                 // write the address
@@ -436,7 +478,7 @@ namespace Rug.Osc
 
                 #endregion
 
-                return (int)stream.Position;
+                return (int)stream.Position - index;
             }
         }
 
@@ -636,11 +678,23 @@ namespace Rug.Osc
         /// <param name="bytes">the array that countains the message</param>
         /// <param name="count">the number of bytes in the message</param>
         /// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
-        public static OscMessage Read(byte[] bytes, int count)
-        {
-			OscMessage msg = new OscMessage(); 
+		public static OscMessage Read(byte[] bytes, int count)
+		{
+			return Read(bytes, 0, count); 
+		}
 
-            using (MemoryStream stream = new MemoryStream(bytes, 0, count)) 
+		/// <summary>
+		/// Read a OscMessage from a array of bytes
+		/// </summary>
+		/// <param name="bytes">the array that countains the message</param>
+		/// <param name="index"></param>
+		/// <param name="count">the number of bytes in the message</param>
+		/// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
+		public static OscMessage Read(byte[] bytes, int index, int count)
+        {
+			OscMessage msg = new OscMessage();
+
+			using (MemoryStream stream = new MemoryStream(bytes, index, count)) 
             using (BinaryReader reader = new BinaryReader(stream)) 
             {
                 #region Check the length of the whole message is correct
@@ -652,7 +706,7 @@ namespace Rug.Osc
 					msg.m_Address = String.Empty;
 					msg.m_Arguments = new object[0];
                     
-                    msg.m_Error = OscMessageError.InvalidSegmentLength;
+                    msg.m_Error = OscPacketError.InvalidSegmentLength;
                     msg.m_ErrorMessage = Strings.Parser_InvalidSegmentLength;
 
                     return msg; 
@@ -681,7 +735,7 @@ namespace Rug.Osc
 					msg.m_Address = String.Empty;
 					msg.m_Arguments = new object[0];
                     
-                    msg.m_Error = OscMessageError.MissingAddress;
+                    msg.m_Error = OscPacketError.MissingAddress;
                     msg.m_ErrorMessage = Strings.Parser_MissingAddressTerminator;
 
                     return msg;
@@ -695,7 +749,7 @@ namespace Rug.Osc
                     msg.m_Address = String.Empty;
                     msg.m_Arguments = new object[0];
 
-                    msg.m_Error = OscMessageError.MissingAddress;
+                    msg.m_Error = OscPacketError.MissingAddress;
                     msg.m_ErrorMessage = Strings.Parser_MissingAddressEmpty;
 
 					return msg;
@@ -704,7 +758,7 @@ namespace Rug.Osc
 				#endregion
 
 				// read the string 
-				msg.m_Address = Encoding.UTF8.GetString(bytes, (int)start, (int)(stream.Position - start) - 1); 
+				msg.m_Address = Encoding.UTF8.GetString(bytes, index + (int)start, (int)(stream.Position - start) - 1); 
 
                 #region Padding
 
@@ -713,7 +767,7 @@ namespace Rug.Osc
 				{
 					msg.m_Arguments = new object[0];
 
-					msg.m_Error = OscMessageError.InvalidSegmentLength;
+					msg.m_Error = OscPacketError.InvalidSegmentLength;
 					msg.m_ErrorMessage = Strings.Parser_UnexpectedEndOfMessage;
 
 					return msg; 
@@ -741,7 +795,7 @@ namespace Rug.Osc
                 {
                     msg.m_Arguments = new object[0];
 
-                    msg.m_Error = OscMessageError.MissingComma;
+                    msg.m_Error = OscPacketError.MissingComma;
                     msg.m_ErrorMessage = Strings.Parser_MissingComma;
 
                     return msg; 
@@ -782,7 +836,7 @@ namespace Rug.Osc
 					{
 						msg.m_Arguments = new object[0];
 
-						msg.m_Error = OscMessageError.MalformedTypeTag;
+						msg.m_Error = OscPacketError.MalformedTypeTag;
 						msg.m_ErrorMessage = Strings.Parser_MalformedTypeTag;
 
 						return msg;
@@ -794,7 +848,7 @@ namespace Rug.Osc
                     // this shouldn't happen and means we're decoding rubbish
 					msg.m_Arguments = new object[0];
 
-                    msg.m_Error = OscMessageError.MissingTypeTag;
+                    msg.m_Error = OscPacketError.MissingTypeTag;
                     msg.m_ErrorMessage = Strings.Parser_MissingTypeTag; 
 
                     return msg;
@@ -807,7 +861,7 @@ namespace Rug.Osc
 				if (Helper.SkipPadding(stream) == false)
 				{
 					msg.m_Arguments = new object[0];
-					msg.m_Error = OscMessageError.InvalidSegmentLength;
+					msg.m_Error = OscPacketError.InvalidSegmentLength;
 					msg.m_ErrorMessage = Strings.Parser_UnexpectedEndOfMessage;
 
 					return msg; 
@@ -815,7 +869,7 @@ namespace Rug.Osc
 
                 #endregion
 
-				if (ReadArguments(msg, bytes, stream, reader, ref typeTag_Start, typeTag_Count, msg.m_Arguments) == false)
+				if (ReadArguments(msg, bytes, index, stream, reader, ref typeTag_Start, typeTag_Count, msg.m_Arguments) == false)
 				{
 					msg.m_Arguments = new object[0];
 				}
@@ -826,12 +880,12 @@ namespace Rug.Osc
 
 		#region Read Arguments
 
-		private static bool ReadArguments(OscMessage msg, byte[] bytes, MemoryStream stream, BinaryReader reader, ref int tagIndex, int count, object[] args)
+		private static bool ReadArguments(OscMessage msg, byte[] bytes, int offset, MemoryStream stream, BinaryReader reader, ref int tagIndex, int count, object[] args)
 		{
 			for (int i = 0; i < count; i++)
 			{
 				// get the type tag char
-				char type = (char)bytes[tagIndex++];
+				char type = (char)bytes[offset + tagIndex++];
 
 				switch (type)
 				{
@@ -840,7 +894,7 @@ namespace Rug.Osc
 						{
 							if (stream.Position + 4 > stream.Length)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingBlob;
+								msg.m_Error = OscPacketError.ErrorParsingBlob;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -851,7 +905,7 @@ namespace Rug.Osc
 							// this shouldn't happen and means we're decoding rubbish
 							if (length > 0 && stream.Position + length >= stream.Length)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingBlob;
+								msg.m_Error = OscPacketError.ErrorParsingBlob;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -862,7 +916,7 @@ namespace Rug.Osc
 							// Advance pass the padding
 							if (Helper.SkipPadding(stream) == false)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingBlob;
+								msg.m_Error = OscPacketError.ErrorParsingBlob;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -889,18 +943,18 @@ namespace Rug.Osc
 
 							if (failed == true)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingString;
+								msg.m_Error = OscPacketError.ErrorParsingString;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_MissingArgumentTerminator, i);
 
 								return false;
 							}
 
-							args[i] = Encoding.UTF8.GetString(bytes, (int)stringStart, (int)(stream.Position - stringStart) - 1);
+							args[i] = Encoding.UTF8.GetString(bytes, offset + (int)stringStart, (int)(stream.Position - stringStart) - 1);
 
 							// Advance pass the padding
 							if (Helper.SkipPadding(stream) == false)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingString;
+								msg.m_Error = OscPacketError.ErrorParsingString;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -926,18 +980,18 @@ namespace Rug.Osc
 
 							if (failed == true)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingSymbol;
+								msg.m_Error = OscPacketError.ErrorParsingSymbol;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_MissingArgumentTerminator, i);
 
 								return false;
 							}
 
-							args[i] = new OscSymbol(Encoding.UTF8.GetString(bytes, (int)stringStart, (int)(stream.Position - stringStart) - 1));
+							args[i] = new OscSymbol(Encoding.UTF8.GetString(bytes, offset + (int)stringStart, (int)(stream.Position - stringStart) - 1));
 
 							// Advance pass the padding
 							if (Helper.SkipPadding(stream) == false)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingSymbol;
+								msg.m_Error = OscPacketError.ErrorParsingSymbol;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -950,7 +1004,7 @@ namespace Rug.Osc
 						{
 							if (stream.Position + 4 > stream.Length)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingInt32;
+								msg.m_Error = OscPacketError.ErrorParsingInt32;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -967,7 +1021,7 @@ namespace Rug.Osc
 						{
 							if (stream.Position + 8 > stream.Length)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingInt64;
+								msg.m_Error = OscPacketError.ErrorParsingInt64;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -984,7 +1038,7 @@ namespace Rug.Osc
 						{
 							if (stream.Position + 4 > stream.Length)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingSingle;
+								msg.m_Error = OscPacketError.ErrorParsingSingle;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -1001,7 +1055,7 @@ namespace Rug.Osc
 						{
 							if (stream.Position + 8 > stream.Length)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingDouble;
+								msg.m_Error = OscPacketError.ErrorParsingDouble;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -1018,7 +1072,7 @@ namespace Rug.Osc
 						{
 							if (stream.Position + 8 > stream.Length)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingOscTimeTag;
+								msg.m_Error = OscPacketError.ErrorParsingOscTimeTag;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -1035,7 +1089,7 @@ namespace Rug.Osc
 						{
 							if (stream.Position + 4 > stream.Length)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingChar;
+								msg.m_Error = OscPacketError.ErrorParsingChar;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -1052,7 +1106,7 @@ namespace Rug.Osc
 						{
 							if (stream.Position + 4 > stream.Length)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingColor;
+								msg.m_Error = OscPacketError.ErrorParsingColor;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -1069,7 +1123,7 @@ namespace Rug.Osc
 						{
 							if (stream.Position + 4 > stream.Length)
 							{
-								msg.m_Error = OscMessageError.ErrorParsingMidiMessage;
+								msg.m_Error = OscPacketError.ErrorParsingMidiMessage;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
 
 								return false;
@@ -1113,7 +1167,7 @@ namespace Rug.Osc
 							// scan forward and look for the end of the typetag string 
 							while (true)
 							{
-								char @char = (char)bytes[typeTag_Char++];
+								char @char = (char)bytes[offset + typeTag_Char++];
 
 								if (@char == ']' && typeTag_Inset == 0)
 								{
@@ -1136,7 +1190,7 @@ namespace Rug.Osc
 
 								if (typeTag_Inset < 0)
 								{
-									msg.m_Error = OscMessageError.MalformedTypeTag;
+									msg.m_Error = OscPacketError.MalformedTypeTag;
 									msg.m_ErrorMessage = Strings.Parser_MalformedTypeTag;
 
 									return false;
@@ -1146,7 +1200,7 @@ namespace Rug.Osc
 							// alocate the arguments array 
 							object[] array = new object[typeTag_Count];
 
-							if (ReadArguments(msg, bytes, stream, reader, ref tagIndex, typeTag_Count, array) == false)
+							if (ReadArguments(msg, bytes, offset, stream, reader, ref tagIndex, typeTag_Count, array) == false)
 							{
 								return false;
 							}
@@ -1160,7 +1214,7 @@ namespace Rug.Osc
 						break;
 					default:
 						// Unknown argument type
-						msg.m_Error = OscMessageError.UnknownArguemntType;
+						msg.m_Error = OscPacketError.UnknownArguemntType;
 						msg.m_ErrorMessage = String.Format(Strings.Parser_UnknownArgumentType, type, i);
 
 						return false;

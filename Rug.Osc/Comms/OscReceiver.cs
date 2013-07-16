@@ -26,7 +26,7 @@ namespace Rug.Osc
 
         private byte[] m_Bytes;
 
-        private OscMessage[] m_ReceiveQueue;
+		private OscPacket[] m_ReceiveQueue;
         private int m_WriteIndex = 0;
         private int m_ReadIndex = 0;
         private int m_Count = 0;
@@ -151,7 +151,7 @@ namespace Rug.Osc
 		/// </summary>
 		/// <param name="message">an osc message if one is ready else null if there are none</param>
 		/// <returns>true if a message was ready</returns>
-        public bool TryReceive(out OscMessage message)
+        public bool TryReceive(out OscPacket message)
         {
 			message = null; 
 
@@ -190,7 +190,7 @@ namespace Rug.Osc
         /// Receive a osc message, this method is blocking and will only return once a message is recived
         /// </summary>
         /// <returns>an osc message</returns>
-        public OscMessage Receive()
+        public OscPacket Receive()
         {
 			try
 			{
@@ -212,7 +212,7 @@ namespace Rug.Osc
 					{
 						lock (m_Lock)
 						{
-							OscMessage message = m_ReceiveQueue[m_ReadIndex];
+							OscPacket message = m_ReceiveQueue[m_ReadIndex];
 
 							m_ReadIndex = NextReadIndex;
 
@@ -236,7 +236,7 @@ namespace Rug.Osc
 					{
 						lock (m_Lock)
 						{
-							OscMessage message = m_ReceiveQueue[m_ReadIndex];
+							OscPacket message = m_ReceiveQueue[m_ReadIndex];
 
 							m_ReadIndex = NextReadIndex;
 
@@ -276,7 +276,7 @@ namespace Rug.Osc
             try
             {
                 int count = Socket.EndReceive(ar);
-                OscMessage message = OscMessage.Read(m_Bytes, count);
+				OscPacket message = OscPacket.Read(m_Bytes, count);
 
                 lock (m_Lock)
                 {
