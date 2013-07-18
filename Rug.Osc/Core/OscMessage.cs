@@ -19,50 +19,21 @@ using System.Collections.Generic;
 
 namespace Rug.Osc
 {
-	#region Osc Message Error
-
-	public enum OscPacketError
-	{
-		None,
-
-		InvalidSegmentLength,
-
-		MissingAddress,
-		MissingComma,
-		MissingTypeTag,
-		MalformedTypeTag,
-
-		ErrorParsingArgument,
-		ErrorParsingBlob,
-		ErrorParsingString,
-		ErrorParsingSymbol,
-		ErrorParsingInt32,
-		ErrorParsingInt64,
-		ErrorParsingSingle,
-		ErrorParsingDouble,
-
-		ErrorParsingColor,
-		ErrorParsingChar,
-		ErrorParsingMidiMessage,
-		ErrorParsingOscTimeTag,
-
-		MissingBundleIdent,
-		InvalidBundleIdent,
-		InvalidBundleMessageHeader,
-
-		UnknownArguemntType,
-
-	}
-
-	#endregion 
-
-	#region Osc Message
-
 	/// <summary>
     /// Any osc message
     /// </summary>
 	public sealed class OscMessage : OscPacket, IEnumerable<object>
     {
+		public static readonly OscMessage ParseError;
+
+		static OscMessage()
+		{
+			ParseError = new OscMessage();
+
+			ParseError.m_Error = OscPacketError.ErrorParsingPacket;
+			ParseError.m_ErrorMessage = Strings.Parser_InvalidPacket;
+		}
+
         #region Private Members
         
         private object[] m_Arguments;
@@ -86,13 +57,16 @@ namespace Rug.Osc
         /// </summary>
         public bool IsEmpty { get { return m_Arguments.Length == 0; } }
 
-		public int Count { get { return m_Arguments.Length; } } 
+		/// <summary>
+		/// Number of arguments in the message 
+		/// </summary>
+		public int Count { get { return m_Arguments.Length; } }
 
 		/// <summary>
-		/// Arguemnts
+		/// Access message arguments by index 
 		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
+		/// <param name="index">the index of the message</param>
+		/// <returns>message at the supplied index</returns>
 		public object this[int index]
 		{
 			get { return m_Arguments[index]; }
@@ -372,10 +346,18 @@ namespace Rug.Osc
 
 		#endregion
 
+		#region To Array
+
+		/// <summary>
+		/// Get the arguments as an array 
+		/// </summary>
+		/// <returns>arguments array</returns>
 		public object[] ToArray()
 		{
 			return m_Arguments;
 		}
+
+		#endregion
 
 		#region To Byte Array
 
@@ -678,7 +660,7 @@ namespace Rug.Osc
         /// <param name="bytes">the array that countains the message</param>
         /// <param name="count">the number of bytes in the message</param>
         /// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
-		public static OscMessage Read(byte[] bytes, int count)
+		public static new OscMessage Read(byte[] bytes, int count)
 		{
 			return Read(bytes, 0, count); 
 		}
@@ -687,10 +669,10 @@ namespace Rug.Osc
 		/// Read a OscMessage from a array of bytes
 		/// </summary>
 		/// <param name="bytes">the array that countains the message</param>
-		/// <param name="index"></param>
+		/// <param name="index">the offset within the array where reading should begin</param>
 		/// <param name="count">the number of bytes in the message</param>
 		/// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
-		public static OscMessage Read(byte[] bytes, int index, int count)
+		public static new OscMessage Read(byte[] bytes, int index, int count)
         {
 			OscMessage msg = new OscMessage();
 
@@ -1393,7 +1375,7 @@ namespace Rug.Osc
 		/// </summary>
 		/// <param name="str">a string containing a message</param>
 		/// <returns>the parsed message</returns>
-		public static OscMessage Parse(string str)
+		public static new OscMessage Parse(string str)
 		{
 			return Parse(str, CultureInfo.InvariantCulture);
 		}
@@ -1551,101 +1533,6 @@ namespace Rug.Osc
 					}				
 				}
 			}
-		}
-
-		#endregion
-
-		#region Scan Forward
-		
-		/// <summary>
-		/// Scan for array start and end control chars
-		/// </summary>
-		/// <param name="str">the string to scan</param>
-		/// <param name="controlChar">the index of the starting control char</param>
-		/// <returns>the index of the end char</returns>
-		private static int ScanForward_Array(string str, int controlChar)
-		{
-			return ScanForward(str, controlChar, '[', ']', Strings.Parser_MissingArrayEndChar);
-		}
-
-		/// <summary>
-		/// Scan for object start and end control chars
-		/// </summary>
-		/// <param name="str">the string to scan</param>
-		/// <param name="controlChar">the index of the starting control char</param>
-		/// <returns>the index of the end char</returns>
-		private static int ScanForward_Object(string str, int controlChar)
-		{
-			return ScanForward(str, controlChar, '{', '}', Strings.Parser_MissingObjectEndChar);
-		}
-
-		/// <summary>
-		/// Scan for start and end control chars
-		/// </summary>
-		/// <param name="str">the string to scan</param>
-		/// <param name="controlChar">the index of the starting control char</param>
-		/// <param name="startChar">start control char</param>
-		/// <param name="endChar">end control char</param>
-		/// <param name="errorString">string to use in the case of an error</param>
-		/// <returns>the index of the end char</returns>
-		private static int ScanForward(string str, int controlChar, char startChar, char endChar, string errorString)
-		{
-			bool found = false; 
-
-			int count = 0;
-
-			int index = controlChar + 1;
-
-			bool insideString = false;
-
-			while (index < str.Length)
-			{
-				if (str[index] == '"')
-				{
-					insideString = !insideString;
-				}
-				else
-				{
-					if (insideString == false)
-					{
-						if (str[index] == startChar)
-						{
-							count++;
-						}
-						else if (str[index] == endChar)
-						{
-							if (count == 0)
-							{
-								found = true; 
-
-								break;
-							}
-
-							count--;
-						}
-					}
-				}
-
-				index++;
-			}
-
-
-			if (insideString == true)
-			{
-				throw new Exception(Strings.Parser_MissingStringEndChar);
-			}
-
-			if (count > 0)
-			{
-				throw new Exception(errorString);
-			}
-
-			if (found == false)
-			{
-				throw new Exception(errorString);
-			}
-
-			return index;
 		}
 
 		#endregion
@@ -1835,6 +1722,4 @@ namespace Rug.Osc
 
 		#endregion
 	}
-
-	#endregion
 }

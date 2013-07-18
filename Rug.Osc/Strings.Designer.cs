@@ -81,27 +81,36 @@ namespace Rug.Osc {
         /// <summary>
         ///   Looks up a localized string similar to Invalid bundle ident &apos;{0}&apos;.
         /// </summary>
-        internal static string Bundle_InvalidBundleIdent {
+        internal static string Bundle_InvalidIdent {
             get {
-                return ResourceManager.GetString("Bundle_InvalidBundleIdent", resourceCulture);
+                return ResourceManager.GetString("Bundle_InvalidIdent", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Invalid bundle message header.
         /// </summary>
-        internal static string Bundle_InvalidBundleMessageHeader {
+        internal static string Bundle_InvalidMessageHeader {
             get {
-                return ResourceManager.GetString("Bundle_InvalidBundleMessageHeader", resourceCulture);
+                return ResourceManager.GetString("Bundle_InvalidMessageHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid bundle timestamp &apos;{0}&apos;.
+        /// </summary>
+        internal static string Bundle_InvalidTimestamp {
+            get {
+                return ResourceManager.GetString("Bundle_InvalidTimestamp", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Missing bundle ident.
         /// </summary>
-        internal static string Bundle_MissingBundleIdent {
+        internal static string Bundle_MissingIdent {
             get {
-                return ResourceManager.GetString("Bundle_MissingBundleIdent", resourceCulture);
+                return ResourceManager.GetString("Bundle_MissingIdent", resourceCulture);
             }
         }
         
@@ -111,6 +120,15 @@ namespace Rug.Osc {
         internal static string Container_IsValidContainerAddress {
             get {
                 return ResourceManager.GetString("Container_IsValidContainerAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown osc packet type &apos;{0}&apos;.
+        /// </summary>
+        internal static string Listener_UnknownOscPacketType {
+            get {
+                return ResourceManager.GetString("Listener_UnknownOscPacketType", resourceCulture);
             }
         }
         
@@ -201,6 +219,15 @@ namespace Rug.Osc {
         internal static string Parser_InvalidColor {
             get {
                 return ResourceManager.GetString("Parser_InvalidColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occured while parsing an osc packet.
+        /// </summary>
+        internal static string Parser_InvalidPacket {
+            get {
+                return ResourceManager.GetString("Parser_InvalidPacket", resourceCulture);
             }
         }
         
@@ -304,7 +331,7 @@ namespace Rug.Osc {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected &apos;}}&apos;.
+        ///   Looks up a localized string similar to Expected &apos;}&apos;.
         /// </summary>
         internal static string Parser_MissingObjectEndChar {
             get {

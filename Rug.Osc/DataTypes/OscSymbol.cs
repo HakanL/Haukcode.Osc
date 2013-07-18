@@ -16,8 +16,15 @@ namespace Rug.Osc
 	/// </summary>
 	public struct OscSymbol
 	{
+		/// <summary>
+		/// The string value of the symbol
+		/// </summary>
 		public string Value;
 
+		/// <summary>
+		/// Create a new symbol
+		/// </summary>
+		/// <param name="value">literal string value</param>
 		public OscSymbol(string value)
 		{
 			Value = value; 

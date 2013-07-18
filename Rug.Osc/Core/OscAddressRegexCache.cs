@@ -16,14 +16,15 @@ namespace Rug.Osc
 {
 	/// <summary>
 	/// Regex cache is an optimisation for regexes for address patterns. Caching is enabled by default. 
-	/// 
+	/// </summary>
+	/// <remarks>
 	/// This mechanism assumes that the same addresses will be used multiple times
 	/// and that there will be a finite number of unique addresses parsed over the course 
 	/// of the execution of the program.
 	/// 
 	/// If there are to be many unique addresses used of the course of the execution of 
 	/// the program then it maybe desirable to disable caching. 
-	/// </summary>
+	/// </remarks>
 	public static class OscAddressRegexCache
 	{
 		private static object m_Lock = new object(); 

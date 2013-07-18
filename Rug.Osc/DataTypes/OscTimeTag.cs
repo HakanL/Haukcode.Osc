@@ -20,6 +20,9 @@ namespace Rug.Osc
 	/// </summary>
 	public struct OscTimeTag
 	{
+		/// <summary>
+		/// The miniumn date for any Osc time tag
+		/// </summary>
 		public static readonly DateTime BaseDate = new DateTime(1900, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
 		/// <summary>
@@ -55,7 +58,7 @@ namespace Rug.Osc
 
 		public override string ToString()
 		{
-			return ToDataTime().ToString("dd-MM-yyyy HH:mm:ss.ffff");
+			return ToDataTime().ToString("dd-MM-yyyy HH:mm:ss.ffffZ");
 		}
 
 		#region To Date Time
@@ -115,6 +118,15 @@ namespace Rug.Osc
 		/// <returns>the parsed time tag</returns>
 		public static OscTimeTag Parse(string str, IFormatProvider provider)
 		{
+			DateTimeStyles style = DateTimeStyles.AdjustToUniversal; 
+
+			if (str.Trim().EndsWith("Z") == true)
+			{
+				style = DateTimeStyles.AssumeUniversal;
+
+				str = str.Trim().TrimEnd('Z'); 
+			}
+
 			string[] formats = new string[] 
 			{	
 				"dd-MM-yy", 
@@ -125,9 +137,9 @@ namespace Rug.Osc
 				"dd-MM-yyyy HH:mm:ss",
 				"dd-MM-yyyy HH:mm",
 				"dd-MM-yyyy HH:mm:ss.ffff" 
-			}; 
+			};
 
-			DateTime datetime = DateTime.ParseExact(str, formats, provider, DateTimeStyles.None);
+			DateTime datetime = DateTime.ParseExact(str, formats, provider, style);
 
 			return FromDataTime(datetime); 
 		}

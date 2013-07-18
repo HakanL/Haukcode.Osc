@@ -75,10 +75,10 @@ namespace Sender
 		
 		private void MessageBox_TextChanged(object sender, EventArgs e)
 		{
-			OscMessage msg;
+			OscPacket msg;
 
 			// try to parse the osc message
-			if (OscMessage.TryParse(m_MessageBox.Text, out msg) == true)
+			if (OscPacket.TryParse(m_MessageBox.Text, out msg) == true)
 			{
 				// if it parsed ok then green 
 				m_MessageBox.BackColor = Color.LightGreen;
@@ -95,7 +95,7 @@ namespace Sender
 			try
 			{
 				// parse the message
-				OscMessage msg = OscMessage.Parse(m_MessageBox.Text);				
+				OscPacket msg = OscPacket.Parse(m_MessageBox.Text);				
 				
 				// write the parsed message
 				AppendLine(msg.ToString());

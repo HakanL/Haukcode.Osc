@@ -98,6 +98,20 @@ namespace Rug.Osc
 
 	#endregion
 
+	[Flags]
+	public enum OscBundleInvokeMode : int 
+	{
+		NeverInvoke = 0,
+
+		InvokeOnTimeBundles = 1, 
+
+		InvokeLateBundlesImmediately = 2,
+
+		InvokeEarlyBundlesImmediately = 4,
+
+		InvokeAllBundlesImmediately = InvokeOnTimeBundles | InvokeLateBundlesImmediately | InvokeEarlyBundlesImmediately,
+	}
+
 	#region Osc Listener Manager
 
 	/// <summary>
@@ -120,6 +134,21 @@ namespace Rug.Osc
 		private Dictionary<OscAddress, OscFilter> m_PatternAddresses = new Dictionary<OscAddress, OscFilter>();
 
 		#endregion
+
+		/// <summary>
+		/// Osc time provider, used for filtering bundles by time, if null then the DefaultTimeProvider is used 
+		/// </summary>
+		public IOscTimeProvider TimeProvider { get; set; }
+
+		/// <summary>
+		/// Bundle invoke mode, the default is OscBundleInvokeMode.InvokeAllBundlesImmediately
+		/// </summary>
+		public OscBundleInvokeMode BundleInvokeMode { get; set; }
+
+		public OscListenerManager()
+		{
+			BundleInvokeMode = OscBundleInvokeMode.InvokeAllBundlesImmediately; 
+		}
 
 		#region Attach
 
@@ -252,6 +281,11 @@ namespace Rug.Osc
 
 		#region Invoke
 
+		/// <summary>
+		/// Invoke a osc packet 
+		/// </summary>
+		/// <param name="packet">the packet</param>
+		/// <returns>true if any thing was invoked</returns>
 		public bool Invoke(OscPacket packet)
 		{
 			if (packet is OscMessage)
@@ -264,15 +298,66 @@ namespace Rug.Osc
 			}
 			else
 			{
-				// TODO: EXCEPTION HERE! 
-				throw new NotImplementedException(); 
+				throw new Exception(String.Format(Strings.Listener_UnknownOscPacketType, packet.ToString())); 
 			}
 		}
 
+		/// <summary>
+		/// Invoke all the messages within a bundle
+		/// </summary>
+		/// <remarks>
+		/// TODO WRITE NOTES ON TimeProvider and BundleInvokeMode
+		/// </remarks>
+		/// <param name="bundle">an osc bundle of messages</param>
+		/// <returns>true if the bundle passed through the timing filter and there was a listener to invoke otherwise false</returns>
 		public bool Invoke(OscBundle bundle)
 		{
-			// TODO: TIME FILTER HERE 
-			bool result = false; 
+			if (BundleInvokeMode == OscBundleInvokeMode.NeverInvoke)
+			{
+				return false; 
+			}
+			else if (BundleInvokeMode != OscBundleInvokeMode.InvokeAllBundlesImmediately)
+			{
+				double delay;
+
+				IOscTimeProvider provider = TimeProvider;
+
+				if (TimeProvider == null)
+				{
+					provider = DefaultTimeProvider.Instance; 
+				}
+
+				delay = provider.DifferenceInSeconds(bundle.Timestamp);
+
+				if ((BundleInvokeMode & OscBundleInvokeMode.InvokeEarlyBundlesImmediately) != 
+					OscBundleInvokeMode.InvokeEarlyBundlesImmediately)
+				{
+					if (delay > 0 && provider.IsWithinTimeFrame(bundle.Timestamp) == false)
+					{
+						return false; 
+					}
+				}
+
+				if ((BundleInvokeMode & OscBundleInvokeMode.InvokeLateBundlesImmediately) !=
+					OscBundleInvokeMode.InvokeLateBundlesImmediately)
+				{
+					if (delay < 0 && provider.IsWithinTimeFrame(bundle.Timestamp) == false)
+					{
+						return false;
+					}
+				}
+
+				if ((BundleInvokeMode & OscBundleInvokeMode.InvokeOnTimeBundles) != 
+					OscBundleInvokeMode.InvokeOnTimeBundles)
+				{
+					if (provider.IsWithinTimeFrame(bundle.Timestamp) == true)
+					{
+						return false;
+					}
+				}
+			}
+
+			bool result = false;
 
 			foreach (OscMessage message in bundle)
 			{

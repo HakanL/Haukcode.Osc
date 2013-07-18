@@ -305,11 +305,11 @@ namespace Rug.Osc
 	{
 		#region Private Static Members
 
-		public static readonly Regex LiteralAddressValidator = new Regex(@"^/[^\s#\*,/\?\[\]\{}]+((/[^\s#\*,/\?\[\]\{}]+)*)$", RegexOptions.Compiled);
+		private static readonly Regex LiteralAddressValidator = new Regex(@"^/[^\s#\*,/\?\[\]\{}]+((/[^\s#\*,/\?\[\]\{}]+)*)$", RegexOptions.Compiled);
 
-		public static readonly Regex PatternAddressValidator = new Regex(@"^(//|/)[^\s#/]+((/[^\s#/]+)*)$", RegexOptions.Compiled);
+		private static readonly Regex PatternAddressValidator = new Regex(@"^(//|/)[^\s#/]+((/[^\s#/]+)*)$", RegexOptions.Compiled);
 
-		public static readonly Regex PatternAddressPartValidator = new Regex(
+		private static readonly Regex PatternAddressPartValidator = new Regex(
 			@"^((
 			  (?<Literal>([^\s#\*,/\?\[\]\{}]+)) |
 			  (?<Wildcard>([\*\?]+)) |	
@@ -329,7 +329,7 @@ namespace Rug.Osc
 			  ",
 			RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
 
-		public static readonly char[] AddressSeperatorChar = new char[] { '/' };
+		private static readonly char[] AddressSeperatorChar = new char[] { '/' };
 
 		#endregion
 

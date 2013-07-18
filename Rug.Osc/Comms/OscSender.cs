@@ -17,8 +17,14 @@ using System.Threading;
 
 namespace Rug.Osc
 {
+	/// <summary>
+	/// Osc udp sender
+	/// </summary>
     public class OscSender : OscSocket
     {
+		/// <summary>
+		/// The default number of messages that can be queued for sending before messages start to get dropped
+		/// </summary>
         public const int DefaultMessageBufferSize = 600;
 
         #region Private Members
@@ -103,7 +109,7 @@ namespace Rug.Osc
             : base(address, port)
         {
             m_Bytes = new byte[maxPacketSize];
-            m_SendQueue = new OscMessage[messageBufferSize];
+            m_SendQueue = new OscPacket[messageBufferSize];
         }
 
         #endregion 

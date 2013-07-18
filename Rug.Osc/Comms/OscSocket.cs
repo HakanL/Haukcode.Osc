@@ -47,9 +47,19 @@ namespace Rug.Osc
 
 	#region Osc Socket Type
 
+	/// <summary>
+	/// Socket direction type
+	/// </summary>
 	public enum OscSocketType
     {
+		/// <summary>
+		/// Sender
+		/// </summary>
         Send, 
+
+		/// <summary>
+		/// Receiver
+		/// </summary>
         Receive
     }
 
@@ -60,6 +70,9 @@ namespace Rug.Osc
 	/// </summary>
 	public abstract class OscSocket : IDisposable
     {
+		/// <summary>
+		/// Default maximum packet size
+		/// </summary>
         public const int DefaultPacketSize = 2048;
 
         #region Private Members
