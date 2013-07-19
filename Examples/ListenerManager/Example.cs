@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Rug.Osc;
+using System.Diagnostics;
 
 namespace ListenerManager
 {
@@ -83,10 +84,10 @@ namespace ListenerManager
 
 		private void MessageBox_TextChanged(object sender, EventArgs e)
 		{
-			OscMessage msg;
+			OscPacket msg;
 
 			// try to parse the osc message
-			if (OscMessage.TryParse(m_MessageBox.Text, out msg) == true)
+			if (OscPacket.TryParse(m_MessageBox.Text, out msg) == true)
 			{
 				// if it parsed ok then green 
 				m_MessageBox.BackColor = Color.LightGreen;
@@ -103,9 +104,28 @@ namespace ListenerManager
 			try
 			{
 				// parse the message
-				OscMessage msg = OscMessage.Parse(m_MessageBox.Text);
+				OscPacket packet = OscPacket.Parse(m_MessageBox.Text);
 
-				m_Manager.Invoke(msg); 
+				switch (m_Manager.ShouldInvoke(packet))
+				{
+					case OscPacketInvokeAction.Invoke:
+						m_Manager.Invoke(packet);
+						break;
+					case OscPacketInvokeAction.DontInvoke:
+						Debug.WriteLine("Cannot invoke");
+						Debug.WriteLine(packet.ToString());
+						break;
+					case OscPacketInvokeAction.HasError:
+						Debug.WriteLine("Error reading osc packet, " + packet.Error);
+						Debug.WriteLine(packet.ErrorMessage);
+						break;
+					case OscPacketInvokeAction.Pospone:
+						Debug.WriteLine("Posponed bundle");
+						Debug.WriteLine(packet.ToString());
+						break;
+					default:
+						break;
+				}	
 			}
 			catch (Exception ex)
 			{

@@ -96,16 +96,27 @@ namespace BasicExample
 						// this will block until one arrives or the socket is closed
 						OscPacket packet = m_Receiver.Receive();
 
-						if (packet.Error == OscPacketError.None)
+						switch (m_Listener.ShouldInvoke(packet))
 						{
-							Console.WriteLine("Received message");
-							m_Listener.Invoke(packet);
-						}
-						else
-						{
-							Console.WriteLine("Error reading osc packet, " + packet.Error);
-							Console.WriteLine(packet.ErrorMessage);
-						}						
+							case OscPacketInvokeAction.Invoke:
+								Console.WriteLine("Received packet");
+								m_Listener.Invoke(packet);
+								break;
+							case OscPacketInvokeAction.DontInvoke:
+								Console.WriteLine("Cannot invoke");
+								Console.WriteLine(packet.ToString()); 
+								break;
+							case OscPacketInvokeAction.HasError:
+								Console.WriteLine("Error reading osc packet, " + packet.Error);
+								Console.WriteLine(packet.ErrorMessage);
+								break;
+							case OscPacketInvokeAction.Pospone:
+								Console.WriteLine("Posponed bundle");
+								Console.WriteLine(packet.ToString()); 
+								break;
+							default:
+								break;
+						}											
 					}
 				}
 			}

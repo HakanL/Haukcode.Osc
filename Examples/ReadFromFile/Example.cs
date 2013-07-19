@@ -56,10 +56,12 @@ namespace ReadFromFile
 				using (FileStream stream = new FileStream(m_FilePath.Text, FileMode.Open, FileAccess.Read))
 				using (OscReader reader = new OscReader(stream, (OscPacketFormat)m_Format.SelectedIndex))
 				{
-					while (reader.EndOfStream == true) 
+					while (reader.EndOfStream == false) 
 					{
 						AppendLine(reader.Read().ToString()); 
 					}
+
+					AppendLine("End of file"); 
 				}				
 			}
 			catch (Exception ex)

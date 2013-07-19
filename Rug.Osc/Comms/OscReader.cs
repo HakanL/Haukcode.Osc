@@ -40,12 +40,12 @@ namespace Rug.Osc
 			{
 				if (BaseStream.CanRead == false)
 				{
-					return false;
+					return true;
 				}
 
 				if (m_Format == OscPacketFormat.Binary)
 				{
-					return BaseStream.Position < BaseStream.Length; 
+					return BaseStream.Position >= BaseStream.Length; 
 				}
 				else
 				{

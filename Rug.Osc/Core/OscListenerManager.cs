@@ -107,9 +107,19 @@ namespace Rug.Osc
 
 		InvokeLateBundlesImmediately = 2,
 
-		InvokeEarlyBundlesImmediately = 4,
+		PosponeEarlyBundles = 4,
 
+		InvokeEarlyBundlesImmediately = 12,
+		
 		InvokeAllBundlesImmediately = InvokeOnTimeBundles | InvokeLateBundlesImmediately | InvokeEarlyBundlesImmediately,
+	}
+
+	public enum OscPacketInvokeAction
+	{
+		Invoke, 
+		DontInvoke, 
+		HasError, 
+		Pospone, 
 	}
 
 	#region Osc Listener Manager
@@ -279,6 +289,87 @@ namespace Rug.Osc
 
 		#endregion
 
+		#region Should Invoke
+
+		public OscPacketInvokeAction ShouldInvoke(OscPacket packet)
+		{
+			if (packet.Error != OscPacketError.None)
+			{
+				return OscPacketInvokeAction.HasError; 
+			}
+
+			if (packet is OscMessage)
+			{
+				return OscPacketInvokeAction.Invoke; 
+			}
+
+			if (packet is OscBundle)
+			{
+				OscBundle bundle = packet as OscBundle;
+
+				if (BundleInvokeMode == OscBundleInvokeMode.NeverInvoke)
+				{
+					return OscPacketInvokeAction.DontInvoke;
+				}
+				else if (BundleInvokeMode != OscBundleInvokeMode.InvokeAllBundlesImmediately)
+				{
+					double delay;
+
+					IOscTimeProvider provider = TimeProvider;
+
+					if (TimeProvider == null)
+					{
+						provider = DefaultTimeProvider.Instance;
+					}
+
+					delay = provider.DifferenceInSeconds(bundle.Timestamp);
+
+					if ((BundleInvokeMode & OscBundleInvokeMode.InvokeEarlyBundlesImmediately) !=
+						OscBundleInvokeMode.InvokeEarlyBundlesImmediately)
+					{
+						if (delay > 0 && provider.IsWithinTimeFrame(bundle.Timestamp) == false)
+						{
+							if ((BundleInvokeMode & OscBundleInvokeMode.PosponeEarlyBundles) !=
+								OscBundleInvokeMode.PosponeEarlyBundles)
+							{
+								return OscPacketInvokeAction.Pospone;
+							}
+							else
+							{
+								return OscPacketInvokeAction.DontInvoke;
+							}
+						}
+					}
+
+					if ((BundleInvokeMode & OscBundleInvokeMode.InvokeLateBundlesImmediately) !=
+						OscBundleInvokeMode.InvokeLateBundlesImmediately)
+					{
+						if (delay < 0 && provider.IsWithinTimeFrame(bundle.Timestamp) == false)
+						{
+							return OscPacketInvokeAction.DontInvoke;
+						}
+					}
+
+					if ((BundleInvokeMode & OscBundleInvokeMode.InvokeOnTimeBundles) !=
+						OscBundleInvokeMode.InvokeOnTimeBundles)
+					{
+						if (provider.IsWithinTimeFrame(bundle.Timestamp) == true)
+						{
+							return OscPacketInvokeAction.DontInvoke;
+						}
+					}
+				}
+
+				return OscPacketInvokeAction.Invoke;
+			}
+			else
+			{
+				return OscPacketInvokeAction.DontInvoke;
+			}
+		}
+
+		#endregion 
+
 		#region Invoke
 
 		/// <summary>
@@ -305,58 +396,10 @@ namespace Rug.Osc
 		/// <summary>
 		/// Invoke all the messages within a bundle
 		/// </summary>
-		/// <remarks>
-		/// TODO WRITE NOTES ON TimeProvider and BundleInvokeMode
-		/// </remarks>
 		/// <param name="bundle">an osc bundle of messages</param>
-		/// <returns>true if the bundle passed through the timing filter and there was a listener to invoke otherwise false</returns>
+		/// <returns>true if there was a listener to invoke for any message in the otherwise false</returns>
 		public bool Invoke(OscBundle bundle)
-		{
-			if (BundleInvokeMode == OscBundleInvokeMode.NeverInvoke)
-			{
-				return false; 
-			}
-			else if (BundleInvokeMode != OscBundleInvokeMode.InvokeAllBundlesImmediately)
-			{
-				double delay;
-
-				IOscTimeProvider provider = TimeProvider;
-
-				if (TimeProvider == null)
-				{
-					provider = DefaultTimeProvider.Instance; 
-				}
-
-				delay = provider.DifferenceInSeconds(bundle.Timestamp);
-
-				if ((BundleInvokeMode & OscBundleInvokeMode.InvokeEarlyBundlesImmediately) != 
-					OscBundleInvokeMode.InvokeEarlyBundlesImmediately)
-				{
-					if (delay > 0 && provider.IsWithinTimeFrame(bundle.Timestamp) == false)
-					{
-						return false; 
-					}
-				}
-
-				if ((BundleInvokeMode & OscBundleInvokeMode.InvokeLateBundlesImmediately) !=
-					OscBundleInvokeMode.InvokeLateBundlesImmediately)
-				{
-					if (delay < 0 && provider.IsWithinTimeFrame(bundle.Timestamp) == false)
-					{
-						return false;
-					}
-				}
-
-				if ((BundleInvokeMode & OscBundleInvokeMode.InvokeOnTimeBundles) != 
-					OscBundleInvokeMode.InvokeOnTimeBundles)
-				{
-					if (provider.IsWithinTimeFrame(bundle.Timestamp) == true)
-					{
-						return false;
-					}
-				}
-			}
-
+		{			
 			bool result = false;
 
 			foreach (OscMessage message in bundle)
