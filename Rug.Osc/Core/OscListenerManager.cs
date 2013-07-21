@@ -98,21 +98,48 @@ namespace Rug.Osc
 
 	#endregion
 
-	[Flags]
+	#region Osc Bundle Invoke Mode
+
+	/// <summary>
+	/// Flags to define when bundles are to be invoked 
+	/// </summary>
+	[Flags]	
 	public enum OscBundleInvokeMode : int 
 	{
+		/// <summary>
+		/// Bundles should never be invoked
+		/// </summary>
 		NeverInvoke = 0,
 
+		/// <summary>
+		/// Invoke bundles that arrived within the current frame 
+		/// </summary>
 		InvokeOnTimeBundles = 1, 
 
+		/// <summary>
+		/// Invoke bundles that arrive late immediately
+		/// </summary>
 		InvokeLateBundlesImmediately = 2,
 
+		/// <summary>
+		/// Pospone the ivokation of bundles that arrive early 
+		/// </summary>
 		PosponeEarlyBundles = 4,
 
+		/// <summary>
+		/// Invoke bundles that arrive early immediately
+		/// </summary>
 		InvokeEarlyBundlesImmediately = 12,
 		
+		/// <summary>
+		/// Invoke all bundles immediately. Equivilent of InvokeOnTimeBundles | InvokeLateBundlesImmediately | InvokeEarlyBundlesImmediately
+		/// </summary>
 		InvokeAllBundlesImmediately = InvokeOnTimeBundles | InvokeLateBundlesImmediately | InvokeEarlyBundlesImmediately,
 	}
+
+	#endregion
+
+	#region Osc Packet Invoke Action
 
 	public enum OscPacketInvokeAction
 	{
@@ -121,6 +148,8 @@ namespace Rug.Osc
 		HasError, 
 		Pospone, 
 	}
+
+	#endregion
 
 	#region Osc Listener Manager
 
