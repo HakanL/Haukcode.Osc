@@ -80,7 +80,29 @@ namespace Rug.Osc
 		/// <param name="messages">messages to bundle</param>
 		public OscBundle(OscTimeTag timestamp, params OscMessage[] messages)
 		{
-			m_Timestamp = timestamp; 
+			m_Timestamp = timestamp;
+			m_Messages = messages;
+		}
+
+		/// <summary>
+		/// Create a bundle of messages
+		/// </summary>
+		/// <param name="timestamp">timestamp</param>
+		/// <param name="messages">messages to bundle</param>
+		public OscBundle(ulong timestamp, params OscMessage[] messages)
+		{
+			m_Timestamp = new OscTimeTag(timestamp); 
+			m_Messages = messages;
+		}
+
+		/// <summary>
+		/// Create a bundle of messages
+		/// </summary>
+		/// <param name="timestamp">timestamp</param>
+		/// <param name="messages">messages to bundle</param>
+		public OscBundle(DateTime timestamp, params OscMessage[] messages)
+		{
+			m_Timestamp = OscTimeTag.FromDataTime(timestamp);
 			m_Messages = messages;
 		}
 
@@ -300,7 +322,6 @@ namespace Rug.Osc
 
 		#endregion
 
-
 		#region Parse
 
 		/// <summary>
@@ -400,13 +421,27 @@ namespace Rug.Osc
 
 			OscTimeTag timeStamp = OscTimeTag.Parse(timeStampStr.Trim(), provider);
 
-			start = end + 1; 
+			start = end + 1;
 
-			start = str.IndexOf('{', start);
+			end = str.IndexOf('{', start);
 
-			List<OscMessage> messages = new List<OscMessage>(); 
+			if (end < 0)
+			{
+				end = str.Length; 			
+			}
 
-			while (start > 0)
+			string gap = str.Substring(start, end - start);
+
+			if (Helper.IsNullOrWhiteSpace(gap) == false)
+			{
+				throw new Exception(String.Format(Strings.Bundle_MissingOpenBracket, gap));
+			}
+
+			start = end; 
+
+			List<OscMessage> messages = new List<OscMessage>();
+
+			while (start > 0 && start < str.Length)
 			{
 				end = ScanForward_Object(str, start);
 
@@ -414,7 +449,21 @@ namespace Rug.Osc
 
 				start = end + 1; 
 
-				start = str.IndexOf('{', start);
+				end = str.IndexOf('{', start);
+
+				if (end < 0)
+				{
+					end = str.Length;
+				}
+
+				gap = str.Substring(start, end - start).Trim();
+
+				if (gap.Equals(",") == false && Helper.IsNullOrWhiteSpace(gap) == false)
+				{
+					throw new Exception(String.Format(Strings.Bundle_MissingOpenBracket, gap));
+				}
+
+				start = end; 
 			}
 
 			return new OscBundle(timeStamp, messages.ToArray()); 
