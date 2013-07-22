@@ -135,6 +135,9 @@
   <data name="Bundle_MissingIdent" xml:space="preserve">
     <value>Missing bundle ident</value>
   </data>
+  <data name="Bundle_MissingOpenBracket" xml:space="preserve">
+    <value>Missing '{{'. Found '{0}'</value>
+  </data>
   <data name="Container_IsValidContainerAddress" xml:space="preserve">
     <value>Invalid container address '{0}'</value>
   </data>

@@ -174,5 +174,39 @@ namespace Rug.Osc.Tests
 			Assert.Inconclusive("Verify the correctness of this test method.");
 		} 
 		*/
+
+		/// <summary>
+		///A test for TryParse
+		///</summary>
+		[TestMethod()]
+		public void TryParseTest_Good()
+		{
+			bool expected = true;
+			foreach (string str in UnitTestHelper.Bundles_Good)
+			{
+				OscBundle bundle = null; 		
+
+				bool actual;
+				actual = OscBundle.TryParse(str, out bundle);
+				Assert.AreEqual(expected, actual, "While parsing good bundle '{0}'", str);
+			}
+		}
+
+		/// <summary>
+		///A test for TryParse
+		///</summary>
+		[TestMethod()]
+		public void TryParseTest_Bad()
+		{
+			bool expected = false;
+			foreach (string str in UnitTestHelper.Bundles_Bad)
+			{
+				OscBundle bundle = null; 		
+
+				bool actual;
+				actual = OscBundle.TryParse(str, out bundle);
+				Assert.AreEqual(expected, actual, "While parsing bad bundle '{0}'", str);
+			}
+		}
 	}
 }

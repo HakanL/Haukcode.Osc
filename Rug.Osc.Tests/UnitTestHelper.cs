@@ -628,7 +628,33 @@ namespace Rug.Osc.Tests
 
 		#endregion
 
-		#endregion		
+		#endregion	
+	
+		#region Bundle 
+
+		internal static OscBundle Bundle_Int()
+		{	
+			return new OscBundle(OscTimeTag.BaseDate.Add(new TimeSpan(0, 0, 0, 34, 3532)), new OscMessage("/test", 1, 2, 3));
+		}
+
+		internal static string BundleString_Int = "#bundle, 00:00:34.3532, { /test, 1, 2, 3 }";
+
+		internal static string[] Bundles_Good = new string[] { 
+			"#bundle, 00:00:34.3532Z, { /test, 1, 2, 3 }", 
+			"#bundle, 00:00:34.3532Z, { /test, 1, 2, 3 }, { /test, 1, 2, 3 }",
+			"#bundle,00:00:34.3532Z,{/test,1,2,3},{/test,1,2,3}"
+		};
+
+		internal static string[] Bundles_Bad = new string[] { 
+			", 00:00:34.3532Z, { /test, 1, 2, 3 }", 
+			"#bundle 00:00:34.3532Z, { /test, 1, 2, 3 }, { /test, 1, 2, 3 }",
+			"#bundle, 00:00:34.3532Z { /test, 1, 2, 3 }, { /test, 1, 2, 3 }",
+			"#bundle, 00:00:34.3532Z,  /test, 1, 2, 3 }, { /test, 1, 2, 3 }",
+			"#bundle, 00:00:34.3532Z, { /test, 1, 2, 3 , { /test, 1, 2, 3 }",
+			"#bundle, 00:00:34.3532Z, { /test, 1, 2, 3 },  /test, 1, 2, 3 }",
+		}; 
+
+		#endregion 
 
 		#region Are Equal
 

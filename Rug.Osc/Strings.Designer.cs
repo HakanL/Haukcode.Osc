@@ -115,6 +115,15 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing &apos;{{&apos;. Found &apos;{0}&apos;.
+        /// </summary>
+        internal static string Bundle_MissingOpenBracket {
+            get {
+                return ResourceManager.GetString("Bundle_MissingOpenBracket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid container address &apos;{0}&apos;.
         /// </summary>
         internal static string Container_IsValidContainerAddress {
