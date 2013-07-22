@@ -1,7 +1,3 @@
-﻿X Implement Non-literal to Non-literal pattern matching (mostly)
-
-X Bundles
-
-X Osc file stream
-
-MessageBuilder? 
+﻿MessageBuilder? 
+Better (more complete) OscMidiMessage 
+Finish IOscTimeProvider mechanism
