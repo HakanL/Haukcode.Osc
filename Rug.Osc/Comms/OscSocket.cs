@@ -66,7 +66,7 @@ namespace Rug.Osc
 	#endregion
 
 	/// <summary>
-	/// Base class for all osc communication
+	/// Base class for all osc UDP communication
 	/// </summary>
 	public abstract class OscSocket : IDisposable
     {

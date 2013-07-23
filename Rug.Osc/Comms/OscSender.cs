@@ -89,7 +89,7 @@ namespace Rug.Osc
         #region Constructors
 
         /// <summary>
-        /// Create a new Osc sender
+        /// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
         /// </summary>
         /// <param name="address">the ip address to send to</param>
         /// <param name="port">the port to send to</param>
@@ -99,7 +99,7 @@ namespace Rug.Osc
         }
 
         /// <summary>
-        /// Create a new Osc sender
+		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
         /// </summary>
         /// <param name="address">the ip address to send to</param>
         /// <param name="port">the port to send to</param>

@@ -25,6 +25,11 @@ namespace Rug.Osc
 			return "bang";
 		}
 
+		/// <summary>
+		/// Matches the string against "Impulse", "Bang", "Infinitum", "Inf" the comparison is StringComparison.InvariantCultureIgnoreCase
+		/// </summary>
+		/// <param name="str">string to check</param>
+		/// <returns>true if the string matches any of the recognised impulse strings else false</returns>
 		public static bool IsImpulse(string str)
 		{
 			bool isTrue = false;

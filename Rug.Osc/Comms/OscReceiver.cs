@@ -89,7 +89,7 @@ namespace Rug.Osc
         #region Constructors
 
         /// <summary>
-        /// Create a new Osc receiver
+		/// Create a new Osc UDP receiver. Note the underlying soket will not be connected untill Connect is called
         /// </summary>
         /// <param name="address">the local ip address to listen to</param>
         /// <param name="port">the port to listen on</param>
@@ -103,7 +103,7 @@ namespace Rug.Osc
         }
 
         /// <summary>
-        /// Create a new Osc receiver
+		/// Create a new Osc UDP receiver. Note the underlying soket will not be connected untill Connect is called
         /// </summary>
         /// <param name="address">the local ip address to listen to</param>
         /// <param name="port">the port to listen on</param>
@@ -113,7 +113,7 @@ namespace Rug.Osc
         }
 
         /// <summary>
-		/// Create a new Osc receiver
+		/// Create a new Osc UDP receiver. Note the underlying soket will not be connected untill Connect is called
         /// </summary>
         /// <param name="port">the port to listen on</param>
         /// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
@@ -126,7 +126,7 @@ namespace Rug.Osc
         }
 
         /// <summary>
-		/// Create a new Osc receiver
+		/// Create a new Osc UDP receiver. Note the underlying soket will not be connected untill Connect is called
         /// </summary>
         /// <param name="port">the port to listen on</param>
         public OscReceiver(int port)
