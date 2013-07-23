@@ -1580,6 +1580,46 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Blob.Length);
 		}
 
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Blob_Array()
+		{
+			string str = UnitTestHelper.MessageString_Blob_Array;
+			OscMessage expected = UnitTestHelper.Message_Blob();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Blob_Hex()
+		{
+			string str = UnitTestHelper.MessageString_Blob_Hex;
+			OscMessage expected = UnitTestHelper.Message_Blob();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+		/// <summary>
+		///A test for Parse
+		///</summary>
+		[TestMethod()]
+		public void ParseTest_Blob_Base64()
+		{
+			string str = UnitTestHelper.MessageString_Blob_Base64;
+			OscMessage expected = UnitTestHelper.Message_Blob();
+			OscMessage actual;
+			actual = OscMessage.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+
 		#endregion
 
 		#endregion

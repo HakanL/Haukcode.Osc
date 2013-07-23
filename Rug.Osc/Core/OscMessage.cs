@@ -1312,7 +1312,7 @@ namespace Rug.Osc
 				}
 				else if (obj is byte[])
 				{
-					sb.Append("BYTES");
+					sb.Append("{ Blob: " + Helper.ToStringBlob(obj as byte[]) + " }");
 				}
 				else
 				{
@@ -1708,11 +1708,19 @@ namespace Rug.Osc
 			switch (nameLower)
 			{
 				case "midi":
+				case "m":
 					return OscMidiMessage.Parse(strTrimmed.Substring(colon + 1).Trim(), provider);
 				case "time":
+				case "t":
 					return OscTimeTag.Parse(strTrimmed.Substring(colon + 1).Trim(), provider);
 				case "color":
+				case "c":
 					return Helper.ParseColor(strTrimmed.Substring(colon + 1).Trim(), provider);
+				case "blob":
+				case "b": 
+				case "data":
+				case "d": 
+					return Helper.ParseBlob(strTrimmed.Substring(colon + 1).Trim(), provider);
 				default:
 					throw new Exception(String.Format(Strings.Parser_UnknownObjectType, name)); 
 			}

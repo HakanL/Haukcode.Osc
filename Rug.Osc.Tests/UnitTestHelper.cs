@@ -405,6 +405,11 @@ namespace Rug.Osc.Tests
 			return new OscMessage("/test", new byte[] { 3, 2, 1 });
 		}
 
+		internal static string MessageString_Blob_Array = "/test, { blob: 3, 2, 1 }";
+		internal static string MessageString_Blob_Hex = "/test, { blob: 0x030201 }";
+		internal static string MessageString_Blob_Base64 = "/test, { blob: 64xAwIB }";
+		
+
 		#endregion
 
 		#region Message Array Arg (Ints)
