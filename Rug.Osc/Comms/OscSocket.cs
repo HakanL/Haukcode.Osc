@@ -81,9 +81,14 @@ namespace Rug.Osc
 
         private Socket m_Socket; 
         private int m_Port;
-        private IPAddress m_Address;        
-        private OscSocketState m_State = OscSocketState.NotConnected;
-        private IPEndPoint m_EndPoint; 
+
+        private IPAddress m_RemoteAddress;
+		private IPEndPoint m_RemoteEndPoint; 
+
+		private IPAddress m_LocalAddress;
+		private IPEndPoint m_LocalEndPoint;
+
+		private OscSocketState m_State = OscSocketState.NotConnected;
         private System.Net.Sockets.SocketFlags m_SocketFlags;
 
         #endregion
@@ -95,15 +100,25 @@ namespace Rug.Osc
         /// </summary>
         public int Port { get { return m_Port; } }
 
-        /// <summary>
-        /// IP address
-        /// </summary>
-        public IPAddress Address { get { return m_Address; } }
+		/// <summary>
+		/// Local IP address
+		/// </summary>
+		public IPAddress LocalAddress { get { return m_LocalAddress; } }
+
+		/// <summary>
+		/// Local Ip end point 
+		/// </summary>
+		public IPEndPoint LocalEndPoint { get { return m_LocalEndPoint; } } 
 
         /// <summary>
-        /// Ip end point 
+        /// Remote IP address
         /// </summary>
-        public IPEndPoint EndPoint { get { return m_EndPoint; } } 
+        public IPAddress RemoteAddress { get { return m_RemoteAddress; } }
+
+        /// <summary>
+		/// Remote Ip end point 
+        /// </summary>
+        public IPEndPoint RemoteEndPoint { get { return m_RemoteEndPoint; } } 
 
         /// <summary>
         /// The current state of the socket
@@ -128,18 +143,45 @@ namespace Rug.Osc
         #endregion
 
         #region Constructors
+		
+		/// <summary>
+		/// Create a new socket for an address and port
+		/// </summary>
+		/// <param name="local">The ip address of the local end point</param>
+		/// <param name="remote">The ip address of the remote end point</param>
+		/// <param name="port">the port</param>
+		internal OscSocket(IPAddress local, IPAddress remote, int port)
+		{
+			m_LocalAddress = local;
+			m_RemoteAddress = remote;
+			m_Port = port;
+
+			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
+			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port);
+		}
 
         /// <summary>
         /// Create a new socket for an address and port
         /// </summary>
         /// <param name="address">The ip address of the local or remote end point</param>
-        /// <param name="port"></param>
+        /// <param name="port">the port</param>
         internal OscSocket(IPAddress address, int port)
         {
-            m_Address = address;
             m_Port = port;
 
-            m_EndPoint = new IPEndPoint(Address, Port);
+			if (this.OscSocketType == Osc.OscSocketType.Send)
+			{
+				m_LocalAddress = IPAddress.Any;
+				m_RemoteAddress = address;
+			}
+			else
+			{
+				m_LocalAddress = address;
+				m_RemoteAddress = IPAddress.Any;
+			}
+
+			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port); 
+			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
         }
 
         /// <summary>
@@ -149,9 +191,11 @@ namespace Rug.Osc
         internal OscSocket(int port)
         {
             m_Port = port;
-            m_Address = IPAddress.Any; 
+			m_LocalAddress = IPAddress.Any;
+			m_RemoteAddress = IPAddress.Any;
 
-            m_EndPoint = new IPEndPoint(Address, Port);
+			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port);
+			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
         }
 
         #endregion
@@ -178,18 +222,23 @@ namespace Rug.Osc
 
                 m_SocketFlags = System.Net.Sockets.SocketFlags.None;
 
-                if (Address == IPAddress.Broadcast)
+                if (RemoteAddress == IPAddress.Broadcast)
                 {
                     m_Socket.EnableBroadcast = true;
                 }
 
                 if (OscSocketType == Osc.OscSocketType.Receive)
                 {
-                    m_Socket.Bind(m_EndPoint);
+                    m_Socket.Bind(m_LocalEndPoint);
                 }
                 else
                 {
-                    m_Socket.Connect(m_EndPoint);
+					if (m_LocalAddress != IPAddress.Any)
+					{
+						m_Socket.Bind(m_LocalEndPoint);
+					}
+
+                    m_Socket.Connect(m_RemoteEndPoint);
                 }
 
                 m_State = OscSocketState.Connected;

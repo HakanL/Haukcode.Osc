@@ -98,6 +98,17 @@ namespace Rug.Osc
         {
         }
 
+		/// <summary>
+		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
+		/// </summary>
+		/// <param name="local">the ip address to send from</param>
+		/// <param name="remote">the ip address to send to</param>
+		/// <param name="port">the port to send to</param>
+		public OscSender(IPAddress local, IPAddress remote, int port)
+			: this(local, remote, port, DefaultMessageBufferSize, DefaultPacketSize)
+		{
+		}
+
         /// <summary>
 		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
         /// </summary>
@@ -106,11 +117,24 @@ namespace Rug.Osc
         /// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
         /// <param name="maxPacketSize">the maximum packet size of any message</param>
         public OscSender(IPAddress address, int port, int messageBufferSize, int maxPacketSize)
-            : base(address, port)
+            : this(IPAddress.Any, address, port, messageBufferSize, maxPacketSize)
         {
-            m_Bytes = new byte[maxPacketSize];
-            m_SendQueue = new OscPacket[messageBufferSize];
         }
+
+		/// <summary>
+		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
+		/// </summary>
+		/// <param name="local">the ip address to send from</param>
+		/// <param name="remote">the ip address to send to</param>
+		/// <param name="port">the port to send to</param>
+		/// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+		/// <param name="maxPacketSize">the maximum packet size of any message</param>
+		public OscSender(IPAddress local, IPAddress remote, int port, int messageBufferSize, int maxPacketSize)
+			: base(local, remote, port)
+		{
+			m_Bytes = new byte[maxPacketSize];
+			m_SendQueue = new OscPacket[messageBufferSize];
+		}
 
         #endregion 
 
