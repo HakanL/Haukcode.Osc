@@ -160,6 +160,12 @@ namespace Rug.Osc
 
         #region Constructors
 
+		/// <summary>
+		/// Construct a osc message
+		/// </summary>
+		/// <param name="address">An osc address that is the destination for this message</param>
+		/// <param name="args">Object array of OSC argument values. The type tag string will be created automatically according to each argument type</param>
+		/// <example>OscMessage message = new OscMessage("/test/test", 1, 2, 3);</example>
         public OscMessage(string address, params object[] args)
         {
             m_Address = address; 
@@ -168,6 +174,11 @@ namespace Rug.Osc
 			if (Helper.IsNullOrWhiteSpace(m_Address) == true)
 			{
 				throw new ArgumentNullException("address"); 
+			}
+
+			if (OscAddress.IsValidAddressPattern(address) == false)
+			{
+				throw new ArgumentException(String.Format(Strings.OscAddress_NotAValidOscAddress, address), "address");
 			}
 
 			if (args == null)
