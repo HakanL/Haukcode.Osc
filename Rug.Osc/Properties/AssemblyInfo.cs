@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Rug.Osc")]
-[assembly: AssemblyDescription("Simple Osc implementaton")]
+[assembly: AssemblyDescription("Rug.Osc (https://bitbucket.org/rugcode/rug.osc/). Simple, complete, open source OSC implementation for .NET and Mono.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rugland Digital Systems")]
 [assembly: AssemblyProduct("Rug.Osc")]
