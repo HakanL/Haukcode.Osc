@@ -22,7 +22,7 @@ namespace Rug.Osc
 	{
 		#region Private Static Members
 
-		private static byte[] m_Padding = new byte[] { 0, 0, 0, 0 };
+		private static readonly byte[] m_Padding = new byte[] { 0, 0, 0, 0 };
 
 		#endregion
 
@@ -220,6 +220,73 @@ namespace Rug.Osc
 
 		#endregion
 
+		#region Blob
+
+		public static byte[] ParseBlob(string str, IFormatProvider provider)
+		{
+			if (Helper.IsNullOrWhiteSpace(str) == true)
+			{
+				return new byte[0];
+			}
+
+			string trimmed = str.Trim();
+
+			if (trimmed.StartsWith("64x") == true)
+			{
+				return System.Convert.FromBase64String(trimmed.Substring(3));
+			}
+			else if (str.StartsWith("0x") == true)
+			{
+				trimmed = trimmed.Substring(2);
+
+				if (trimmed.Length % 2 != 0)
+				{
+					// this is an error 
+					throw new Exception();
+				}
+
+				int length = trimmed.Length / 2;
+
+				byte[] bytes = new byte[length];
+
+				for (int i = 0; i < bytes.Length; i++)
+				{
+					bytes[i] = byte.Parse(trimmed.Substring(i * 2, 2), NumberStyles.HexNumber, provider);
+				}
+
+				return bytes;
+			}
+			else
+			{
+				string[] parts = str.Split(',');
+
+				byte[] bytes = new byte[parts.Length];
+
+				for (int i = 0; i < bytes.Length; i++)
+				{
+					bytes[i] = byte.Parse(parts[i], NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite, provider);
+				}
+
+				return bytes;
+			}
+		}
+
+		public static string ToStringBlob(byte[] bytes)
+		{
+			StringBuilder sb = new StringBuilder((bytes.Length * 2) + 2);
+
+			sb.Append("0x");
+
+			foreach (byte b in bytes)
+			{
+				sb.Append(b.ToString("X2"));
+			}
+
+			return sb.ToString();
+		}
+
+		#endregion
+
 		#region Color
 
 		internal static void Write(BinaryWriter writer, Color value)
@@ -353,68 +420,5 @@ namespace Rug.Osc
 		}
 
 		#endregion	
-	
-		public static byte[] ParseBlob(string str, IFormatProvider provider)
-		{
-			if (Helper.IsNullOrWhiteSpace(str) == true)
-			{
-				return new byte[0]; 
-			}
-			
-			string trimmed = str.Trim();
-
-			if (trimmed.StartsWith("64x") == true)
-			{
-				return System.Convert.FromBase64String(trimmed.Substring(3)); 
-			}
-			else if (str.StartsWith("0x") == true)
-			{			
-				trimmed = trimmed.Substring(2); 
-
-				if (trimmed.Length % 2 != 0)
-				{
-					// this is an error 
-					throw new Exception(); 
-				}
-
-				int length = trimmed.Length / 2;
-
-				byte[] bytes = new byte[length];
-
-				for (int i = 0; i < bytes.Length; i++)
-				{
-					bytes[i] = byte.Parse(trimmed.Substring(i * 2, 2), NumberStyles.HexNumber, provider);
-				}
-
-				return bytes;
-			}
-			else 
-			{
-				string[] parts = str.Split(',');
-
-				byte[] bytes = new byte[parts.Length];
-
-				for (int i = 0; i < bytes.Length; i++)
-				{
-					bytes[i] = byte.Parse(parts[i], NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite, provider);
-				}
-
-				return bytes; 
-			}						
-		}
-
-		public static string ToStringBlob(byte[] bytes)
-		{
-			StringBuilder sb = new StringBuilder((bytes.Length * 2) + 2);
-
-			sb.Append("0x");
-
-			foreach (byte b in bytes)
-			{
-				sb.Append(b.ToString("X2")); 
-			}
-
-			return sb.ToString(); 
-		}
 	}
 }

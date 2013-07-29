@@ -18,7 +18,7 @@ namespace Rug.Osc
 	/// <summary>
 	/// Osc udp receiver
 	/// </summary>
-    public class OscReceiver : OscSocket
+    public sealed class OscReceiver : OscSocket
     {
 		/// <summary>
 		/// The default number of messages that can be queued for processing after being received before messages start to get dropped
@@ -27,12 +27,12 @@ namespace Rug.Osc
 
         #region Private Members
 
-        private object m_Lock = new object();
-        private AutoResetEvent m_MessageReceived = new AutoResetEvent(false);
+		private readonly object m_Lock = new object();
+		private readonly AutoResetEvent m_MessageReceived = new AutoResetEvent(false);
 
-        private byte[] m_Bytes;
+		private readonly byte[] m_Bytes;
 
-		private OscPacket[] m_ReceiveQueue;
+		private readonly OscPacket[] m_ReceiveQueue;
         private int m_WriteIndex = 0;
         private int m_ReadIndex = 0;
         private int m_Count = 0;

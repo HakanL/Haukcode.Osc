@@ -77,19 +77,19 @@ namespace Rug.Osc
 
         #region Private Members
 
-        private object m_Lock = new object(); 
+		private readonly object m_Lock = new object(); 
 
-        private Socket m_Socket; 
-        private int m_Port;
+        private Socket m_Socket;
+		private readonly int m_Port;
 
-        private IPAddress m_RemoteAddress;
-		private IPEndPoint m_RemoteEndPoint; 
+		private readonly IPAddress m_RemoteAddress;
+		private readonly IPEndPoint m_RemoteEndPoint;
 
-		private IPAddress m_LocalAddress;
-		private IPEndPoint m_LocalEndPoint;
+		private readonly IPAddress m_LocalAddress;
+		private readonly IPEndPoint m_LocalEndPoint;
 
 		private OscSocketState m_State = OscSocketState.NotConnected;
-        private System.Net.Sockets.SocketFlags m_SocketFlags;
+		private readonly System.Net.Sockets.SocketFlags m_SocketFlags;
 
         #endregion
 
@@ -158,6 +158,8 @@ namespace Rug.Osc
 
 			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
 			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port);
+
+			m_SocketFlags = System.Net.Sockets.SocketFlags.None;
 		}
 
         /// <summary>
@@ -182,6 +184,8 @@ namespace Rug.Osc
 
 			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port); 
 			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
+
+			m_SocketFlags = System.Net.Sockets.SocketFlags.None;
         }
 
         /// <summary>
@@ -196,6 +200,8 @@ namespace Rug.Osc
 
 			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port);
 			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
+
+			m_SocketFlags = System.Net.Sockets.SocketFlags.None;
         }
 
         #endregion
@@ -218,9 +224,7 @@ namespace Rug.Osc
                 // create the instance of the socket
                 m_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-                m_Socket.Blocking = false;
-
-                m_SocketFlags = System.Net.Sockets.SocketFlags.None;
+                m_Socket.Blocking = false;                
 
                 if (RemoteAddress == IPAddress.Broadcast)
                 {

@@ -27,9 +27,9 @@ namespace Rug.Osc
 	/// </remarks>
 	public static class OscAddressRegexCache
 	{
-		private static object m_Lock = new object(); 
+		private static readonly object m_Lock = new object();
 
-		private static Dictionary<string, Regex> m_Lookup = new Dictionary<string,Regex>(); 
+		private static readonly Dictionary<string, Regex> m_Lookup = new Dictionary<string, Regex>(); 
 
 		/// <summary>
 		/// Enable regex caching for the entire program (Enabled by default)

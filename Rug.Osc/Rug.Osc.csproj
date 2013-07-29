@@ -40,6 +40,13 @@
   <ItemGroup>
     <Compile Include="Comms\OscReader.cs" />
     <Compile Include="Comms\OscWriter.cs" />
+    <Compile Include="Core\OscAddressPart.cs" />
+    <Compile Include="Core\OscAddressPartType.cs" />
+    <Compile Include="Core\OscAddressType.cs" />
+    <Compile Include="Core\OscBundleInvokeMode.cs" />
+    <Compile Include="Core\OscFilter.cs" />
+    <Compile Include="Core\OscListener.cs" />
+    <Compile Include="Core\OscPacketInvokeAction.cs" />
     <Compile Include="DataTypes\OscNull.cs" />
     <Compile Include="Core\DefaultTimeProvider.cs" />
     <Compile Include="EnumHelper.cs" />

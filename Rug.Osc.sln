@@ -187,4 +187,7 @@ Global
 		{2136CFE7-D8B3-4F44-8E3A-09D16D9DE573} = {510D8309-C9ED-4967-AAD6-0ED85C8FFB0E}
 		{EDAFCF33-7638-446A-BD26-1AD972425562} = {D667575C-2F68-44D0-9063-3401A660CE8C}
 	EndGlobalSection
+	GlobalSection(NDepend) = preSolution
+		Project = ".\Rug.Osc.ndproj"
+	EndGlobalSection
 EndGlobal

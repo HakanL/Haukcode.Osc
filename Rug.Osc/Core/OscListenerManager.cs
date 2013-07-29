@@ -16,161 +16,24 @@ namespace Rug.Osc
 {
 	public delegate void OscMessageEvent(OscMessage message);
 
-	#region Osc Container
-
-	internal class OscListener
-	{
-		/// <summary>
-		/// The literal address of the event
-		/// </summary>
-		public readonly string Address;
-
-		public event OscMessageEvent Event; 
-
-		public bool IsNull { get { return Event == null; } }
-
-		internal OscListener(string address)
-		{
-			Address = address; 
-		}
-
-		/// <summary>
-		/// Invoke the event
-		/// </summary>
-		/// <param name="message">message that caused the event</param>
-		public void Invoke(OscMessage message) 
-		{
-			if (Event != null)
-			{
-				Event(message);
-			}
-		}
-
-		/// <summary>
-		/// Nullify the event
-		/// </summary>
-		public void Clear() 
-		{
-			Event = null; 
-		} 
-	}
-
-	#endregion
-
-	#region Osc Container
-
-	internal class OscFilter
-	{
-		/// <summary>
-		/// The literal address of the event
-		/// </summary>
-		public readonly OscAddress Address;
-
-		public event OscMessageEvent Event;
-
-		public bool IsNull { get { return Event == null; } }
-
-		internal OscFilter(OscAddress address)
-		{
-			Address = address;
-		}
-
-		/// <summary>
-		/// Invoke the event
-		/// </summary>
-		/// <param name="message">message that caused the event</param>
-		public void Invoke(OscMessage message)
-		{
-			if (Event != null)
-			{
-				Event(message);
-			}
-		}
-
-		/// <summary>
-		/// Nullify the event
-		/// </summary>
-		public void Clear()
-		{
-			Event = null;
-		}
-	}
-
-	#endregion
-
-	#region Osc Bundle Invoke Mode
-
-	/// <summary>
-	/// Flags to define when bundles are to be invoked 
-	/// </summary>
-	[Flags]	
-	public enum OscBundleInvokeMode : int 
-	{
-		/// <summary>
-		/// Bundles should never be invoked
-		/// </summary>
-		NeverInvoke = 0,
-
-		/// <summary>
-		/// Invoke bundles that arrived within the current frame 
-		/// </summary>
-		InvokeOnTimeBundles = 1, 
-
-		/// <summary>
-		/// Invoke bundles that arrive late immediately
-		/// </summary>
-		InvokeLateBundlesImmediately = 2,
-
-		/// <summary>
-		/// Pospone the ivokation of bundles that arrive early 
-		/// </summary>
-		PosponeEarlyBundles = 4,
-
-		/// <summary>
-		/// Invoke bundles that arrive early immediately
-		/// </summary>
-		InvokeEarlyBundlesImmediately = 12,
-		
-		/// <summary>
-		/// Invoke all bundles immediately. Equivilent of InvokeOnTimeBundles | InvokeLateBundlesImmediately | InvokeEarlyBundlesImmediately
-		/// </summary>
-		InvokeAllBundlesImmediately = InvokeOnTimeBundles | InvokeLateBundlesImmediately | InvokeEarlyBundlesImmediately,
-	}
-
-	#endregion
-
-	#region Osc Packet Invoke Action
-
-	public enum OscPacketInvokeAction
-	{
-		Invoke, 
-		DontInvoke, 
-		HasError, 
-		Pospone, 
-	}
-
-	#endregion
-
-	#region Osc Listener Manager
-
 	/// <summary>
 	/// Manages osc address event listening
 	/// </summary>
-	public class OscListenerManager : IDisposable
+	public sealed class OscListenerManager : IDisposable
 	{
-		private object m_Lock = new object(); 
+		private readonly object m_Lock = new object(); 
 
 		#region Private Members
 
 		/// <summary>
 		/// Lookup of all literal addresses to listeners 
 		/// </summary>
-		private Dictionary<string, OscListener> m_LiteralAddresses = new Dictionary<string, OscListener>();
+		private readonly Dictionary<string, OscListener> m_LiteralAddresses = new Dictionary<string, OscListener>();
 
 		/// <summary>
 		/// Lookup of all pattern address to filters
 		/// </summary>
-		private Dictionary<OscAddress, OscFilter> m_PatternAddresses = new Dictionary<OscAddress, OscFilter>();
+		private readonly Dictionary<OscAddress, OscFilter> m_PatternAddresses = new Dictionary<OscAddress, OscFilter>();
 
 		#endregion
 
@@ -524,11 +387,16 @@ namespace Rug.Osc
 				}
 
 				m_LiteralAddresses.Clear();
+
+				foreach (KeyValuePair<OscAddress, OscFilter> value in m_PatternAddresses)
+				{
+					value.Value.Clear();
+				}
+
+				m_PatternAddresses.Clear();
 			}
 		}
 
 		#endregion
 	}
-
-	#endregion
 }

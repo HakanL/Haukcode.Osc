@@ -24,7 +24,7 @@ namespace Rug.Osc
 	{
 		#region Private Static Members
 
-		private static char[] m_EnumSeperators = new char[] { ',', ';', '+', '|', ' ' };
+		private static readonly char[] m_EnumSeperators = new char[] { ',', ';', '+', '|', ' ' };
 
 		#endregion
 

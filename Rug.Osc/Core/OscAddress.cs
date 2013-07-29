@@ -16,322 +16,10 @@ using System.Text.RegularExpressions;
 
 namespace Rug.Osc
 {
-	#region Osc Address Type
-
-	internal enum OscAddressType 
-	{
-		Literal, 
-		Pattern 
-	}
-
-	#endregion
-
-	#region Osc Address Part Type
-
-	/// <summary>
-	/// Type of address part
-	/// </summary>
-	public enum OscAddressPartType
-	{
-		/// <summary>
-		/// Address seperator char i.e. '/'  
-		/// </summary>
-		AddressSeparator,
-
-		/// <summary>
-		/// Address wildcared i.e. '//'
-		/// </summary>
-		AddressWildcard,
-
-		/// <summary>
-		/// Any string literal i.e [^\s#\*,/\?\[\]\{}]+ 
-		/// </summary>
-		Literal,
-
-		/// <summary>
-		/// Either single char or anylength wildcard i.e '?' or '*'
-		/// </summary>
-		Wildcard,
-
-		/// <summary>
-		/// Char span e.g. [a-z]+
-		/// </summary>
-		CharSpan,
-
-		/// <summary>
-		/// List of literal matches
-		/// </summary>
-		List,
-
-		/// <summary>
-		/// List of posible char matches e.g. [abcdefg]+
-		/// </summary>
-		CharList,
-	}
-
-	#endregion 
-
-	#region Osc Address Part
-
-	/// <summary>
-	/// Encompasses a single part of an osc address
-	/// </summary>
-	public struct OscAddressPart
-	{
-		#region Regex Char Escape Helpers
-
-		private static Regex CharMatcher = new Regex(@"[\.\$\^\{\[\(\|\)\*\+\?\\]", RegexOptions.Compiled); 
-
-		private static string EscapeString(string str)
-		{
-			return CharMatcher.Replace(str, match =>
-			{
-				switch (match.Value)
-				{
-					case ".":
-						return @"\.";
-					case "$":
-						return @"\$";
-					case "^":
-						return @"\^";
-					case "{":
-						return @"\{";
-					case "[":
-						return @"\[";
-					case "(":
-						return @"\(";
-					case "|":
-						return @"\|";
-					case ")":
-						return @"\)";
-					case "*":
-						return @"\*";
-					case "+":
-						return @"\+";
-					case "?":
-						return @"\?";
-					case "\\":
-						return @"\\";
-					default: throw new Exception(Strings.OscAddress_UnexpectedMatch);
-				}
-			});
-		}
-
-		private static string EscapeChar(char c) 
-		{
-			return EscapeString(c.ToString());
-		}
-
-		#endregion
-
-		#region Public Fields
-
-		/// <summary>
-		/// The address part type 
-		/// </summary>
-		public readonly OscAddressPartType Type;
-
-		/// <summary>
-		/// The original string value of this part
-		/// </summary>
-		public readonly string Value;
-
-		/// <summary>
-		/// How the string was interpreted (only used for testing) 
-		/// </summary>
-		internal readonly string Interpreted;
-
-		/// <summary>
-		/// The regex representation of this part
-		/// </summary>
-		public readonly string PartRegex;
-
-		#endregion
-
-		#region Constructor
-
-		/// <summary>
-		/// Create a address part
-		/// </summary>
-		/// <param name="type">the type of part</param>
-		/// <param name="value">the original string value</param>
-		/// <param name="interpreted">the representation of the original value as interpreted by the parser</param>
-		/// <param name="partRegex">the part as a regex expression</param>
-		private OscAddressPart(OscAddressPartType type, string value, string interpreted, string partRegex)
-		{
-			Type = type;
-			Value = value;
-			Interpreted = interpreted;
-			PartRegex = partRegex; 
-		}
-
-		#endregion
-
-		#region Factory Methods
-
-		/// <summary>
-		/// Create a address separator part '/' 
-		/// </summary>
-		/// <returns>the part</returns>
-		internal static OscAddressPart AddressSeparator()
-		{
-			return new OscAddressPart(OscAddressPartType.AddressSeparator, "/", "/", "/"); 
-		}
-
-		/// <summary>
-		/// Create a address wildcard part "//" 
-		/// </summary>
-		/// <returns>the part</returns>
-		internal static OscAddressPart AddressWildcard()
-		{
-			return new OscAddressPart(OscAddressPartType.AddressWildcard, "//", "//", "/"); 
-		}
-
-		/// <summary>
-		/// Create a literal address part
-		/// </summary>
-		/// <param name="value">the literal</param>
-		/// <returns>the part</returns>
-		internal static OscAddressPart Literal(string value)
-		{
-			return new OscAddressPart(OscAddressPartType.Literal, value, value, "(" + EscapeString(value) + ")");
-		}
-
-		/// <summary>
-		/// Create a part for a wildcard part
-		/// </summary>
-		/// <param name="value">the original string</param>
-		/// <returns>the part</returns>
-		internal static OscAddressPart Wildcard(string value)
-		{
-			string regex = value;
-
-			// reduce the complexity 
-			while (regex.Contains("*?") == true)
-			{
-				regex = regex.Replace("*?", "*");			
-			}
-
-			// reduce needless complexity 
-			while (regex.Contains("**") == true)
-			{
-				regex = regex.Replace("**", "*");
-			}
-
-
-			StringBuilder sb = new StringBuilder();
-
-			// replace with wildcard regex
-			foreach (char c in regex)
-			{
-				if (c == '*')
-				{
-					sb.Append(@"([^\s#\*,/\?\[\]\{}]*)"); 
-				}
-				else if (c == '?')
-				{
-					sb.Append(@"([^\s#\*,/\?\[\]\{}])"); 
-				}
-			}
-
-			return new OscAddressPart(OscAddressPartType.Wildcard, value, value, sb.ToString());
-		}
-
-		
-		/// <summary>
-		/// Character span e.g. [a-e] 
-		/// </summary>
-		/// <param name="value">the original string</param>
-		/// <returns>the part</returns>
-		internal static OscAddressPart CharSpan(string value)
-		{
-			bool isNot = false;
-			int index = 1;
-
-			if (value[index] == '!')
-			{
-				isNot = true;
-				index++;
-			}
-
-			char low = value[index++];			
-			index++; 
-			char high = value[index++];
-
-			string regex = String.Format("[{0}{1}-{2}]+", isNot ? "^" : String.Empty, EscapeChar(low), EscapeChar(high));
-			string rebuild = String.Format("[{0}{1}-{2}]", isNot ? "!" : String.Empty, low, high); 
-
-			return new OscAddressPart(OscAddressPartType.CharSpan, value, rebuild, regex);
-		}
-
-		/// <summary>
-		/// Character list e.g. [abcde]
-		/// </summary>
-		/// <param name="value">the original string</param>
-		/// <returns>the part</returns>
-		internal static OscAddressPart CharList(string value)
-		{
-			bool isNot = false;
-			int index = 1;
-
-			if (value[index] == '!')
-			{
-				isNot = true;
-				index++;
-			}
-
-			string list = value.Substring(index, (value.Length - 1) - index);
-
-			string regex = String.Format("[{0}{1}]+", isNot ? "^" : String.Empty, EscapeString(list));
-			string rebuild = String.Format("[{0}{1}]", isNot ? "!" : String.Empty, list);
-
-			return new OscAddressPart(OscAddressPartType.CharList, value, rebuild, regex);
-		}
-
-		/// <summary>
-		/// Literal list e.g. {thing1,THING1}
-		/// </summary>
-		/// <param name="value">the original string</param>
-		/// <returns>the part</returns>
-		internal static OscAddressPart List(string value)
-		{
-			string[] list = value.Substring(1, value.Length - 2).Split(',');
-
-			StringBuilder regSb = new StringBuilder();
-			StringBuilder listSb = new StringBuilder();
-
-			bool first = true; 
-
-			foreach (string str in list)
-			{
-				if (first == false)
-				{
-					regSb.Append("|");
-					listSb.Append(",");
-				}
-				else
-				{
-					first = false;
-				}
-
-				regSb.Append("(" + EscapeString(str) + ")");
-				listSb.Append(str);
-			}
-
-			return new OscAddressPart(OscAddressPartType.List, value, "{" + listSb.ToString() + "}", "(" + regSb.ToString() + ")");
-		}
-
-		#endregion 
-	}
-	
-	#endregion
-
-	#region Osc Address
-
 	/// <summary>
 	/// Encompasses an entire osc address
 	/// </summary>
-	public class OscAddress
+	public sealed class OscAddress
 	{
 		#region Private Static Members
 
@@ -365,10 +53,10 @@ namespace Rug.Osc
 
 		#region Private Members
 
-		private string m_OrigialString;
-		private OscAddressPart[] m_Parts;
-		private OscAddressType m_Type;
-		private Regex m_Regex; 
+		private readonly string m_OrigialString;
+		private readonly OscAddressPart[] m_Parts;
+		private readonly OscAddressType m_Type;
+		private readonly Regex m_Regex; 
 
 		#endregion 
 
@@ -500,36 +188,31 @@ namespace Rug.Osc
 			// build the regex if one is needed
 			if (m_Type != OscAddressType.Literal)
 			{
-				BuildRegex(); 
+				StringBuilder regex = new StringBuilder();
+
+				if (m_Parts[0].Type == OscAddressPartType.AddressWildcard)
+				{
+					// dont care where the start is 
+					regex.Append("(");
+				}
+				else
+				{
+					// match the start of the string 
+					regex.Append("^(");
+				}
+
+				foreach (OscAddressPart part in m_Parts)
+				{
+					// match the part
+					regex.Append(part.PartRegex);
+				}
+
+				// match the end of the string
+				regex.Append(")$");
+
+				// aquire the regex
+				m_Regex = OscAddressRegexCache.Aquire(regex.ToString()); // new Regex(regex.ToString(), RegexOptions.None);
 			}
-		}
-
-		private void BuildRegex()
-		{
-			StringBuilder regex = new StringBuilder();
-
-			if (m_Parts[0].Type == OscAddressPartType.AddressWildcard)
-			{
-				// dont care where the start is 
-				regex.Append("(");
-			}
-			else
-			{
-				// match the start of the string 
-				regex.Append("^(");
-			}
-
-			foreach (OscAddressPart part in m_Parts)
-			{
-				// match the part
-				regex.Append(part.PartRegex);
-			}
-
-			// match the end of the string
-			regex.Append(")$");
-
-			// aquire the regex
-			m_Regex = OscAddressRegexCache.Aquire(regex.ToString()); // new Regex(regex.ToString(), RegexOptions.None);
 		}
 
 		#endregion
@@ -714,6 +397,4 @@ namespace Rug.Osc
 
 		#endregion
 	}
-
-	#endregion
 }

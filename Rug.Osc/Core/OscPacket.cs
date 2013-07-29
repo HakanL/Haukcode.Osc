@@ -1,6 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿/* 
+ * Rug.Osc 
+ * 
+ * THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+ * EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED 
+ * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+ * 
+ * Copyright (C) 2013 Phill Tew. All rights reserved.
+ * 
+ */
+
+using System;
 
 namespace Rug.Osc
 {
@@ -9,6 +18,8 @@ namespace Rug.Osc
 	/// </summary>
 	public abstract class OscPacket
 	{
+		#region Properties
+
 		/// <summary>
 		/// The size of the packet in bytes
 		/// </summary>
@@ -29,6 +40,13 @@ namespace Rug.Osc
 		/// </summary>
 		/// <returns></returns>
 		public abstract byte[] ToByteArray();
+
+		#endregion
+
+		internal OscPacket()
+		{
+
+		}
 
 		#region Write
 
@@ -83,6 +101,8 @@ namespace Rug.Osc
 		
 		#endregion
 
+		#region Parse
+
 		public static OscPacket Parse(string str)
 		{
 			if (str.Trim().StartsWith(OscBundle.BundleIdent) == true)
@@ -111,6 +131,7 @@ namespace Rug.Osc
 			}
 		}
 
+		#endregion 
 
 		#region Scan Forward
 

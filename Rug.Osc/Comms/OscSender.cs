@@ -20,7 +20,7 @@ namespace Rug.Osc
 	/// <summary>
 	/// Osc udp sender
 	/// </summary>
-    public class OscSender : OscSocket
+    public sealed class OscSender : OscSocket
     {
 		/// <summary>
 		/// The default number of messages that can be queued for sending before messages start to get dropped
@@ -29,12 +29,12 @@ namespace Rug.Osc
 
         #region Private Members
 
-        private object m_Lock = new object();
-        private AutoResetEvent m_QueueEmpty = new AutoResetEvent(true);
+		private readonly object m_Lock = new object();
+		private readonly AutoResetEvent m_QueueEmpty = new AutoResetEvent(true);
 
-        private byte[] m_Bytes;
+		private readonly byte[] m_Bytes;
 
-        private OscPacket[] m_SendQueue;
+		private readonly OscPacket[] m_SendQueue;
         private int m_WriteIndex = 0;
         private int m_ReadIndex = 0;
         private int m_Count = 0;

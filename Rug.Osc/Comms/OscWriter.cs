@@ -1,6 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿/* 
+ * Rug.Osc 
+ * 
+ * THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+ * EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED 
+ * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+ * 
+ * Copyright (C) 2013 Phill Tew. All rights reserved.
+ * 
+ */
+
+using System;
 using System.IO;
 
 namespace Rug.Osc
@@ -8,15 +17,15 @@ namespace Rug.Osc
 	/// <summary>
 	/// Writes osc packets to a stream
 	/// </summary>
-	public class OscWriter : IDisposable
+	public sealed class OscWriter : IDisposable
 	{
 		#region Private Memebers
 
-		private Stream m_Stream;
-		private BinaryWriter m_BinaryWriter;
-		private StreamWriter m_StringWriter;
+		private readonly Stream m_Stream;
+		private readonly BinaryWriter m_BinaryWriter;
+		private readonly StreamWriter m_StringWriter;
 
-		private OscPacketFormat m_Format;
+		private readonly OscPacketFormat m_Format;
 
 		#endregion
 
