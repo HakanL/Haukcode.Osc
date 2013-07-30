@@ -857,7 +857,7 @@ select new { t.ClassConstructor,
 }]]></Query>
     </Group>
     <Group Name="Design" Active="True" ShownInReport="False">
-      <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Avoid custom delegates</Name>
+      <Query Active="False" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Avoid custom delegates</Name>
 
 // Prefer using one of the standard generic delegate type in
 // Predicate<T> Func<T0,T1,..,TResult> Action<T0,T1,..> 
@@ -889,7 +889,7 @@ let replaceWith = resultTypeName == "Boolean" ?
              
 
 select new { t, replaceWith }]]></Query>
-      <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Types with disposable instance fields must be disposable</Name>
+      <Query Active="False" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Types with disposable instance fields must be disposable</Name>
 warnif count > 0
 
 let iDisposable = ThirdParty.Types.WithFullName("System.IDisposable").FirstOrDefault() 
@@ -955,7 +955,7 @@ select new { t, t.SizeOfInst, t.InstanceFields } // Must derive directly from Sy
   //                      that are intended to be sub-classed by 
   //                      your clients.
   ]]></Query>
-      <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Avoid namespaces with few types</Name>
+      <Query Active="False" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Avoid namespaces with few types</Name>
 warnif count > 0 from n in JustMyCode.Namespaces 
 let types = n.ChildTypes.Where(t => !t.IsGeneratedByCompiler)
 where 
@@ -1004,7 +1004,7 @@ warnif count > 0 from m in Application.Methods where
   m.NbLinesOfCode == 0
 select m
     ]]></Query>
-      <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Instances size shouldn't be too big</Name>
+      <Query Active="False" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Instances size shouldn't be too big</Name>
 warnif count > 0 from t in JustMyCode.Types where 
   t.SizeOfInst > 64 
   orderby t.SizeOfInst descending
@@ -1676,7 +1676,7 @@ from f in codeBase.OlderVersion().Fields where
  !f.ParentType.IsNotUsedAnymore()
 select new { f, MethodsThatUsedMe = f.MethodsUsingMe }]]></Query>
     </Group>
-    <Group Name="Test and Code Coverage" Active="False" ShownInReport="True">
+    <Group Name="Test and Code Coverage" Active="True" ShownInReport="True">
       <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>C.R.A.P method code metric</Name>
 // Change Risk Analyzer and Predictor (i.e. CRAP) code metric
 // This code metric helps in pinpointing overly complex and untested code.
@@ -2024,7 +2024,7 @@ where types.Count() > 0 || methods.Count() > 0 || fields.Count() > 0
 select new { tAttr, types , methods, fields }]]></Query>
     </Group>
     <Group Name="Visibility" Active="True" ShownInReport="False">
-      <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Methods that could have a lower visibility</Name>
+      <Query Active="False" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Methods that could have a lower visibility</Name>
 warnif count > 0 from m in JustMyCode.Methods where 
   m.Visibility != m.OptimalVisibility &&
   !m.HasAttribute("NDepend.Attributes.CannotDecreaseVisibilityAttribute".AllowNoMatch()) &&
@@ -2044,7 +2044,7 @@ select new { m,
              m.Visibility , 
              CouldBeDeclared = m.OptimalVisibility,
              m.MethodsCallingMe }]]></Query>
-      <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Types that could have a lower visibility</Name>
+      <Query Active="False" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Types that could have a lower visibility</Name>
 warnif count > 0 from t in JustMyCode.Types where 
 
   t.Visibility != t.OptimalVisibility &&
@@ -2061,7 +2061,7 @@ select new { t, t.Visibility ,
                 CouldBeDeclared = t.OptimalVisibility, 
                 t.TypesUsingMe }
 ]]></Query>
-      <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Fields that could have a lower visibility</Name>
+      <Query Active="False" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Fields that could have a lower visibility</Name>
 warnif count > 0 from f in JustMyCode.Fields where 
   f.Visibility != f.OptimalVisibility &&
  !f.HasAttribute("NDepend.Attributes.CannotDecreaseVisibilityAttribute".AllowNoMatch()) &&
@@ -2185,7 +2185,7 @@ where types.Count() > 0 || methods.Count() > 0 || fields.Count() > 0
 select new { tAttr, types , methods, fields }]]></Query>
     </Group>
     <Group Name="Purity - Immutability - Side-Effects" Active="True" ShownInReport="False">
-      <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Fields should be marked as ReadOnly when possible</Name>
+      <Query Active="False" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Fields should be marked as ReadOnly when possible</Name>
 warnif count > 0 
 from f in JustMyCode.Fields where 
    f.IsImmutable && 
@@ -2235,7 +2235,7 @@ select new { t, t.NbLinesOfCode, mutableFields }
 // how NDepend supports it here:
 // http://codebetter.com/blogs/patricksmacchia/archive/2008/01/13/immutable-types-understand-them-and-use-them.aspx
 ]]></Query>
-      <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Property Getters should be immutable</Name>
+      <Query Active="False" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Property Getters should be immutable</Name>
 warnif count > 0 from m in Application.Methods where
   m.IsPropertyGetter &&
   ( ( !m.IsStatic && m.ChangesObjectState) ||
@@ -2250,7 +2250,7 @@ select new { m, m.NbLinesOfCode, fieldsAssigned  }
 // But in general, the callers of a property 
 // doesn't expect to change any state through the call.
     ]]></Query>
-      <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Avoid static fields with a mutable field type</Name>
+      <Query Active="False" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Avoid static fields with a mutable field type</Name>
 warnif count > 0
 from f in Application.Fields
 where f.IsStatic && !f.IsEnumValue && !f.IsGeneratedByCompiler && !f.IsLiteral
@@ -3307,7 +3307,7 @@ from m in a.ChildMethods where
 select new { m, ReturnTypeReference = m.ReturnType }]]></Query>
       </Group>
     </Group>
-    <Group Name="Statistics" Active="False" ShownInReport="False">
+    <Group Name="Statistics" Active="True" ShownInReport="False">
       <Query Active="False" DisplayList="False" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Most used types (Rank)</Name>
 (from t in Application.Types orderby t.Rank descending
  select new { t, t.Rank }).Take(50)

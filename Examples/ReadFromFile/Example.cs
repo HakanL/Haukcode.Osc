@@ -34,22 +34,22 @@ namespace ReadFromFile
 			m_OpenFileDialog.Filter = "All files (*.*)|*.*"; 
 		}
 
-		private void m_SelectFile_Click(object sender, EventArgs e)
+		private void SelectFile_Click(object sender, EventArgs e)
 		{
 			m_OpenFileDialog.ShowDialog(); 
 		}
 
-		private void m_OpenFileDialog_FileOk(object sender, CancelEventArgs e)
+		private void OpenFileDialog_FileOk(object sender, CancelEventArgs e)
 		{
 			m_FilePath.Text = m_OpenFileDialog.FileName; 
 		}
 
-		private void m_Format_SelectedIndexChanged(object sender, EventArgs e)
+		private void Format_SelectedIndexChanged(object sender, EventArgs e)
 		{
 
 		}
 
-		private void m_Go_Click(object sender, EventArgs e)
+		private void Go_Click(object sender, EventArgs e)
 		{
 			try
 			{
@@ -71,7 +71,7 @@ namespace ReadFromFile
 			}
 		}
 
-		private void m_Clear_Click(object sender, EventArgs e)
+		private void Clear_Click(object sender, EventArgs e)
 		{
 			m_Output.Clear(); 
 		}

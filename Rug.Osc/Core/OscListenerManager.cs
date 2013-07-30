@@ -190,6 +190,11 @@ namespace Rug.Osc
 
 		#region Should Invoke
 
+		/// <summary>
+		/// Determin if the packet should be invoked
+		/// </summary>
+		/// <param name="packet">A packet</param>
+		/// <returns>The appropriate action that should be taken with the packet</returns>
 		public OscPacketInvokeAction ShouldInvoke(OscPacket packet)
 		{
 			if (packet.Error != OscPacketError.None)

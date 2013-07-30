@@ -104,7 +104,7 @@
 			this.m_Go.TabIndex = 1;
 			this.m_Go.Text = "GO";
 			this.m_Go.UseVisualStyleBackColor = true;
-			this.m_Go.Click += new System.EventHandler(this.m_Go_Click);
+			this.m_Go.Click += new System.EventHandler(this.Go_Click);
 			// 
 			// ProfileForm
 			// 

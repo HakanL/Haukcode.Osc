@@ -134,7 +134,7 @@ namespace ListenerManager
 			}
 		}
 
-		private void m_ListenerAddress_TextChanged(object sender, EventArgs e)
+		private void ListenerAddress_TextChanged(object sender, EventArgs e)
 		{			
 			// try to parse the osc address literal
 			if (OscAddress.IsValidAddressPattern(m_ListenerAddress.Text) == true)
@@ -149,7 +149,7 @@ namespace ListenerManager
 			}
 		}
 
-		private void m_Add_Click(object sender, EventArgs e)
+		private void Add_Click(object sender, EventArgs e)
 		{
 			AddEvent(m_ListenerAddress.Text);			
 		}

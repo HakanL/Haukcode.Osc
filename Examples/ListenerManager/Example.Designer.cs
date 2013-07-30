@@ -83,7 +83,7 @@
 			this.m_Add.TabIndex = 4;
 			this.m_Add.Text = "Add";
 			this.m_Add.UseVisualStyleBackColor = true;
-			this.m_Add.Click += new System.EventHandler(this.m_Add_Click);
+			this.m_Add.Click += new System.EventHandler(this.Add_Click);
 			// 
 			// m_ListenerAddress
 			// 
@@ -94,7 +94,7 @@
 			this.m_ListenerAddress.Size = new System.Drawing.Size(464, 20);
 			this.m_ListenerAddress.TabIndex = 5;
 			this.m_ListenerAddress.Text = "/test/d/thing_0";
-			this.m_ListenerAddress.TextChanged += new System.EventHandler(this.m_ListenerAddress_TextChanged);
+			this.m_ListenerAddress.TextChanged += new System.EventHandler(this.ListenerAddress_TextChanged);
 			// 
 			// Example
 			// 

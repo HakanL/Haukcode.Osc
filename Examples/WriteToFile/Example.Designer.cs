@@ -49,7 +49,7 @@
 			this.m_Clear.TabIndex = 11;
 			this.m_Clear.Text = "Clear";
 			this.m_Clear.UseVisualStyleBackColor = true;
-			this.m_Clear.Click += new System.EventHandler(this.m_Clear_Click);
+			this.m_Clear.Click += new System.EventHandler(this.Clear_Click);
 			// 
 			// m_SelectFile
 			// 
@@ -60,7 +60,7 @@
 			this.m_SelectFile.TabIndex = 10;
 			this.m_SelectFile.Text = "...";
 			this.m_SelectFile.UseVisualStyleBackColor = true;
-			this.m_SelectFile.Click += new System.EventHandler(this.m_SelectFile_Click);
+			this.m_SelectFile.Click += new System.EventHandler(this.SelectFile_Click);
 			// 
 			// m_Format
 			// 
@@ -71,7 +71,7 @@
 			this.m_Format.Name = "m_Format";
 			this.m_Format.Size = new System.Drawing.Size(73, 21);
 			this.m_Format.TabIndex = 9;
-			this.m_Format.SelectedIndexChanged += new System.EventHandler(this.m_Format_SelectedIndexChanged);
+			this.m_Format.SelectedIndexChanged += new System.EventHandler(this.Format_SelectedIndexChanged);
 			// 
 			// m_Output
 			// 
@@ -102,7 +102,7 @@
 			this.m_Go.TabIndex = 6;
 			this.m_Go.Text = "Open";
 			this.m_Go.UseVisualStyleBackColor = true;
-			this.m_Go.Click += new System.EventHandler(this.m_Go_Click);
+			this.m_Go.Click += new System.EventHandler(this.Go_Click);
 			// 
 			// m_Message
 			// 
@@ -113,7 +113,7 @@
 			this.m_Message.Size = new System.Drawing.Size(434, 20);
 			this.m_Message.TabIndex = 12;
 			this.m_Message.Text = "#bundle, 13:44:34.4532, { /test, 2,5,6,7 }, { /test, 2,5,6,7 }";
-			this.m_Message.TextChanged += new System.EventHandler(this.m_Message_TextChanged);
+			this.m_Message.TextChanged += new System.EventHandler(this.Message_TextChanged);
 			// 
 			// m_Write
 			// 
@@ -124,11 +124,11 @@
 			this.m_Write.TabIndex = 13;
 			this.m_Write.Text = "Write";
 			this.m_Write.UseVisualStyleBackColor = true;
-			this.m_Write.Click += new System.EventHandler(this.m_Write_Click);
+			this.m_Write.Click += new System.EventHandler(this.Write_Click);
 			// 
 			// m_SaveFileDialog
 			// 
-			this.m_SaveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.m_SaveFileDialog_FileOk);
+			this.m_SaveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.SaveFileDialog_FileOk);
 			// 
 			// Example
 			// 

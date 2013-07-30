@@ -41,22 +41,22 @@ namespace WriteToFile
 			m_Write.Enabled = false; 
 		}
 
-		private void m_SelectFile_Click(object sender, EventArgs e)
+		private void SelectFile_Click(object sender, EventArgs e)
 		{
 			m_SaveFileDialog.ShowDialog();
 		}
 
-		private void m_SaveFileDialog_FileOk(object sender, CancelEventArgs e)
+		private void SaveFileDialog_FileOk(object sender, CancelEventArgs e)
 		{
 			m_FilePath.Text = m_SaveFileDialog.FileName;
 		}
 
-		private void m_Format_SelectedIndexChanged(object sender, EventArgs e)
+		private void Format_SelectedIndexChanged(object sender, EventArgs e)
 		{
 
 		}
 
-		private void m_Go_Click(object sender, EventArgs e)
+		private void Go_Click(object sender, EventArgs e)
 		{
 			if (m_IsFileOpen == false)
 			{
@@ -126,7 +126,7 @@ namespace WriteToFile
 			}
 		}
 
-		private void m_Message_TextChanged(object sender, EventArgs e)
+		private void Message_TextChanged(object sender, EventArgs e)
 		{
 			OscPacket msg;
 
@@ -143,12 +143,12 @@ namespace WriteToFile
 			}
 		}
 
-		private void m_Clear_Click(object sender, EventArgs e)
+		private void Clear_Click(object sender, EventArgs e)
 		{
 			m_Output.Clear();
 		}
 
-		private void m_Write_Click(object sender, EventArgs e)
+		private void Write_Click(object sender, EventArgs e)
 		{
 			OscPacket msg;
 

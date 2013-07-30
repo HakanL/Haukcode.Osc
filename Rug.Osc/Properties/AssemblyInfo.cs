@@ -19,6 +19,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System;
 
 [assembly: AssemblyTitle("Rug.Osc")]
 [assembly: AssemblyDescription("Rug.Osc (https://bitbucket.org/rugcode/rug.osc/). Simple, complete, open source OSC implementation for .NET and Mono.")]

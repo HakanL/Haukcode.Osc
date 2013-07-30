@@ -46,6 +46,11 @@ namespace Rug.Osc
 			Value = value;
 		}
 
+		/// <summary>
+		/// Does this OSC-timetag equal another object
+		/// </summary>
+		/// <param name="obj">An object</param>
+		/// <returns>true if the objects are the same</returns>
 		public override bool Equals(object obj)
 		{
 			if (obj is OscTimeTag)
@@ -58,11 +63,19 @@ namespace Rug.Osc
 			}
 		}
 
+		/// <summary>
+		/// Gets a hashcode for this OSC-timetag
+		/// </summary>
+		/// <returns>A hashcode</returns>
 		public override int GetHashCode()
 		{
 			return Value.GetHashCode();
 		}
 
+		/// <summary>
+		/// Get a string of this OSC-timetag in the format "dd-MM-yyyy HH:mm:ss.ffffZ"
+		/// </summary>
+		/// <returns>The string value of this OSC-timetag</returns>
 		public override string ToString()
 		{
 			return ToDataTime().ToString("dd-MM-yyyy HH:mm:ss.ffffZ");

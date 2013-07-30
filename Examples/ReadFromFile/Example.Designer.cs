@@ -46,7 +46,7 @@
 			this.m_Go.TabIndex = 0;
 			this.m_Go.Text = "Read";
 			this.m_Go.UseVisualStyleBackColor = true;
-			this.m_Go.Click += new System.EventHandler(this.m_Go_Click);
+			this.m_Go.Click += new System.EventHandler(this.Go_Click);
 			// 
 			// m_FilePath
 			// 
@@ -77,7 +77,7 @@
 			this.m_Format.Name = "m_Format";
 			this.m_Format.Size = new System.Drawing.Size(73, 21);
 			this.m_Format.TabIndex = 3;
-			this.m_Format.SelectedIndexChanged += new System.EventHandler(this.m_Format_SelectedIndexChanged);
+			this.m_Format.SelectedIndexChanged += new System.EventHandler(this.Format_SelectedIndexChanged);
 			// 
 			// m_SelectFile
 			// 
@@ -88,11 +88,11 @@
 			this.m_SelectFile.TabIndex = 4;
 			this.m_SelectFile.Text = "...";
 			this.m_SelectFile.UseVisualStyleBackColor = true;
-			this.m_SelectFile.Click += new System.EventHandler(this.m_SelectFile_Click);
+			this.m_SelectFile.Click += new System.EventHandler(this.SelectFile_Click);
 			// 
 			// m_OpenFileDialog
 			// 
-			this.m_OpenFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.m_OpenFileDialog_FileOk);
+			this.m_OpenFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.OpenFileDialog_FileOk);
 			// 
 			// m_Clear
 			// 
@@ -104,7 +104,7 @@
 			this.m_Clear.TabIndex = 5;
 			this.m_Clear.Text = "Clear";
 			this.m_Clear.UseVisualStyleBackColor = true;
-			this.m_Clear.Click += new System.EventHandler(this.m_Clear_Click);
+			this.m_Clear.Click += new System.EventHandler(this.Clear_Click);
 			// 
 			// Example
 			// 

@@ -41,7 +41,7 @@ namespace Rug.Osc.Profile
 			}
 		}
 
-		private void m_Go_Click(object sender, EventArgs e)
+		private void Go_Click(object sender, EventArgs e)
 		{
 			foreach (DataGridViewRow row in m_Data.Rows)
 			{
