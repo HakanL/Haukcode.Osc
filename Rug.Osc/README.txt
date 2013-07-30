@@ -12,3 +12,6 @@ Send and receive osc packets via UDP.
 Read and write osc packets to streams.
 Parse osc messages and bundles from strings.
 Optimized for use in real-time applications.
+
+Distributed under the MIT License
+

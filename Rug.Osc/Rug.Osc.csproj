@@ -80,6 +80,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LICENSE.txt" />
     <Content Include="README.txt" />
     <Content Include="TODO.txt" />
   </ItemGroup>
