@@ -19,7 +19,7 @@
 
 namespace Rug.Osc
 {
-	internal struct OscListener
+	internal class OscListener
 	{
 		/// <summary>
 		/// The literal address of the event
