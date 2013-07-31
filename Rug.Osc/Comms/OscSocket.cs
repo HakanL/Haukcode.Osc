@@ -231,6 +231,8 @@ namespace Rug.Osc
                 // create the instance of the socket
                 m_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
+				//m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, m);						
+
                 m_Socket.Blocking = false;                
 
                 if (RemoteAddress == IPAddress.Broadcast)
@@ -241,9 +243,18 @@ namespace Rug.Osc
                 if (OscSocketType == Osc.OscSocketType.Receive)
                 {
                     m_Socket.Bind(m_LocalEndPoint);
-                }
+
+					/*
+					if (multicastAddr != null)
+					{
+						m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(IPAddress.Parse(multicastAddr)));
+					}
+					*/
+				}
                 else
                 {
+					//m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 10);
+					// m_RemoteEndPoint.Address.GetAddressBytes(); 
 					if (m_LocalAddress != IPAddress.Any)
 					{
 						m_Socket.Bind(m_LocalEndPoint);
