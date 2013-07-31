@@ -22,9 +22,11 @@ namespace Rug.Osc
 {
 	public sealed class DefaultTimeProvider : IOscTimeProvider
 	{
-		public static readonly DefaultTimeProvider Instance = new DefaultTimeProvider(); 
+		private double m_FrameSizeInSeconds; 
 
-		public double FrameSizeInSeconds { get; set; }
+		public static readonly DefaultTimeProvider Instance = new DefaultTimeProvider();
+
+		public double FrameSizeInSeconds { get { return m_FrameSizeInSeconds; } set { m_FrameSizeInSeconds = value; } }
 
 		/// <summary>
 		/// Get the current time 

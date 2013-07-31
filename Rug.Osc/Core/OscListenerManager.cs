@@ -42,17 +42,21 @@ namespace Rug.Osc
 		/// </summary>
 		private readonly Dictionary<OscAddress, OscFilter> m_PatternAddresses = new Dictionary<OscAddress, OscFilter>();
 
+		private IOscTimeProvider m_TimeProvider;
+		
+		private OscBundleInvokeMode m_BundleInvokeMode; 
+
 		#endregion
 
 		/// <summary>
 		/// Osc time provider, used for filtering bundles by time, if null then the DefaultTimeProvider is used 
 		/// </summary>
-		public IOscTimeProvider TimeProvider { get; set; }
+		public IOscTimeProvider TimeProvider { get { return m_TimeProvider; } set { m_TimeProvider = value; } }
 
 		/// <summary>
 		/// Bundle invoke mode, the default is OscBundleInvokeMode.InvokeAllBundlesImmediately
 		/// </summary>
-		public OscBundleInvokeMode BundleInvokeMode { get; set; }
+		public OscBundleInvokeMode BundleInvokeMode { get { return m_BundleInvokeMode; } set { m_BundleInvokeMode = value; } }
 
 		public OscListenerManager()
 		{

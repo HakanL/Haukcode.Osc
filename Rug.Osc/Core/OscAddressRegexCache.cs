@@ -36,12 +36,14 @@ namespace Rug.Osc
 	{
 		private static readonly object m_Lock = new object();
 
-		private static readonly Dictionary<string, Regex> m_Lookup = new Dictionary<string, Regex>(); 
+		private static readonly Dictionary<string, Regex> m_Lookup = new Dictionary<string, Regex>();
+
+		private static bool m_Enabled;
 
 		/// <summary>
 		/// Enable regex caching for the entire program (Enabled by default)
 		/// </summary>
-		public static bool Enabled { get; set; }
+		public static bool Enabled { get { return m_Enabled; } set { m_Enabled = value; } }
 
 		/// <summary>
 		/// The number of cached regex(s) 
