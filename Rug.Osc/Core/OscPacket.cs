@@ -122,6 +122,18 @@ namespace Rug.Osc
 			}
 		}
 
+		public static OscPacket Parse(string str, IFormatProvider provider)
+		{
+			if (str.Trim().StartsWith(OscBundle.BundleIdent) == true)
+			{
+				return OscBundle.Parse(str, provider);
+			}
+			else
+			{
+				return OscMessage.Parse(str, provider);
+			}
+		}
+
 		public static bool TryParse(string str, out OscPacket packet)
 		{
 			try
@@ -135,6 +147,22 @@ namespace Rug.Osc
 				packet = default(OscPacket);
 
 				return false; 
+			}
+		}
+
+		public static bool TryParse(string str, IFormatProvider provider, out OscPacket packet)
+		{
+			try
+			{
+				packet = Parse(str, provider);
+
+				return true;
+			}
+			catch
+			{
+				packet = default(OscPacket);
+
+				return false;
 			}
 		}
 
