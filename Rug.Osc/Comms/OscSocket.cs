@@ -82,7 +82,25 @@ namespace Rug.Osc
 		/// </summary>
         public const int DefaultPacketSize = 2048;
 
+		/// <summary>
+		/// Default time to live for multicast packets
+		/// </summary>
+		public const int DefaultMulticastTimeToLive = 8;
+
+		/// <summary>
+		/// Is the supplied address a UDP multicast address
+		/// </summary>
+		/// <param name="address">An address</param>
+		/// <returns>true if it is a multicast address</returns>
+		public static bool IsMulticastAddress(IPAddress address)
+		{
+			return (address.GetAddressBytes()[0] & MulticastAddressMask) == MulticastAddressValue;
+		}
+
         #region Private Members
+
+		private const byte MulticastAddressMask = 0xF0;
+		private const byte MulticastAddressValue = 0xE0; 
 
 		private readonly object m_Lock = new object(); 
 
@@ -94,6 +112,9 @@ namespace Rug.Osc
 
 		private readonly IPAddress m_LocalAddress;
 		private readonly IPEndPoint m_LocalEndPoint;
+
+		private readonly bool m_IsMulticastEndPoint; 
+		private readonly int m_TimeToLive; 
 
 		private OscSocketState m_State = OscSocketState.NotConnected;
 		private readonly System.Net.Sockets.SocketFlags m_SocketFlags;
@@ -125,7 +146,17 @@ namespace Rug.Osc
         /// <summary>
 		/// Remote Ip end point 
         /// </summary>
-        public IPEndPoint RemoteEndPoint { get { return m_RemoteEndPoint; } } 
+        public IPEndPoint RemoteEndPoint { get { return m_RemoteEndPoint; } }
+
+		/// <summary>
+		/// Is the remote endpoint a multicast address
+		/// </summary>
+		public bool IsMulticastEndPoint { get { return m_IsMulticastEndPoint; } } 
+
+		/// <summary>
+		/// Time to live for multicast packets
+		/// </summary>
+		public int TimeToLive { get { return m_TimeToLive; } } 
 
         /// <summary>
         /// The current state of the socket
@@ -150,14 +181,15 @@ namespace Rug.Osc
         #endregion
 
         #region Constructors
-		
+
 		/// <summary>
 		/// Create a new socket for an address and port
 		/// </summary>
 		/// <param name="local">The ip address of the local end point</param>
 		/// <param name="remote">The ip address of the remote end point</param>
 		/// <param name="port">the port</param>
-		internal OscSocket(IPAddress local, IPAddress remote, int port)
+		/// <param name="timeToLive">TTL value to apply to packets</param>
+		internal OscSocket(IPAddress local, IPAddress remote, int port, int timeToLive)
 		{
 			m_LocalAddress = local;
 			m_RemoteAddress = remote;
@@ -166,7 +198,23 @@ namespace Rug.Osc
 			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
 			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port);
 
+			m_TimeToLive = timeToLive; 			
+
+			m_IsMulticastEndPoint = IsMulticastAddress(m_RemoteAddress);
+
 			m_SocketFlags = System.Net.Sockets.SocketFlags.None;
+		}
+
+		/// <summary>
+		/// Create a new socket for an address and port
+		/// </summary>
+		/// <param name="local">The ip address of the local end point</param>
+		/// <param name="remote">The ip address of the remote end point</param>
+		/// <param name="port">the port</param>
+		internal OscSocket(IPAddress local, IPAddress remote, int port)
+			: this(local, remote, port, DefaultMulticastTimeToLive)
+		{
+
 		}
 
         /// <summary>
@@ -192,6 +240,8 @@ namespace Rug.Osc
 			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port); 
 			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
 
+			m_IsMulticastEndPoint = IsMulticastAddress(m_RemoteAddress);
+
 			m_SocketFlags = System.Net.Sockets.SocketFlags.None;
         }
 
@@ -209,6 +259,8 @@ namespace Rug.Osc
 			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
 
 			m_SocketFlags = System.Net.Sockets.SocketFlags.None;
+
+			m_IsMulticastEndPoint = false; 
         }
 
         #endregion
@@ -230,9 +282,7 @@ namespace Rug.Osc
 
                 // create the instance of the socket
                 m_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-				//m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, m);						
-
+				
                 m_Socket.Blocking = false;                
 
                 if (RemoteAddress == IPAddress.Broadcast)
@@ -240,28 +290,27 @@ namespace Rug.Osc
                     m_Socket.EnableBroadcast = true;
                 }
 
-                if (OscSocketType == Osc.OscSocketType.Receive)
-                {
-                    m_Socket.Bind(m_LocalEndPoint);
+				m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 16);
+				m_Socket.ExclusiveAddressUse = false;
 
-					/*
-					if (multicastAddr != null)
+				m_Socket.Bind(m_LocalEndPoint);
+
+                if (OscSocketType == Osc.OscSocketType.Receive)
+                {						
+					if (IsMulticastEndPoint == true)
 					{
-						m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(IPAddress.Parse(multicastAddr)));
+						m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(m_RemoteAddress));
 					}
-					*/
 				}
                 else
                 {
-					//m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 10);
-					// m_RemoteEndPoint.Address.GetAddressBytes(); 
-					if (m_LocalAddress != IPAddress.Any)
+					if (IsMulticastEndPoint == true)
 					{
-						m_Socket.Bind(m_LocalEndPoint);
+						m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, TimeToLive);
 					}
-
-                    m_Socket.Connect(m_RemoteEndPoint);
-                }
+					
+					m_Socket.Connect(m_RemoteEndPoint);
+				}
 
                 m_State = OscSocketState.Connected;
 

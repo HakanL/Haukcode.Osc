@@ -19,7 +19,7 @@
 
 namespace Rug.Osc
 {
-	internal struct OscFilter
+	internal class OscFilter
 	{
 		/// <summary>
 		/// The pattern address of the event
