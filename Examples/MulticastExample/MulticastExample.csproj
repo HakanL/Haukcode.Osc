@@ -5,15 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{82546516-FDF7-47C5-8490-DA520F394257}</ProjectGuid>
+    <ProjectGuid>{C131E372-8FCF-4537-BBE9-584A720AF940}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BasicExample</RootNamespace>
-    <AssemblyName>BasicExample</AssemblyName>
+    <RootNamespace>MulticastExample</RootNamespace>
+    <AssemblyName>MulticastExample</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>

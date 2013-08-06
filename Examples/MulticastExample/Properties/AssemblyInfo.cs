@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BasicExample")]
-[assembly: AssemblyDescription("A basic program to show message throughput with Rug.Osc")]
+[assembly: AssemblyTitle("MulticastExample")]
+[assembly: AssemblyDescription("A basic program to show multicasting with Rug.Osc")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rugland Digital Systems")]
 [assembly: AssemblyProduct("Rug.Osc")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("39481948-6bf5-45e0-94cd-dc31d2a91ca4")]
+[assembly: Guid("ba7da5ef-49e8-4811-b7dd-22ec406682ff")]
 
 // Version information for an assembly consists of the following four values:
 //

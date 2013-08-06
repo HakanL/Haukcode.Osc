@@ -403,6 +403,15 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The suppied address must be a multicast address.
+        /// </summary>
+        internal static string Receiver_NotMulticastAddress {
+            get {
+                return ResourceManager.GetString("Receiver_NotMulticastAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The receiver socket has been disconnected.
         /// </summary>
         internal static string Receiver_SocketIsClosed {

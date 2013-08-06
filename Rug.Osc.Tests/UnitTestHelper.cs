@@ -672,6 +672,34 @@ namespace Rug.Osc.Tests
 			AreEqual(expected.ToArray(), actual.ToArray());
 		}
 
+		internal static void AreEqual(OscPacket[] expected, OscPacket[] actual)
+		{
+			Assert.AreEqual(expected.Length, actual.Length, "Number of arguments do not match");
+
+			for (int i = 0; i < actual.Length; i++)
+			{								
+				AreEqual(expected[i], actual[i]);
+			}
+		}
+
+		internal static void AreEqual(OscPacket expected, OscPacket actual)
+		{
+			Assert.AreEqual(expected.GetType(), actual.GetType(), "Packets are not of the same type");
+
+			if (expected is OscMessage)
+			{
+				AreEqual(expected as OscMessage, actual as OscMessage);
+			}
+			else if (expected is OscBundle)
+			{
+				AreEqual(expected as OscBundle, actual as OscBundle);
+			}
+			else
+			{
+				Assert.Fail("Unexpected packet type"); 
+			}
+		}
+
 		internal static void AreEqual(OscMessage[] expected, OscMessage[] actual)
 		{
 			Assert.AreEqual(expected.Length, actual.Length, "Number of arguments do not match");

@@ -19,11 +19,12 @@
 using System;
 using System.Net;
 using System.Threading;
+using System.Net.Sockets;
 
 namespace Rug.Osc
 {
 	/// <summary>
-	/// Osc udp receiver
+	/// Osc UDP receiver
 	/// </summary>
     public sealed class OscReceiver : OscSocket
     {
@@ -95,6 +96,27 @@ namespace Rug.Osc
 
         #region Constructors
 
+		/// <summary>
+		/// Create a new Osc UDP receiver. Note the underlying soket will not be connected untill Connect is called
+		/// </summary>
+		/// <param name="address">the local ip address to listen to</param>
+		/// <param name="multicast">a multicast address to join</param>
+		/// <param name="port">the port to listen on</param>
+		/// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+		/// <param name="maxPacketSize">the maximum packet size of any message</param>
+		public OscReceiver(IPAddress address, IPAddress multicast, int port, int messageBufferSize, int maxPacketSize)
+			: base(address, multicast, port)
+		{
+			m_Bytes = new byte[maxPacketSize];
+			m_ReceiveQueue = new OscPacket[messageBufferSize];
+
+			if (IsMulticastEndPoint == false)
+			{
+				// TODO Fill this in!
+				throw new Exception(Strings.Receiver_NotMulticastAddress); 
+			}
+		}
+
         /// <summary>
 		/// Create a new Osc UDP receiver. Note the underlying soket will not be connected untill Connect is called
         /// </summary>
@@ -118,6 +140,17 @@ namespace Rug.Osc
             : this(address, port, DefaultMessageBufferSize, DefaultPacketSize) 
         {
         }
+
+		/// <summary>
+		/// Create a new Osc UDP receiver. Note the underlying soket will not be connected untill Connect is called
+		/// </summary>
+		/// <param name="address">the local ip address to listen to</param>
+		/// <param name="multicast">a multicast address to join</param>
+		/// <param name="port">the port to listen on</param>
+		public OscReceiver(IPAddress address, IPAddress multicast, int port)
+			: this(address, multicast, port, DefaultMessageBufferSize, DefaultPacketSize)
+		{
+		}
 
         /// <summary>
 		/// Create a new Osc UDP receiver. Note the underlying soket will not be connected untill Connect is called
@@ -147,6 +180,8 @@ namespace Rug.Osc
 
         protected override void OnConnect()
         {
+			Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, m_Bytes.Length * 4);
+
             m_IsReceiving = false; 
         }
 
