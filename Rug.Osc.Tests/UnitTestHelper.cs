@@ -643,11 +643,24 @@ namespace Rug.Osc.Tests
 		}
 
 		internal static string BundleString_Int = "#bundle, 00:00:34.3532, { /test, 1, 2, 3 }";
+				
+		internal static OscBundle Bundle_MultiLineString()
+		{
+			StringBuilder sb = new StringBuilder();
+			
+			sb.AppendLine("THIS TEST IS ON");
+			sb.AppendLine("SEPERATE LINES");
+
+			return new OscBundle(OscTimeTag.BaseDate.Add(new TimeSpan(0, 0, 0, 34, 3532)), new OscMessage("/test", sb.ToString()));
+		}
+
+		internal static string BundleString_MultiLineString = "#bundle, 01-01-1900 00:00:37.5320Z, { /test, \"THIS TEST IS ON\r\nSEPERATE LINES\r\n\" }";
 
 		internal static string[] Bundles_Good = new string[] { 
 			"#bundle, 00:00:34.3532Z, { /test, 1, 2, 3 }", 
 			"#bundle, 00:00:34.3532Z, { /test, 1, 2, 3 }, { /test, 1, 2, 3 }",
-			"#bundle,00:00:34.3532Z,{/test,1,2,3},{/test,1,2,3}"
+			"#bundle,00:00:34.3532Z,{/test,1,2,3},{/test,1,2,3}",
+			"#bundle, 00:00:34.3532Z, { /test, \"THIS TEST IS ON\nSEPERATE LINES\" }",
 		};
 
 		internal static string[] Bundles_Bad = new string[] { 
@@ -657,7 +670,9 @@ namespace Rug.Osc.Tests
 			"#bundle, 00:00:34.3532Z,  /test, 1, 2, 3 }, { /test, 1, 2, 3 }",
 			"#bundle, 00:00:34.3532Z, { /test, 1, 2, 3 , { /test, 1, 2, 3 }",
 			"#bundle, 00:00:34.3532Z, { /test, 1, 2, 3 },  /test, 1, 2, 3 }",
-		}; 
+			"#bundle, 00:00:34.3532Z, { /test, \"THIS TEST IS ON\nSEPERATE LINES",
+			"#bundle, 00:00:34.3532Z, { /test, \"THIS TEST IS ON\nSEPERATE LINES\" ",
+		};
 
 		#endregion 
 

@@ -18,6 +18,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 
 namespace Rug.Osc
 {
@@ -121,6 +122,22 @@ namespace Rug.Osc
 
 				if (OscPacket.TryParse(line, out packet) == false)
 				{
+					StringBuilder sb = new StringBuilder();
+
+					sb.AppendLine(line); 
+
+					while (EndOfStream == false)
+					{
+						sb.Append(m_StringReader.ReadLine());
+
+						if (OscPacket.TryParse(sb.ToString(), out packet) == true)
+						{
+							return packet; 
+						}
+
+						sb.AppendLine(); 
+					}
+
 					return OscMessage.ParseError; 
 				}
 
