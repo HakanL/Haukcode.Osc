@@ -661,7 +661,13 @@ namespace Rug.Osc.Tests
 			"#bundle, 00:00:34.3532Z, { /test, 1, 2, 3 }, { /test, 1, 2, 3 }",
 			"#bundle,00:00:34.3532Z,{/test,1,2,3},{/test,1,2,3}",
 			"#bundle, 00:00:34.3532Z, { /test, \"THIS TEST IS ON\nSEPERATE LINES\" }",
+			"#bundle, 00:00:34.3532Z,\r\n{ /test, 1, 2, 3 },\r\n{ /test, 1, 2, 3 }",
+			"#bundle, 00:00:34.3532Z, { \r\n/test, 1, 2, 3\r\n}",
+			"#bundle, 00:00:34.3532Z, { \r\n/test,\r\n1,\r\n2,\r\n3\r\n}",
 		};
+
+		//Fixed Issue #3,
+
 
 		internal static string[] Bundles_Bad = new string[] { 
 			", 00:00:34.3532Z, { /test, 1, 2, 3 }", 
@@ -670,8 +676,9 @@ namespace Rug.Osc.Tests
 			"#bundle, 00:00:34.3532Z,  /test, 1, 2, 3 }, { /test, 1, 2, 3 }",
 			"#bundle, 00:00:34.3532Z, { /test, 1, 2, 3 , { /test, 1, 2, 3 }",
 			"#bundle, 00:00:34.3532Z, { /test, 1, 2, 3 },  /test, 1, 2, 3 }",
-			"#bundle, 00:00:34.3532Z, { /test, \"THIS TEST IS ON\nSEPERATE LINES",
-			"#bundle, 00:00:34.3532Z, { /test, \"THIS TEST IS ON\nSEPERATE LINES\" ",
+			"#bundle, 00:00:34.3532Z, { /test, \"THIS TEST IS ON\r\nSEPERATE LINES",
+			"#bundle, 00:00:34.3532Z, { /test, \"THIS TEST IS ON\r\nSEPERATE LINES\" ",
+			"#bundle, 00:00:34.3532Z, { /\r\ntest, 1, 2, 3}",
 		};
 
 		#endregion 
