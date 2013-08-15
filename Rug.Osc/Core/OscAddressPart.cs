@@ -155,32 +155,54 @@ namespace Rug.Osc
 		{
 			string regex = value;
 
-			// reduce the complexity 
-			while (regex.Contains("*?") == true)
-			{
-				regex = regex.Replace("*?", "*");
-			}
-
 			// reduce needless complexity 
 			while (regex.Contains("**") == true)
 			{
 				regex = regex.Replace("**", "*");
 			}
 
-
 			StringBuilder sb = new StringBuilder();
+
+			// single char mode indicates that 1 or more '?' has been encountered while parsing 
+			bool singleCharMode = false;
+
+			// the number of '?' that have been encountered sequentially
+			int count = 0; 
 
 			// replace with wildcard regex
 			foreach (char c in regex)
 			{
 				if (c == '*')
 				{
+					// if we are in single char mode the output the match for the current count of sequential chars
+					if (singleCharMode == true)
+					{
+						sb.Append(String.Format(@"([^\s#\*,/\?\[\]\{{}}]{{{0}}})", count));
+					}
+
+					// no longer in single char mode
+					singleCharMode = false;
+
+					// reset the count
+					count = 0; 
+
+					// output the zero or more chars matcher 
 					sb.Append(@"([^\s#\*,/\?\[\]\{}]*)");
 				}
 				else if (c == '?')
-				{
-					sb.Append(@"([^\s#\*,/\?\[\]\{}])");
+				{					
+					// indicate that a '?' has been encountered 
+					singleCharMode = true;
+
+					// increment the count
+					count++;
 				}
+			}
+
+			// if we are in single char mode then output the match for the current count of sequential chars
+			if (singleCharMode == true)
+			{			
+				sb.Append(String.Format(@"([^\s#\*,/\?\[\]\{{}}]{{{0}}})", count));
 			}
 
 			return new OscAddressPart(OscAddressPartType.Wildcard, value, value, sb.ToString());

@@ -101,6 +101,127 @@ namespace Rug.Osc.Tests
 			Assert.IsFalse(OscAddress.IsMatch(addressPattern, address));
 		}
 
+		/// <summary>
+		///A test for IsMatch
+		///</summary>
+		[TestMethod()]
+		public void IsMatchTest_PossibleIssueWithAddressPatternWildcard1()
+		{
+			string addressPattern = "/?*test";
+			string address = "/test";
+
+			Assert.IsFalse(OscAddress.IsMatch(addressPattern, address));
+		}
+
+		/// <summary>
+		///A test for IsMatch
+		///</summary>
+		[TestMethod()]
+		public void IsMatchTest_PossibleIssueWithAddressPatternWildcard2()
+		{
+			string addressPattern = "/?*?test";
+			string address = "/test";
+
+			Assert.IsFalse(OscAddress.IsMatch(addressPattern, address));
+		}
+
+		/// <summary>
+		///A test for IsMatch
+		///</summary>
+		[TestMethod()]
+		public void IsMatchTest_PossibleIssueWithAddressPatternWildcard3()
+		{
+			string addressPattern = "/*?test";
+			string address = "/test";
+
+			Assert.IsFalse(OscAddress.IsMatch(addressPattern, address));
+		}
+		
+		/// <summary>
+		///A test for IsMatch
+		///</summary>
+		[TestMethod()]
+		public void IsMatchTest_PossibleIssueWithAddressPatternWildcard4()
+		{
+			string addressPattern = "/?*test";
+			string address = "/1test";
+
+			Assert.IsTrue(OscAddress.IsMatch(addressPattern, address));
+		}
+
+		/// <summary>
+		///A test for IsMatch
+		///</summary>
+		[TestMethod()]
+		public void IsMatchTest_PossibleIssueWithAddressPatternWildcard5()
+		{
+			string addressPattern = "/?*test";
+			string address = "/1_test";
+
+			Assert.IsTrue(OscAddress.IsMatch(addressPattern, address));
+		}
+
+		/// <summary>
+		///A test for IsMatch
+		///</summary>
+		[TestMethod()]
+		public void IsMatchTest_PossibleIssueWithAddressPatternWildcard6()
+		{
+			string addressPattern = "/???test";
+			string address = "/123test";
+
+			Assert.IsTrue(OscAddress.IsMatch(addressPattern, address));
+		}
+
+		/// <summary>
+		///A test for IsMatch
+		///</summary>
+		[TestMethod()]
+		public void IsMatchTest_PossibleIssueWithAddressPatternWildcard7()
+		{
+			string addressPattern = "/???test";
+			string address = "/test";
+
+			Assert.IsFalse(OscAddress.IsMatch(addressPattern, address));
+		}
+
+
+		/// <summary>
+		///A test for IsMatch
+		///</summary>
+		[TestMethod()]
+		public void IsMatchTest_PossibleIssueWithAddressPatternWildcard8()
+		{
+			string addressPattern = "/???test??";
+			string address = "/test";
+
+			Assert.IsFalse(OscAddress.IsMatch(addressPattern, address));
+		}
+
+		/// <summary>
+		///A test for IsMatch
+		///</summary>
+		[TestMethod()]
+		public void IsMatchTest_PossibleIssueWithAddressPatternWildcard9()
+		{
+			string addressPattern = "/???test??";
+			string address = "/123test45";
+
+			Assert.IsTrue(OscAddress.IsMatch(addressPattern, address));
+		}
+
+		/// <summary>
+		///A test for IsMatch
+		///</summary>
+		[TestMethod()]
+		public void IsMatchTest_PossibleIssueWithAddressPatternWildcard10()
+		{
+			string addressPattern = "/???test*?";
+			string address = "/123test9";
+
+			Assert.IsTrue(OscAddress.IsMatch(addressPattern, address));
+		}
+
 		#endregion 
 
 		#region Validate Address 
