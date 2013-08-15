@@ -228,9 +228,19 @@ namespace Rug.Osc
 			char low = value[index++];
 			index++;
 			char high = value[index++];
-
-			string regex = String.Format("[{0}{1}-{2}]+", isNot ? "^" : String.Empty, EscapeChar(low), EscapeChar(high));
+			
 			string rebuild = String.Format("[{0}{1}-{2}]", isNot ? "!" : String.Empty, low, high);
+
+			// if the range is the wrong way round then swap them
+			if ((int)low > (int)high)
+			{
+				char temp = high;
+
+				high = low;
+				low = temp;
+			}
+			
+			string regex = String.Format("[{0}{1}-{2}]+", isNot ? "^" : String.Empty, EscapeChar(low), EscapeChar(high));
 
 			return new OscAddressPart(OscAddressPartType.CharSpan, value, rebuild, regex);
 		}
@@ -273,6 +283,9 @@ namespace Rug.Osc
 
 			bool first = true;
 
+			regSb.Append("(");
+			listSb.Append("{"); 
+
 			foreach (string str in list)
 			{
 				if (first == false)
@@ -289,7 +302,10 @@ namespace Rug.Osc
 				listSb.Append(str);
 			}
 
-			return new OscAddressPart(OscAddressPartType.List, value, "{" + listSb.ToString() + "}", "(" + regSb.ToString() + ")");
+			listSb.Append("}"); 
+			regSb.Append(")"); 
+
+			return new OscAddressPart(OscAddressPartType.List, value, listSb.ToString(), regSb.ToString());
 		}
 
 		#endregion
