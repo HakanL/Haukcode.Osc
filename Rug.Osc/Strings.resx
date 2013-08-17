@@ -171,6 +171,9 @@
   <data name="Parser_InvalidAddress" xml:space="preserve">
     <value>Invalid address</value>
   </data>
+  <data name="Parser_InvalidBlobStringLength" xml:space="preserve">
+    <value>Invalid blob string length</value>
+  </data>
   <data name="Parser_InvalidColor" xml:space="preserve">
     <value>Invalid color '{0}'</value>
   </data>
@@ -237,7 +240,13 @@
   <data name="Receiver_SocketIsClosed" xml:space="preserve">
     <value>The receiver socket has been disconnected</value>
   </data>
+  <data name="Socket_AddressFamilyIncompatible" xml:space="preserve">
+    <value>Both local and remote must belong to the same address family</value>
+  </data>
   <data name="Socket_AlreadyOpenOrNotClosed" xml:space="preserve">
     <value>The socket is already open or is not fully closed</value>
+  </data>
+  <data name="Socket_UnsupportedAddressFamily" xml:space="preserve">
+    <value>Unsupported address family '{0}'</value>
   </data>
 </root>

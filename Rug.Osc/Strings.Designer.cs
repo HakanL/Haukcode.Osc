@@ -223,6 +223,15 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid blob string length.
+        /// </summary>
+        internal static string Parser_InvalidBlobStringLength {
+            get {
+                return ResourceManager.GetString("Parser_InvalidBlobStringLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid color &apos;{0}&apos;.
         /// </summary>
         internal static string Parser_InvalidColor {
@@ -421,11 +430,29 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Both local and remote must belong to the same address family.
+        /// </summary>
+        internal static string Socket_AddressFamilyIncompatible {
+            get {
+                return ResourceManager.GetString("Socket_AddressFamilyIncompatible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The socket is already open or is not fully closed.
         /// </summary>
         internal static string Socket_AlreadyOpenOrNotClosed {
             get {
                 return ResourceManager.GetString("Socket_AlreadyOpenOrNotClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported address family &apos;{0}&apos;.
+        /// </summary>
+        internal static string Socket_UnsupportedAddressFamily {
+            get {
+                return ResourceManager.GetString("Socket_UnsupportedAddressFamily", resourceCulture);
             }
         }
     }
