@@ -8,6 +8,7 @@ Simple, complete, open source OSC implementation for .NET and Mono.
 * Message address patterns and pattern matching.
 * Osc message bundles.
 * Send and receive osc packets via UDP.
+* Supports IPv4, IPv6, Unicast, Multicast and Broadcast (IPv4 only)
 * Read and write osc packets to streams.
 * Parse osc messages and bundles from strings.
 * Optimized for use in real-time applications.
@@ -34,4 +35,4 @@ using (OscSender sender = new OscSender(address, port))
 
 ```
 
-Download the [source distribution](https://bitbucket.org/rugcode/rug.osc/get/Version-1.1.0.0.zip) for more examples.
+Download the [source distribution](https://bitbucket.org/rugcode/rug.osc/get/Version-1.2.0.0.zip) for more examples.
