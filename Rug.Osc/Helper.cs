@@ -249,7 +249,7 @@ namespace Rug.Osc
 				if (trimmed.Length % 2 != 0)
 				{
 					// this is an error 
-					throw new Exception();
+					throw new Exception(Strings.Parser_InvalidBlobStringLength);
 				}
 
 				int length = trimmed.Length / 2;
