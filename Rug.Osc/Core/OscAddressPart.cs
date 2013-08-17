@@ -155,32 +155,54 @@ namespace Rug.Osc
 		{
 			string regex = value;
 
-			// reduce the complexity 
-			while (regex.Contains("*?") == true)
-			{
-				regex = regex.Replace("*?", "*");
-			}
-
 			// reduce needless complexity 
 			while (regex.Contains("**") == true)
 			{
 				regex = regex.Replace("**", "*");
 			}
 
-
 			StringBuilder sb = new StringBuilder();
+
+			// single char mode indicates that 1 or more '?' has been encountered while parsing 
+			bool singleCharMode = false;
+
+			// the number of '?' that have been encountered sequentially
+			int count = 0; 
 
 			// replace with wildcard regex
 			foreach (char c in regex)
 			{
 				if (c == '*')
 				{
+					// if we are in single char mode the output the match for the current count of sequential chars
+					if (singleCharMode == true)
+					{
+						sb.Append(String.Format(@"([^\s#\*,/\?\[\]\{{}}]{{{0}}})", count));
+					}
+
+					// no longer in single char mode
+					singleCharMode = false;
+
+					// reset the count
+					count = 0; 
+
+					// output the zero or more chars matcher 
 					sb.Append(@"([^\s#\*,/\?\[\]\{}]*)");
 				}
 				else if (c == '?')
-				{
-					sb.Append(@"([^\s#\*,/\?\[\]\{}])");
+				{					
+					// indicate that a '?' has been encountered 
+					singleCharMode = true;
+
+					// increment the count
+					count++;
 				}
+			}
+
+			// if we are in single char mode then output the match for the current count of sequential chars
+			if (singleCharMode == true)
+			{			
+				sb.Append(String.Format(@"([^\s#\*,/\?\[\]\{{}}]{{{0}}})", count));
 			}
 
 			return new OscAddressPart(OscAddressPartType.Wildcard, value, value, sb.ToString());
@@ -206,9 +228,19 @@ namespace Rug.Osc
 			char low = value[index++];
 			index++;
 			char high = value[index++];
-
-			string regex = String.Format("[{0}{1}-{2}]+", isNot ? "^" : String.Empty, EscapeChar(low), EscapeChar(high));
+			
 			string rebuild = String.Format("[{0}{1}-{2}]", isNot ? "!" : String.Empty, low, high);
+
+			// if the range is the wrong way round then swap them
+			if ((int)low > (int)high)
+			{
+				char temp = high;
+
+				high = low;
+				low = temp;
+			}
+			
+			string regex = String.Format("[{0}{1}-{2}]+", isNot ? "^" : String.Empty, EscapeChar(low), EscapeChar(high));
 
 			return new OscAddressPart(OscAddressPartType.CharSpan, value, rebuild, regex);
 		}
@@ -251,6 +283,9 @@ namespace Rug.Osc
 
 			bool first = true;
 
+			regSb.Append("(");
+			listSb.Append("{"); 
+
 			foreach (string str in list)
 			{
 				if (first == false)
@@ -267,7 +302,10 @@ namespace Rug.Osc
 				listSb.Append(str);
 			}
 
-			return new OscAddressPart(OscAddressPartType.List, value, "{" + listSb.ToString() + "}", "(" + regSb.ToString() + ")");
+			listSb.Append("}"); 
+			regSb.Append(")"); 
+
+			return new OscAddressPart(OscAddressPartType.List, value, listSb.ToString(), regSb.ToString());
 		}
 
 		#endregion
