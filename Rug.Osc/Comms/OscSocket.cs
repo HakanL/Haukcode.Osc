@@ -94,7 +94,14 @@ namespace Rug.Osc
 		/// <returns>true if it is a multicast address</returns>
 		public static bool IsMulticastAddress(IPAddress address)
 		{
-			return (address.GetAddressBytes()[0] & MulticastAddressMask) == MulticastAddressValue;
+			if (address.AddressFamily == AddressFamily.InterNetworkV6)
+			{
+				return address.IsIPv6Multicast; 
+			}
+			else
+			{
+				return (address.GetAddressBytes()[0] & MulticastAddressMask) == MulticastAddressValue;
+			}
 		}
 
         #region Private Members
@@ -191,6 +198,23 @@ namespace Rug.Osc
 		/// <param name="timeToLive">TTL value to apply to packets</param>
 		internal OscSocket(IPAddress local, IPAddress remote, int port, int timeToLive)
 		{
+			if (local.AddressFamily != AddressFamily.InterNetwork &&
+				local.AddressFamily != AddressFamily.InterNetworkV6)
+			{
+				throw new ArgumentException(String.Format(Strings.Socket_UnsupportedAddressFamily, local.AddressFamily), "local"); 
+			}
+
+			if (remote.AddressFamily != AddressFamily.InterNetwork &&
+				remote.AddressFamily != AddressFamily.InterNetworkV6)
+			{
+				throw new ArgumentException(String.Format(Strings.Socket_UnsupportedAddressFamily, local.AddressFamily), "remote"); 
+			}
+
+			if (local.AddressFamily != remote.AddressFamily)
+			{
+				throw new Exception(Strings.Socket_AddressFamilyIncompatible); 
+			}
+
 			m_LocalAddress = local;
 			m_RemoteAddress = remote;
 			m_Port = port;
@@ -224,17 +248,25 @@ namespace Rug.Osc
         /// <param name="port">the port</param>
         internal OscSocket(IPAddress address, int port)
         {
+			if (address.AddressFamily != AddressFamily.InterNetwork &&
+				address.AddressFamily != AddressFamily.InterNetworkV6)
+			{
+				throw new ArgumentException(String.Format(Strings.Socket_UnsupportedAddressFamily, address.AddressFamily), "address");
+			}
+
+			bool useIpV6 = address.AddressFamily == AddressFamily.InterNetworkV6; 
+
             m_Port = port;
 
 			if (this.OscSocketType == Osc.OscSocketType.Send)
 			{
-				m_LocalAddress = IPAddress.Any;
+				m_LocalAddress = useIpV6 ? IPAddress.IPv6Any : IPAddress.Any;
 				m_RemoteAddress = address;
 			}
 			else
 			{
 				m_LocalAddress = address;
-				m_RemoteAddress = IPAddress.Any;
+				m_RemoteAddress = useIpV6 ? IPAddress.IPv6Any : IPAddress.Any;
 			}
 
 			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port); 
@@ -280,33 +312,50 @@ namespace Rug.Osc
                     throw new Exception(Strings.Socket_AlreadyOpenOrNotClosed); 
                 }
 
+				bool useIpV6 = m_LocalAddress.AddressFamily == AddressFamily.InterNetworkV6; 
+
                 // create the instance of the socket
-                m_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+				m_Socket = new Socket(useIpV6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 				
                 m_Socket.Blocking = false;                
 
                 if (RemoteAddress == IPAddress.Broadcast)
                 {
                     m_Socket.EnableBroadcast = true;
+					m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
                 }
 
 				m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 16);
 				m_Socket.ExclusiveAddressUse = false;
-
+				
 				m_Socket.Bind(m_LocalEndPoint);
 
                 if (OscSocketType == Osc.OscSocketType.Receive)
                 {						
 					if (IsMulticastEndPoint == true)
 					{
-						m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(m_RemoteAddress));
+						if (useIpV6 == true)
+						{
+							m_Socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(m_RemoteAddress));
+						}
+						else
+						{
+							m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(m_RemoteAddress));
+						}
 					}
 				}
                 else
                 {
 					if (IsMulticastEndPoint == true)
 					{
-						m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, TimeToLive);
+						if (useIpV6 == true)
+						{
+							m_Socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.MulticastTimeToLive, TimeToLive);
+						}
+						else
+						{
+							m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, TimeToLive);
+						}
 					}
 					
 					m_Socket.Connect(m_RemoteEndPoint);
