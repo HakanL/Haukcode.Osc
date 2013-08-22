@@ -54,6 +54,8 @@
     <Compile Include="OscMessageTest.cs" />
     <Compile Include="OscMidiMessageTest.cs" />
     <Compile Include="OscReaderTest.cs" />
+    <Compile Include="OscReceiverTest.cs" />
+    <Compile Include="OscSenderTest.cs" />
     <Compile Include="OscSocketTest.cs" />
     <Compile Include="OscTimeTagTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
