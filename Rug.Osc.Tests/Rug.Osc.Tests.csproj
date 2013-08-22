@@ -50,6 +50,7 @@
     <Compile Include="HelperTest.cs" />
     <Compile Include="OscAddressTest.cs" />
     <Compile Include="OscBundleTest.cs" />
+    <Compile Include="OscListenerManagerTest.cs" />
     <Compile Include="OscMessageTest.cs" />
     <Compile Include="OscMidiMessageTest.cs" />
     <Compile Include="OscReaderTest.cs" />

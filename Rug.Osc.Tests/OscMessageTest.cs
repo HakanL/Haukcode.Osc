@@ -4,8 +4,6 @@ using System;
 
 namespace Rug.Osc.Tests
 {
-    
-    
     /// <summary>
     ///This is a test class for OscMessageTest and is intended
     ///to contain all OscMessageTest Unit Tests
