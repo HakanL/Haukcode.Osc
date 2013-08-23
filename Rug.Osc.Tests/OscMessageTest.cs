@@ -251,6 +251,23 @@ namespace Rug.Osc.Tests
 			UnitTestHelper.AreEqual(expected, actual);	
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Int()
+		{
+			OscMessage expected = UnitTestHelper.Message_Int();
+			byte[] bytes = UnitTestHelper.MessageBody_Int;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+			
+			Assert.IsTrue(actual.Equals(expected));
+		}	
+
 		#endregion
 
 		#region Long
@@ -334,6 +351,24 @@ namespace Rug.Osc.Tests
 			UnitTestHelper.AreEqual(expected, actual);
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Long()
+		{
+			OscMessage expected = UnitTestHelper.Message_Long();
+			byte[] bytes = UnitTestHelper.MessageBody_Long;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
+
+
 		#endregion
 
 		#region Float
@@ -403,7 +438,6 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Float.Length);
 		}
 
-
 		/// <summary>
 		///A test for Parse
 		///</summary>
@@ -415,6 +449,23 @@ namespace Rug.Osc.Tests
 			OscMessage actual;
 			actual = OscMessage.Parse(str);
 			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Float()
+		{
+			OscMessage expected = UnitTestHelper.Message_Float();
+			byte[] bytes = UnitTestHelper.MessageBody_Float;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
 		}
 
 		#endregion
@@ -500,6 +551,23 @@ namespace Rug.Osc.Tests
 			UnitTestHelper.AreEqual(expected, actual);
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Double()
+		{
+			OscMessage expected = UnitTestHelper.Message_Double();
+			byte[] bytes = UnitTestHelper.MessageBody_Double;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
+
 		#endregion
 
 		#region TimeTag
@@ -557,6 +625,8 @@ namespace Rug.Osc.Tests
 			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
+
+			Assert.IsTrue(actual.Equals(expected)); 
 		}
 
 		/// <summary>
@@ -567,6 +637,23 @@ namespace Rug.Osc.Tests
 		{
 			OscMessage target = UnitTestHelper.Message_TimeTag();
 			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_TimeTag.Length);
+		}
+
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_TimeTag()
+		{
+			OscMessage expected = UnitTestHelper.Message_TimeTag();
+			byte[] bytes = UnitTestHelper.MessageBody_TimeTag;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
 		}
 
 		#endregion
@@ -652,6 +739,23 @@ namespace Rug.Osc.Tests
 			UnitTestHelper.AreEqual(expected, actual);
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Char()
+		{
+			OscMessage expected = UnitTestHelper.Message_Char();
+			byte[] bytes = UnitTestHelper.MessageBody_Char;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
+
 		#endregion
 
 		#region Color
@@ -723,6 +827,23 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Color_Red.Length);
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Color_Red()
+		{
+			OscMessage expected = UnitTestHelper.Message_Color_Red();
+			byte[] bytes = UnitTestHelper.MessageBody_Color_Red;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
+
 		#endregion
 
 		#region Color Green
@@ -790,6 +911,23 @@ namespace Rug.Osc.Tests
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Green();
 			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Color_Green.Length);
+		}
+
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Color_Green()
+		{
+			OscMessage expected = UnitTestHelper.Message_Color_Green();
+			byte[] bytes = UnitTestHelper.MessageBody_Color_Green;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
 		}
 
 		#endregion
@@ -861,6 +999,24 @@ namespace Rug.Osc.Tests
 			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Color_Blue.Length);
 		}
 
+
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Color_Blue()
+		{
+			OscMessage expected = UnitTestHelper.Message_Color_Blue();
+			byte[] bytes = UnitTestHelper.MessageBody_Color_Blue;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
+
 		#endregion
 
 		#region Color Transparent
@@ -918,6 +1074,8 @@ namespace Rug.Osc.Tests
 			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
+
+			Assert.IsTrue(actual.Equals(expected)); 
 		}
 
 		/// <summary>
@@ -928,6 +1086,23 @@ namespace Rug.Osc.Tests
 		{
 			OscMessage target = UnitTestHelper.Message_Color_Transparent();
 			Assert.AreEqual(target.SizeInBytes, UnitTestHelper.MessageBody_Color_Transparent.Length);
+		}
+
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Color_Transparent()
+		{
+			OscMessage expected = UnitTestHelper.Message_Color_Transparent();
+			byte[] bytes = UnitTestHelper.MessageBody_Color_Transparent;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
 		}
 
 		#endregion
@@ -1014,6 +1189,23 @@ namespace Rug.Osc.Tests
 			UnitTestHelper.AreEqual(expected, actual);
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Midi()
+		{
+			OscMessage expected = UnitTestHelper.Message_Midi();
+			byte[] bytes = UnitTestHelper.MessageBody_Midi;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
+
 		#endregion
 
 		#region True
@@ -1071,6 +1263,8 @@ namespace Rug.Osc.Tests
 			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
+
+			Assert.IsTrue(actual.Equals(expected)); 
 		}
 
 		/// <summary>
@@ -1097,6 +1291,22 @@ namespace Rug.Osc.Tests
 			UnitTestHelper.AreEqual(expected, actual);
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_True()
+		{
+			OscMessage expected = UnitTestHelper.Message_True();
+			byte[] bytes = UnitTestHelper.MessageBody_True;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
 
 		#endregion
 
@@ -1155,6 +1365,8 @@ namespace Rug.Osc.Tests
 			actual = OscMessage.Read(bytes, count);
 
 			UnitTestHelper.AreEqual(expected, actual);
+
+			Assert.IsTrue(actual.Equals(expected)); 
 		}
 
 		/// <summary>
@@ -1181,6 +1393,22 @@ namespace Rug.Osc.Tests
 			UnitTestHelper.AreEqual(expected, actual);
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_False()
+		{
+			OscMessage expected = UnitTestHelper.Message_False();
+			byte[] bytes = UnitTestHelper.MessageBody_False;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
 
 		#endregion
 
@@ -1265,6 +1493,23 @@ namespace Rug.Osc.Tests
 			UnitTestHelper.AreEqual(expected, actual);
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Nil()
+		{
+			OscMessage expected = UnitTestHelper.Message_Nil();
+			byte[] bytes = UnitTestHelper.MessageBody_Nil;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
+
 		#endregion
 
 		#region Infinitum
@@ -1345,6 +1590,23 @@ namespace Rug.Osc.Tests
 			OscMessage actual;
 			actual = OscMessage.Parse(str);
 			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Infinitum()
+		{
+			OscMessage expected = UnitTestHelper.Message_Infinitum();
+			byte[] bytes = UnitTestHelper.MessageBody_Infinitum;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
 		}
 
 		#endregion
@@ -1429,6 +1691,23 @@ namespace Rug.Osc.Tests
 			UnitTestHelper.AreEqual(expected, actual);
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_String()
+		{
+			OscMessage expected = UnitTestHelper.Message_String();
+			byte[] bytes = UnitTestHelper.MessageBody_String;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
+
 		#endregion
 
 		#region Symbol
@@ -1508,6 +1787,23 @@ namespace Rug.Osc.Tests
 			OscMessage actual;
 			actual = OscMessage.Parse(str);
 			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Symbol()
+		{
+			OscMessage expected = UnitTestHelper.Message_Symbol();
+			byte[] bytes = UnitTestHelper.MessageBody_Symbol;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
 		}
 
 		#endregion
@@ -1617,6 +1913,22 @@ namespace Rug.Osc.Tests
 			UnitTestHelper.AreEqual(expected, actual);
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Blob()
+		{
+			OscMessage expected = UnitTestHelper.Message_Blob();
+			byte[] bytes = UnitTestHelper.MessageBody_Blob;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
 
 		#endregion
 
@@ -1685,6 +1997,23 @@ namespace Rug.Osc.Tests
 		}
 
 		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Array_Ints()
+		{
+			OscMessage expected = UnitTestHelper.Message_Array_Ints();
+			byte[] bytes = UnitTestHelper.MessageBody_Array_Ints;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
+
+		/// <summary>
 		///A test for Write
 		///</summary>
 		[TestMethod()]
@@ -1744,6 +2073,23 @@ namespace Rug.Osc.Tests
 		}
 
 		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Array_Ints2()
+		{
+			OscMessage expected = UnitTestHelper.Message_Array_Ints2();
+			byte[] bytes = UnitTestHelper.MessageBody_Array_Ints2;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
+
+		/// <summary>
 		///A test for Write
 		///</summary>
 		[TestMethod()]
@@ -1800,6 +2146,23 @@ namespace Rug.Osc.Tests
 			OscMessage actual;
 			actual = OscMessage.Parse(str);
 			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Array_NestedInts()
+		{
+			OscMessage expected = UnitTestHelper.Message_Array_NestedInts();
+			byte[] bytes = UnitTestHelper.MessageBody_Array_NestedInts;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
 		}
 
 		#endregion
@@ -1887,6 +2250,23 @@ namespace Rug.Osc.Tests
 			UnitTestHelper.AreEqual(expected, actual);
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Float2()
+		{
+			OscMessage expected = UnitTestHelper.Message_Float2();
+			byte[] bytes = UnitTestHelper.MessageBody_Float2;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
+
 		#endregion
 
 		#region Float 3
@@ -1943,7 +2323,7 @@ namespace Rug.Osc.Tests
 
 			actual = OscMessage.Read(bytes, count);
 
-			UnitTestHelper.AreEqual(expected, actual);
+			Assert.IsTrue(actual.Equals(expected)); 
 		}
 
 		/// <summary>
@@ -1969,6 +2349,22 @@ namespace Rug.Osc.Tests
 			UnitTestHelper.AreEqual(expected, actual);
 		}
 
+		/// <summary>
+		///A test for Equals
+		///</summary>
+		[TestMethod()]
+		public void EqualsTest_Float3()
+		{
+			OscMessage expected = UnitTestHelper.Message_Float3();
+			byte[] bytes = UnitTestHelper.MessageBody_Float3;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			Assert.IsTrue(actual.Equals(expected));
+		}
 
 		#endregion
 

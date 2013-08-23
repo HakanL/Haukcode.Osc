@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Drawing;
 
 namespace Rug.Osc
 {
@@ -261,5 +262,37 @@ namespace Rug.Osc
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Is the supplied object exactly the same instance as this object
+		/// </summary>
+		/// <param name="obj">an object</param>
+		/// <returns>returns true if </returns>
+		public virtual bool IsSameInstance(object obj)
+		{
+			return base.Equals(obj);
+		}
+
+		public abstract bool Equals(object obj);
+
+		public abstract int GetHashCode();
+
+		protected bool BytesAreEqual(byte[] expected, byte[] actual)
+		{
+			if (expected.Length != actual.Length)
+			{
+				return false;
+			}
+
+			for (int i = 0; i < expected.Length; i++)
+			{
+				if (expected[i] != actual[i])
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
 	}
 }

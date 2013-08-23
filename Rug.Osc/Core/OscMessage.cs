@@ -48,7 +48,10 @@ namespace Rug.Osc
         private string m_Address;
         
         private OscPacketError m_Error = OscPacketError.None;
-        private string m_ErrorMessage = String.Empty;    
+        private string m_ErrorMessage = String.Empty;
+
+		private bool m_HasHashCode = false;
+		private int m_HashCode = 0; 
 
 	    #endregion
 
@@ -362,7 +365,7 @@ namespace Rug.Osc
 			return m_Arguments.GetEnumerator();
 		}
 
-		#endregion
+		#endregion	
 
 		#region To Array
 
@@ -1338,6 +1341,184 @@ namespace Rug.Osc
 				}
 			}
 		}
+
+		#endregion
+
+		#region Equals
+
+		/// <summary>
+		/// Is the supplied object exactly the same instance as this object
+		/// </summary>
+		/// <param name="obj">an object</param>
+		/// <returns>returns true if </returns>
+		public override bool IsSameInstance(object obj)
+		{
+			return base.IsSameInstance(obj);
+		}
+
+		/// <summary>
+		/// Does a deep comparison of the suppied object and this instance
+		/// </summary>
+		/// <param name="obj">An object</param>
+		/// <returns>true if the objects are equivalent</returns>
+		public override bool Equals(object obj)
+		{
+			// if the object is the same instance then return true
+			if (IsSameInstance(obj) == true)
+			{
+				return true;
+			}
+			// if the object is a message 
+			else if (obj is OscMessage)
+			{
+				return MessagesAreEqual(obj as OscMessage, this);
+			}
+			// if the onbject is a byte array
+			else if (obj is byte[])
+			{
+				// check the bytes against the bytes of this message
+				return BytesAreEqual(obj as byte[], this.ToByteArray());
+			}
+			// if the object is a string
+			else if (obj is string)
+			{
+				// check the string 
+				return this.ToString().Equals(obj is string);
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Are 2 messages equivalent
+		/// </summary>
+		/// <param name="message1">A message</param>
+		/// <param name="message2">A message</param>
+		/// <returns>true if the objects are equivalent</returns>
+		private bool MessagesAreEqual(OscMessage message1, OscMessage message2)
+		{
+			// ensure the error codes are the same
+			if (message1.Error != message2.Error)
+			{
+				return false;
+			}
+
+			// ensure the error messages are the same
+			if (message1.ErrorMessage != message2.ErrorMessage)
+			{
+				return false;
+			}
+
+			// ensure the address is the same
+			if (message1.Address != message2.Address)
+			{
+				return false;
+			}
+
+			// ensure the argument arrays are the same
+			return ArgumentsAreEqual(message1.ToArray(), message2.ToArray());
+		}
+
+		/// <summary>
+		/// Are the contents of 2 argument arrays the equivalent
+		/// </summary>
+		/// <param name="array1">An array containing argument objects</param>
+		/// <param name="array2">An array containing argument objects</param>
+		/// <returns>true if the object arrays are equivalent</returns>
+		private bool ArgumentsAreEqual(object[] array1, object[] array2)
+		{
+			// ensure the arrays the same langth
+			if (array1.Length != array2.Length)
+			{
+				return false;
+			}
+
+			// iterate through the arrays
+			for (int i = 0; i < array1.Length; i++)
+			{
+				// ensure the objects at index i of the same type? 
+				if (array1[i].GetType() != array2[i].GetType())
+				{
+					return false;
+				}
+
+				// is the argument an object array
+				if (array1[i] is object[])
+				{
+					object[] expectedArg = (object[])array1[i];
+					object[] actualArg = (object[])array2[i];
+
+					// ensure the argument object arrays are the same
+					if (ArgumentsAreEqual(expectedArg, actualArg) == false)
+					{
+						return false;
+					}
+				}
+				// is the argument an byte array
+				else if (array1[i] is byte[])
+				{
+					byte[] expectedArg = (byte[])array1[i];
+					byte[] actualArg = (byte[])array2[i];
+
+					// ensure the byte arrays are the same
+					if (BytesAreEqual(expectedArg, actualArg) == false)
+					{
+						return false;
+					}
+				}
+				// is the argument a color
+				else if (array1[i] is Color)
+				{
+					Color expectedArg = (Color)array1[i];
+					Color actualArg = (Color)array2[i];
+
+					// check the RGBA values
+					if (expectedArg.R != actualArg.R ||
+						expectedArg.G != actualArg.G ||
+						expectedArg.B != actualArg.B ||
+						expectedArg.A != actualArg.A)
+					{
+						return false;
+					}
+				}
+				// anything else
+				else
+				{					
+					// just check the value
+					if (array1[i].Equals(array2[i]) == false)
+					{
+						return false;
+					}
+				}
+			}
+
+			// were good
+			return true;
+		}
+
+		#endregion
+
+		#region Hash Code
+
+		/// <summary>
+		/// Get the hash code for this object 
+		/// </summary>
+		/// <returns>The hash code</returns>
+		public override int GetHashCode()
+		{
+			// if no has code has been created
+			if (m_HasHashCode == false)
+			{
+				// assign the hashcode from the string form (TODO: do something better?!)
+				m_HashCode = this.ToString().GetHashCode();
+
+				// indicate that a hashcode has been created
+				m_HasHashCode = true;
+			}
+
+			// return the hashcode
+			return m_HashCode;
+		}	
 
 		#endregion
 

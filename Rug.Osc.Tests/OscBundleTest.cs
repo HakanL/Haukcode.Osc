@@ -111,6 +111,8 @@ namespace Rug.Osc.Tests
 			OscBundle actual;
 			actual = OscBundle.Read(bytes, index, count);
 			UnitTestHelper.AreEqual(expected, actual);
+
+			Assert.IsTrue(actual.Equals(expected)); 
 		}
 
 		/* 
