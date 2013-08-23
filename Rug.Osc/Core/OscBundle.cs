@@ -40,6 +40,9 @@ namespace Rug.Osc
 		private OscPacketError m_Error;
 		private string m_ErrorMessage;
 
+		private bool m_HasHashCode = false;
+		private int m_HashCode;
+
 		#endregion
 
 		#region Public Properties
@@ -91,6 +94,8 @@ namespace Rug.Osc
 
 		#endregion
 
+		#region Constructors
+
 		/// <summary>
 		/// Create a bundle of messages
 		/// </summary>
@@ -126,6 +131,10 @@ namespace Rug.Osc
 
 		private OscBundle() { }
 
+		#endregion
+
+		#region To String
+
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
@@ -143,6 +152,167 @@ namespace Rug.Osc
 
 			return sb.ToString();
 		}
+
+		#endregion 
+
+		#region Equals
+
+		/// <summary>
+		/// Is the supplied object exactly the same instance as this object
+		/// </summary>
+		/// <param name="obj">an object</param>
+		/// <returns>true if the objects are equivalent</returns>
+		public override bool IsSameInstance(object obj)
+		{
+			return base.IsSameInstance(obj);
+		}
+
+		/// <summary>
+		/// Does a deep comparison of the suppied object and this instance
+		/// </summary>
+		/// <param name="obj">An object</param>
+		/// <returns>true if the objects are equivalent</returns>
+		public override bool Equals(object obj)
+		{
+			// if the object is the same instance then return true
+			if (IsSameInstance(obj) == true)
+			{
+				return true;
+			}
+			// if the object is a bundle 
+			else if (obj is OscBundle)
+			{
+				return BundlesAreEqual(obj as OscBundle, this);
+			}
+			// if the object is a byte array 
+			else if (obj is byte[])
+			{
+				// check the bytes against the bytes of this bundle
+				return BytesAreEqual(obj as byte[], this.ToByteArray());
+			}
+			// if the object is a string
+			else if (obj is string)
+			{
+				// check the string 
+				return this.ToString().Equals(obj is string);
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Are 2 bundles equivalent
+		/// </summary>
+		/// <param name="bundle1">A bundle</param>
+		/// <param name="bundle2">A bundle</param>
+		/// <returns>true if the objects are equivalent</returns>
+		private bool BundlesAreEqual(OscBundle bundle1, OscBundle bundle2)
+		{
+			// ensure the error codes are the same
+			if (bundle1.Error != bundle2.Error)
+			{
+				return false;
+			}
+
+			// ensure the error messages are the same
+			if (bundle1.ErrorMessage != bundle2.ErrorMessage)
+			{
+				return false;
+			}
+
+			// ensure the timestamps are the same
+			if (bundle1.Timestamp.Value != bundle2.Timestamp.Value)
+			{
+				return false;
+			}
+
+			// ensure the packet arrays are equivalent
+			return PacketArraysAreEqual(bundle1.ToArray(), bundle2.ToArray());
+		}
+
+		/// <summary>
+		/// Are 2 packet arrays equivalent
+		/// </summary>
+		/// <param name="array1">A packet array</param>
+		/// <param name="array2">A packet array</param>
+		/// <returns>true if the packet arrays are equivalent</returns>
+		private bool PacketArraysAreEqual(OscPacket[] array1, OscPacket[] array2)
+		{
+			// ensure they are the same length
+			if (array1.Length != array2.Length)
+			{
+				return false;
+			}
+
+			// iterate through all the objects
+			for (int i = 0; i < array2.Length; i++)
+			{
+				// are they the same? 
+				if (PacketsAreEqual(array1[i], array2[i]) == false)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Are 2 packets equivalent 
+		/// </summary>
+		/// <param name="packet1">A packet</param>
+		/// <param name="packet2">A packet</param>
+		/// <returns>true if the packets are equivalent</returns>
+		private bool PacketsAreEqual(OscPacket packet1, OscPacket packet2)
+		{
+			// ensure they are the same type
+			if (packet1.GetType() != packet2.GetType())
+			{
+				return false;
+			}
+
+			// are the packets messages
+			if (packet1 is OscMessage)
+			{
+				return (packet1 as OscMessage).Equals(packet2);
+			}
+			// are the packets bundles
+			else if (packet1 is OscBundle)
+			{
+				return BundlesAreEqual(packet1 as OscBundle, packet2 as OscBundle);
+			}
+			// return false
+			else
+			{
+				return false;
+			}
+		}
+
+		#endregion
+
+		#region Hash Code
+
+		/// <summary>
+		/// Get the hash code for this object 
+		/// </summary>
+		/// <returns>The hash code</returns>
+		public override int GetHashCode()
+		{
+			// if no has code has been created
+			if (m_HasHashCode == false)
+			{
+				// assign the hashcode from the string form (TODO: do something better?!)
+				m_HashCode = this.ToString().GetHashCode();
+
+				// indicate that a hashcode has been created
+				m_HasHashCode = true;
+			}
+
+			// return the hashcode
+			return m_HashCode;
+		}
+
+		#endregion
 
 		#region Enumerable
 
