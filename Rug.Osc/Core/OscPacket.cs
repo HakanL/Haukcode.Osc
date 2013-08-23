@@ -294,5 +294,41 @@ namespace Rug.Osc
 
 			return true;
 		}
+
+		#region Operators
+
+		public static bool operator ==(OscPacket packet1, OscPacket packet2)
+		{
+			if (packet1 is OscMessage && packet2 is OscMessage)
+			{
+				return (packet1 as OscMessage).Equals(packet2 as OscMessage) == true;
+			}
+			else if (packet1 is OscBundle && packet2 is OscBundle)
+			{
+				return (packet1 as OscBundle).Equals(packet2 as OscBundle) == true;
+			}
+			else
+			{
+				return false; 
+			}				
+		}
+
+		public static bool operator !=(OscPacket packet1, OscPacket packet2)
+		{
+			if (packet1 is OscMessage && packet2 is OscMessage)
+			{
+				return (packet1 as OscMessage).Equals(packet2 as OscMessage) == false;
+			}
+			else if (packet1 is OscBundle && packet2 is OscBundle)
+			{
+				return (packet1 as OscBundle).Equals(packet2 as OscBundle) == false;
+			}
+			else
+			{
+				return true;
+			}	
+		}
+
+		#endregion
 	}
 }

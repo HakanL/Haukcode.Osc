@@ -658,5 +658,19 @@ namespace Rug.Osc
 		}
 
 		#endregion
+
+		#region Operators
+
+		public static bool operator ==(OscBundle bundle1, OscBundle bundle2)
+		{
+			return bundle1.Equals(bundle2) == true;
+		}
+
+		public static bool operator !=(OscBundle bundle1, OscBundle bundle2)
+		{
+			return bundle1.Equals(bundle2) == false;
+		}
+
+		#endregion
 	}
 }

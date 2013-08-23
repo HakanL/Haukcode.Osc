@@ -455,5 +455,14 @@ namespace Rug.Osc {
                 return ResourceManager.GetString("Socket_UnsupportedAddressFamily", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid osc-timetag string &apos;{0}&apos;.
+        /// </summary>
+        internal static string TimeTag_InvalidString {
+            get {
+                return ResourceManager.GetString("TimeTag_InvalidString", resourceCulture);
+            }
+        }
     }
 }

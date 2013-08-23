@@ -249,4 +249,7 @@
   <data name="Socket_UnsupportedAddressFamily" xml:space="preserve">
     <value>Unsupported address family '{0}'</value>
   </data>
+  <data name="TimeTag_InvalidString" xml:space="preserve">
+    <value>Invalid osc-timetag string '{0}'</value>
+  </data>
 </root>

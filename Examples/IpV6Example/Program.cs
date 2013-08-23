@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 using Rug.Osc;
-using System.Net;
 
 namespace IpV6Example
 {
