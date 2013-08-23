@@ -280,6 +280,9 @@ namespace Rug.Osc
 
 		public static string ToStringBlob(byte[] bytes)
 		{
+			// if the deafult is to be Base64 encoded
+			//return "64x" + System.Convert.ToBase64String(bytes); 
+
 			StringBuilder sb = new StringBuilder((bytes.Length * 2) + 2);
 
 			sb.Append("0x");
@@ -287,7 +290,7 @@ namespace Rug.Osc
 			foreach (byte b in bytes)
 			{
 				sb.Append(b.ToString("X2"));
-			}
+			}				
 
 			return sb.ToString();
 		}

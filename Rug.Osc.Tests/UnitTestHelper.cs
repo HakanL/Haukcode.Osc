@@ -131,7 +131,7 @@ namespace Rug.Osc.Tests
 			return new OscMessage("/test", (byte)'p');
 		}
 
-		internal static string MessageString_Char = "/test, p";
+		internal static string MessageString_Char = "/test, 'p'";
 
 		#endregion
 

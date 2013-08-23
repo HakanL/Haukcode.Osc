@@ -1285,11 +1285,11 @@ namespace Rug.Osc
 				}
 				else if (obj is long)
 				{
-					sb.Append(((long)obj).ToString(provider));
+					sb.Append(((long)obj).ToString(provider) + "L");
 				}
 				else if (obj is float)
 				{
-					sb.Append(((float)obj).ToString(provider));
+					sb.Append(((float)obj).ToString(provider) + "f");
 				}
 				else if (obj is double)
 				{
@@ -1297,7 +1297,7 @@ namespace Rug.Osc
 				}
 				else if (obj is byte)
 				{
-					sb.Append((char)obj); 
+					sb.Append("'" + (char)(byte)obj + "'"); 
 				}
 				else if (obj is Color)
 				{
@@ -1784,6 +1784,15 @@ namespace Rug.Osc
 				}
 			}
 
+			// parse int64
+			if (argString.EndsWith("L") == true)
+			{
+				if (long.TryParse(argString.Substring(0, argString.Length - 1), NumberStyles.Integer, provider, out value_Int64) == true)
+				{
+					return value_Int64;
+				}
+			}
+
 			// parse int32
 			if (int.TryParse(argString, NumberStyles.Integer, provider, out value_Int32) == true)
 			{
@@ -1833,9 +1842,11 @@ namespace Rug.Osc
 			}
 
 			// parse char
-			if (argString.Length == 1)
+			if (argString.Length == 3 && 
+				argString[0] == '\'' && 
+				argString[2] == '\'')
 			{
-				char c = str.Trim()[0];
+				char c = str.Trim()[1];
 
 				return (byte)c;
 			}
@@ -1926,6 +1937,20 @@ namespace Rug.Osc
 		}
 
 		#endregion
+
+		#endregion
+
+		#region Operators
+
+		public static bool operator ==(OscMessage msg1, OscMessage msg2)
+		{
+			return msg1.Equals(msg2) == true;
+		}
+
+		public static bool operator !=(OscMessage msg1, OscMessage msg2)
+		{
+			return msg1.Equals(msg2) == false;
+		}
 
 		#endregion
 	}

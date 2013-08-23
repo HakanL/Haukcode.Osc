@@ -159,9 +159,26 @@ namespace Rug.Osc
 				"dd-MM-yyyy HH:mm:ss.ffff" 
 			};
 
-			DateTime datetime = DateTime.ParseExact(str, formats, provider, style);
+			DateTime datetime;
+			ulong value_UInt64;
 
-			return FromDataTime(datetime); 
+			if (DateTime.TryParseExact(str, formats, provider, style, out datetime) == true)
+			{
+				return FromDataTime(datetime); 
+			}
+			else if (str.StartsWith("0x") == true && 
+					 ulong.TryParse(str.Substring(2), NumberStyles.HexNumber, provider, out value_UInt64) == true) 
+			{
+				return new OscTimeTag(value_UInt64);
+			}
+			else if (ulong.TryParse(str, NumberStyles.Integer, provider, out value_UInt64) == true)
+			{
+				return new OscTimeTag(value_UInt64);
+			}
+			else 
+			{
+				throw new Exception(String.Format(Strings.TimeTag_InvalidString, str)); 
+			}		
 		}
 
 		/// <summary>
