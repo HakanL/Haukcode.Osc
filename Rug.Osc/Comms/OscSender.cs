@@ -246,7 +246,7 @@ namespace Rug.Osc
 
                     Socket.EndSend(ar, out error);
 
-					if (m_SendQueue[m_ReadIndex] != ar.AsyncState as OscPacket)
+					if (m_SendQueue[m_ReadIndex].IsSameInstance(ar.AsyncState as OscPacket) == false)
                     {
                         Debug.WriteLine("Objects do not match at index " + m_ReadIndex);
                     }
