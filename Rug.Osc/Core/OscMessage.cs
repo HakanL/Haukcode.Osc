@@ -906,7 +906,7 @@ namespace Rug.Osc
 							uint length = Helper.ReadUInt32(reader);
 
 							// this shouldn't happen and means we're decoding rubbish
-							if (length > 0 && stream.Position + length >= stream.Length)
+							if (length > 0 && stream.Position + length > stream.Length)
 							{
 								msg.m_Error = OscPacketError.ErrorParsingBlob;
 								msg.m_ErrorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);

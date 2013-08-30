@@ -114,7 +114,7 @@ namespace ParsingExample
 			Console.WriteLine("Input String       : " + packetStr);
 			Console.WriteLine("Parsed Packet      : " + packet2.ToString());
 			Console.WriteLine("Packets are equal  : " + (packet1 == packet2).ToString());
-			Console.WriteLine();			
+			Console.WriteLine();
 		}
 	}
 }
