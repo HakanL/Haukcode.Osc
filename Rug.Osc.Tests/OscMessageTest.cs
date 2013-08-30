@@ -1865,6 +1865,23 @@ namespace Rug.Osc.Tests
 		}
 
 		/// <summary>
+		///A test for Read
+		///</summary>
+		[TestMethod()]
+		public void ReadTest_Blob2()
+		{
+			OscMessage expected = UnitTestHelper.Message_Blob2();
+			byte[] bytes = UnitTestHelper.MessageBody_Blob2;
+
+			int count = bytes.Length;
+			OscMessage actual;
+
+			actual = OscMessage.Read(bytes, count);
+
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+		/// <summary>
 		///A test for MessageSize
 		///</summary>
 		[TestMethod()]
