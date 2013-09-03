@@ -9,7 +9,7 @@ namespace ListenerManager
 {
 	public partial class Example : Form
 	{
-		OscListenerManager m_Manager;
+		OscNamespaceManager m_Manager;
 		DataTable m_Data = new DataTable();
 		int m_MethodID = 1; 
 
@@ -27,7 +27,7 @@ namespace ListenerManager
 
 		void PopulateData()
 		{
-			m_Manager = new OscListenerManager();
+			m_Manager = new OscNamespaceManager();
 
 			m_Data.Columns.Add("MethodID", typeof(int), null);
 			m_Data.Columns.Add("Address", typeof(string), null);

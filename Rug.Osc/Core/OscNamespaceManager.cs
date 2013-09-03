@@ -26,7 +26,7 @@ namespace Rug.Osc
 	/// <summary>
 	/// Manages osc address event listening
 	/// </summary>
-	public sealed class OscListenerManager : IDisposable
+	public sealed class OscNamespaceManager : IDisposable
 	{
 		private readonly object m_Lock = new object(); 
 
@@ -58,7 +58,7 @@ namespace Rug.Osc
 		/// </summary>
 		public OscBundleInvokeMode BundleInvokeMode { get { return m_BundleInvokeMode; } set { m_BundleInvokeMode = value; } }
 
-		public OscListenerManager()
+		public OscNamespaceManager()
 		{
 			BundleInvokeMode = OscBundleInvokeMode.InvokeAllBundlesImmediately; 
 		}
