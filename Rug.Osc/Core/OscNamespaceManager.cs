@@ -331,56 +331,67 @@ namespace Rug.Osc
 		public bool Invoke(OscMessage message)
 		{
 			bool invoked = false; 
-			OscAddress oscAddress = null; 
+			OscAddress oscAddress = null;
 
-			if (OscAddress.IsValidAddressLiteral(message.Address) == true)
+			List<OscListener> shouldInvoke = new List<OscListener>();
+			List<OscFilter> shouldInvoke_Filter = new List<OscFilter>(); 
+
+			lock (m_Lock)
 			{
-				OscListener container;
 
-				lock (m_Lock)
+				if (OscAddress.IsValidAddressLiteral(message.Address) == true)
 				{
+					OscListener container;
+
 					if (m_LiteralAddresses.TryGetValue(message.Address, out container) == true)
 					{
-						container.Invoke(message);
+						//container.Invoke(message);
+						shouldInvoke.Add(container); 
 						invoked = true;
 					}
 				}
-			}
-			else
-			{
-				oscAddress = new OscAddress(message.Address);
-
-				lock (m_Lock)
+				else
 				{
+					oscAddress = new OscAddress(message.Address);
+
 					foreach (KeyValuePair<string, OscListener> value in m_LiteralAddresses)
 					{
 						if (oscAddress.Match(value.Key) == true)
 						{
-							value.Value.Invoke(message);
+							//value.Value.Invoke(message);
+							shouldInvoke.Add(value.Value); 
+							invoked = true;
+						}
+					}
+				}
+
+				if (m_PatternAddresses.Count > 0)
+				{
+					if (oscAddress == null)
+					{
+						oscAddress = new OscAddress(message.Address);
+					}
+
+					foreach (KeyValuePair<OscAddress, OscFilter> value in m_PatternAddresses)
+					{
+						if (oscAddress.Match(value.Key) == true)
+						{
+							//value.Value.Invoke(message);
+							shouldInvoke_Filter.Add(value.Value); 
 							invoked = true;
 						}
 					}
 				}
 			}
 
-			if (m_PatternAddresses.Count > 0)
+			foreach (OscListener @event in shouldInvoke)
 			{
-				if (oscAddress == null)
-				{
-					oscAddress = new OscAddress(message.Address);
-				}
+				@event.Invoke(message); 
+			}
 
-				lock (m_Lock)
-				{
-					foreach (KeyValuePair<OscAddress, OscFilter> value in m_PatternAddresses)
-					{
-						if (oscAddress.Match(value.Key) == true)
-						{
-							value.Value.Invoke(message);
-							invoked = true;
-						}
-					}
-				}
+			foreach (OscFilter @event in shouldInvoke_Filter)
+			{
+				@event.Invoke(message);
 			}
 
 			return invoked; 
