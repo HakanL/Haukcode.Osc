@@ -54,7 +54,7 @@
     <Compile Include="Core\OscAddress.cs" />
     <Compile Include="Core\OscBundle.cs" />
     <Compile Include="Core\OscPacket.cs" />
-    <Compile Include="Core\OscListenerManager.cs" />
+    <Compile Include="Core\OscNamespaceManager.cs" />
     <Compile Include="DataTypes\OscImpulse.cs" />
     <Compile Include="Core\OscMessage.cs" />
     <Compile Include="DataTypes\OscMidiMessage.cs" />
