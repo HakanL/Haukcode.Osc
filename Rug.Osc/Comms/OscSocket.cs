@@ -114,6 +114,9 @@ namespace Rug.Osc
 		private Socket m_Socket;
 		private readonly int m_Port;
 
+		private int m_LocalPort;
+		private bool m_UseDynamicLocalPort;
+
 		private readonly IPAddress m_RemoteAddress;
 		private readonly IPEndPoint m_RemoteEndPoint;
 
@@ -134,6 +137,16 @@ namespace Rug.Osc
 		/// Network port
 		/// </summary>
 		public int Port { get { return m_Port; } }
+
+		/// <summary>
+		/// Local network port, this is the result of dynamic port allocation is UseDynamicLocalPort is true
+		/// </summary>
+		public int LocalPort { get { return m_LocalPort; } } 
+
+		/// <summary>
+		/// True of the socket should use dynamic local port assignment
+		/// </summary>
+		public bool UseDynamicLocalPort { get { return m_UseDynamicLocalPort; } }		
 
 		/// <summary>
 		/// Local IP address
@@ -193,10 +206,11 @@ namespace Rug.Osc
 		/// Create a new socket for an address and port
 		/// </summary>
 		/// <param name="local">The ip address of the local end point</param>
+		/// <param name="localPort">the local port, use 0 for dynamically assigned</param>
 		/// <param name="remote">The ip address of the remote end point</param>
-		/// <param name="port">the port</param>
+		/// <param name="remotePort">the remote port</param>
 		/// <param name="timeToLive">TTL value to apply to packets</param>
-		internal OscSocket(IPAddress local, IPAddress remote, int port, int timeToLive)
+		internal OscSocket(IPAddress local, int localPort, IPAddress remote, int remotePort, int timeToLive)
 		{
 			if (local.AddressFamily != AddressFamily.InterNetwork &&
 				local.AddressFamily != AddressFamily.InterNetworkV6)
@@ -215,18 +229,45 @@ namespace Rug.Osc
 				throw new Exception(Strings.Socket_AddressFamilyIncompatible);
 			}
 
+			if (remotePort < 1 || remotePort > 65535)
+			{
+				throw new ArgumentOutOfRangeException("remotePort", Strings.Socket_RemotePortOutOfRange);
+			}
+
+			if (localPort < 0 || remotePort > 65535)
+			{
+				throw new ArgumentOutOfRangeException("localPort", Strings.Socket_LocalPortOutOfRange);
+			}
+
+			// if the local port is 0 then we are to use dynamic port assignment
+			m_UseDynamicLocalPort = localPort == 0; 
+
 			m_LocalAddress = local;
 			m_RemoteAddress = remote;
-			m_Port = port;
+			m_Port = remotePort;
+			m_LocalPort = localPort; 
 
-			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
-			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port);
+			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, remotePort);
+			m_LocalEndPoint = new IPEndPoint(LocalAddress, localPort);
 
 			m_TimeToLive = timeToLive;
 
 			m_IsMulticastEndPoint = IsMulticastAddress(m_RemoteAddress);
 
 			m_SocketFlags = System.Net.Sockets.SocketFlags.None;
+		}
+
+		/// <summary>
+		/// Create a new socket for an address and port
+		/// </summary>
+		/// <param name="local">The ip address of the local end point</param>
+		/// <param name="remote">The ip address of the remote end point</param>
+		/// <param name="port">the port</param>
+		/// <param name="timeToLive">TTL value to apply to packets</param>
+		internal OscSocket(IPAddress local, IPAddress remote, int port, int timeToLive)
+			: this(local, port, remote, port, timeToLive)
+		{
+
 		}
 
 		/// <summary>
@@ -256,7 +297,14 @@ namespace Rug.Osc
 
 			bool useIpV6 = address.AddressFamily == AddressFamily.InterNetworkV6;
 
+			if (port < 1 || port > 65535)
+			{
+				throw new ArgumentOutOfRangeException("port", Strings.Socket_PortOutOfRange); 
+			}
+
 			m_Port = port;
+			m_LocalPort = port; 			
+			m_UseDynamicLocalPort = false; 
 
 			if (this.OscSocketType == Osc.OscSocketType.Send)
 			{
@@ -283,9 +331,17 @@ namespace Rug.Osc
 		/// <param name="port">the port to bind to</param>
 		internal OscSocket(int port)
 		{
+			if (port < 1 || port > 65535)
+			{
+				throw new ArgumentOutOfRangeException("port", Strings.Socket_PortOutOfRange);
+			}
+
 			m_Port = port;
+			m_LocalPort = port;
+			m_UseDynamicLocalPort = false;
+
 			m_LocalAddress = IPAddress.Any;
-			m_RemoteAddress = IPAddress.Any;
+			m_RemoteAddress = IPAddress.Any;			
 
 			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port);
 			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
@@ -328,7 +384,28 @@ namespace Rug.Osc
 				m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 16);
 				m_Socket.ExclusiveAddressUse = false;
 
-				m_Socket.Bind(m_LocalEndPoint);
+				if (m_UseDynamicLocalPort == true)
+				{
+					IPEndPoint tempEndPoint = new IPEndPoint(m_LocalEndPoint.Address, 0);
+
+					m_Socket.Bind(tempEndPoint);
+
+					// set the local port from the resolved socket port 
+					switch (m_Socket.LocalEndPoint.AddressFamily)
+					{
+						case AddressFamily.InterNetworkV6:
+						case AddressFamily.InterNetwork:
+							m_LocalPort = ((IPEndPoint)m_Socket.LocalEndPoint).Port;
+							m_LocalEndPoint.Port = m_LocalPort;
+							break;
+						default:
+							throw new InvalidOperationException(String.Format(Strings.Socket_UnsupportedAddressFamily, m_Socket.LocalEndPoint.AddressFamily));
+					}
+				}
+				else
+				{
+					m_Socket.Bind(m_LocalEndPoint);
+				}
 
 				if (OscSocketType == Osc.OscSocketType.Receive)
 				{

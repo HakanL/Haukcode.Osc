@@ -96,7 +96,7 @@ namespace Rug.Osc
 		#region Constructors
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
 		/// </summary>
 		/// <param name="address">the ip address to send to</param>
 		/// <param name="port">the port to send to</param>
@@ -106,7 +106,18 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+		/// </summary>
+		/// <param name="address">the ip address to send to</param>
+		/// <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>
+		/// <param name="port">the port to send to</param>
+		public OscSender(IPAddress address, int localPort, int remotePort)
+			: this(address, localPort, remotePort, DefaultMessageBufferSize, DefaultPacketSize)
+		{
+		}
+
+		/// <summary>
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
 		/// </summary>
 		/// <param name="local">the ip address to send from</param>
 		/// <param name="remote">the ip address to send to</param>
@@ -117,7 +128,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
 		/// </summary>
 		/// <param name="local">the ip address to send from</param>
 		/// <param name="remote">the ip address to send to</param>
@@ -129,7 +140,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
 		/// </summary>
 		/// <param name="address">the ip address to send to</param>
 		/// <param name="port">the port to send to</param>		
@@ -142,7 +153,21 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+		/// </summary>
+		/// <param name="address">the ip address to send to</param>
+		/// <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>
+		/// <param name="remotePort">the port to send to</param>		
+		/// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+		/// <param name="maxPacketSize">the maximum packet size of any message</param>
+		public OscSender(IPAddress address, int localPort, int remotePort, int messageBufferSize, int maxPacketSize)
+			: this(address.AddressFamily == AddressFamily.InterNetworkV6 ? IPAddress.IPv6Any : IPAddress.Any, localPort,
+					address, remotePort, DefaultMulticastTimeToLive, messageBufferSize, maxPacketSize)
+		{
+		}
+
+		/// <summary>
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
 		/// </summary>
 		/// <param name="local">the ip address to send from</param>
 		/// <param name="remote">the ip address to send to</param>
@@ -155,7 +180,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
 		/// </summary>
 		/// <param name="local">the ip address to send from</param>
 		/// <param name="remote">the ip address to send to</param>
@@ -164,7 +189,23 @@ namespace Rug.Osc
 		/// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
 		/// <param name="maxPacketSize">the maximum packet size of any message</param>
 		public OscSender(IPAddress local, IPAddress remote, int port, int timeToLive, int messageBufferSize, int maxPacketSize)
-			: base(local, remote, port, timeToLive)
+			: this(local, port, remote, port, timeToLive, messageBufferSize, maxPacketSize)
+		{
+
+		}
+
+		/// <summary>
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+		/// </summary>
+		/// <param name="local">the ip address to send from</param>
+		/// <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>
+		/// <param name="remote">the ip address to send to</param>
+		/// <param name="remotePort">the port to send to</param>
+		/// <param name="timeToLive">TTL value to apply to packets</param>
+		/// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+		/// <param name="maxPacketSize">the maximum packet size of any message</param>
+		public OscSender(IPAddress local, int localPort, IPAddress remote, int remotePort, int timeToLive, int messageBufferSize, int maxPacketSize)
+			: base(local, localPort, remote, remotePort, timeToLive)
 		{
 			m_Bytes = new byte[maxPacketSize];
 			m_SendQueue = new OscPacket[messageBufferSize];

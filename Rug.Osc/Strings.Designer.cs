@@ -448,6 +448,33 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The valid range for local port numbers is 1 to 65535 or 0 for a dynamically assigned port.
+        /// </summary>
+        internal static string Socket_LocalPortOutOfRange {
+            get {
+                return ResourceManager.GetString("Socket_LocalPortOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The valid range for port numbers is 1 to 65535.
+        /// </summary>
+        internal static string Socket_PortOutOfRange {
+            get {
+                return ResourceManager.GetString("Socket_PortOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The valid range for remote port numbers is 1 to 65535.
+        /// </summary>
+        internal static string Socket_RemotePortOutOfRange {
+            get {
+                return ResourceManager.GetString("Socket_RemotePortOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unsupported address family &apos;{0}&apos;.
         /// </summary>
         internal static string Socket_UnsupportedAddressFamily {
