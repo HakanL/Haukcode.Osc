@@ -27,30 +27,30 @@ namespace Rug.Osc
 	/// <summary>
 	/// The connection state of an osc socket
 	/// </summary>
-    public enum OscSocketState
-    {
+	public enum OscSocketState
+	{
 		/// <summary>
 		/// The socket has never been connected
 		/// </summary>
-        NotConnected,
+		NotConnected,
 
-        /// <summary>
+		/// <summary>
 		/// The socket is connected
-        /// </summary>
-        Connected, 
-        
+		/// </summary>
+		Connected,
+
 		/// <summary>
 		/// The socket is closing
 		/// </summary>
-        Closing, 
-        
-        /// <summary>
-		/// The socket has been closed
-        /// </summary>
-        Closed, 
-    }
+		Closing,
 
-	#endregion 
+		/// <summary>
+		/// The socket has been closed
+		/// </summary>
+		Closed,
+	}
+
+	#endregion
 
 	#region Osc Socket Type
 
@@ -58,17 +58,17 @@ namespace Rug.Osc
 	/// Socket direction type
 	/// </summary>
 	public enum OscSocketType
-    {
+	{
 		/// <summary>
 		/// Sender
 		/// </summary>
-        Send, 
+		Send,
 
 		/// <summary>
 		/// Receiver
 		/// </summary>
-        Receive
-    }
+		Receive
+	}
 
 	#endregion
 
@@ -76,11 +76,11 @@ namespace Rug.Osc
 	/// Base class for all osc UDP communication
 	/// </summary>
 	public abstract class OscSocket : IDisposable
-    {
+	{
 		/// <summary>
 		/// Default maximum packet size
 		/// </summary>
-        public const int DefaultPacketSize = 2048;
+		public const int DefaultPacketSize = 2048;
 
 		/// <summary>
 		/// Default time to live for multicast packets
@@ -96,7 +96,7 @@ namespace Rug.Osc
 		{
 			if (address.AddressFamily == AddressFamily.InterNetworkV6)
 			{
-				return address.IsIPv6Multicast; 
+				return address.IsIPv6Multicast;
 			}
 			else
 			{
@@ -104,14 +104,14 @@ namespace Rug.Osc
 			}
 		}
 
-        #region Private Members
+		#region Private Members
 
 		private const byte MulticastAddressMask = 0xF0;
-		private const byte MulticastAddressValue = 0xE0; 
+		private const byte MulticastAddressValue = 0xE0;
 
-		private readonly object m_Lock = new object(); 
+		private readonly object m_Lock = new object();
 
-        private Socket m_Socket;
+		private Socket m_Socket;
 		private readonly int m_Port;
 
 		private readonly IPAddress m_RemoteAddress;
@@ -120,20 +120,20 @@ namespace Rug.Osc
 		private readonly IPAddress m_LocalAddress;
 		private readonly IPEndPoint m_LocalEndPoint;
 
-		private readonly bool m_IsMulticastEndPoint; 
-		private readonly int m_TimeToLive; 
+		private readonly bool m_IsMulticastEndPoint;
+		private readonly int m_TimeToLive;
 
 		private OscSocketState m_State = OscSocketState.NotConnected;
 		private readonly System.Net.Sockets.SocketFlags m_SocketFlags;
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        /// Network port
-        /// </summary>
-        public int Port { get { return m_Port; } }
+		/// <summary>
+		/// Network port
+		/// </summary>
+		public int Port { get { return m_Port; } }
 
 		/// <summary>
 		/// Local IP address
@@ -143,51 +143,51 @@ namespace Rug.Osc
 		/// <summary>
 		/// Local Ip end point 
 		/// </summary>
-		public IPEndPoint LocalEndPoint { get { return m_LocalEndPoint; } } 
+		public IPEndPoint LocalEndPoint { get { return m_LocalEndPoint; } }
 
-        /// <summary>
-        /// Remote IP address
-        /// </summary>
-        public IPAddress RemoteAddress { get { return m_RemoteAddress; } }
+		/// <summary>
+		/// Remote IP address
+		/// </summary>
+		public IPAddress RemoteAddress { get { return m_RemoteAddress; } }
 
-        /// <summary>
+		/// <summary>
 		/// Remote Ip end point 
-        /// </summary>
-        public IPEndPoint RemoteEndPoint { get { return m_RemoteEndPoint; } }
+		/// </summary>
+		public IPEndPoint RemoteEndPoint { get { return m_RemoteEndPoint; } }
 
 		/// <summary>
 		/// Is the remote endpoint a multicast address
 		/// </summary>
-		public bool IsMulticastEndPoint { get { return m_IsMulticastEndPoint; } } 
+		public bool IsMulticastEndPoint { get { return m_IsMulticastEndPoint; } }
 
 		/// <summary>
 		/// Time to live for multicast packets
 		/// </summary>
-		public int TimeToLive { get { return m_TimeToLive; } } 
+		public int TimeToLive { get { return m_TimeToLive; } }
 
-        /// <summary>
-        /// The current state of the socket
-        /// </summary>
-        public OscSocketState State { get { return m_State; } protected set { m_State = value; } }
+		/// <summary>
+		/// The current state of the socket
+		/// </summary>
+		public OscSocketState State { get { return m_State; } protected set { m_State = value; } }
 
 		/// <summary>
 		/// The socket type
 		/// </summary>
 		public abstract OscSocketType OscSocketType { get; }
 
-        /// <summary>
-        /// The instance of the socket 
-        /// </summary>
-        protected Socket Socket { get { return m_Socket; } }
+		/// <summary>
+		/// The instance of the socket 
+		/// </summary>
+		protected Socket Socket { get { return m_Socket; } }
 
-        /// <summary>
-        /// Flags for the socket
-        /// </summary>
-        protected System.Net.Sockets.SocketFlags SocketFlags { get { return m_SocketFlags; } }
+		/// <summary>
+		/// Flags for the socket
+		/// </summary>
+		protected System.Net.Sockets.SocketFlags SocketFlags { get { return m_SocketFlags; } }
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
 		/// <summary>
 		/// Create a new socket for an address and port
@@ -201,18 +201,18 @@ namespace Rug.Osc
 			if (local.AddressFamily != AddressFamily.InterNetwork &&
 				local.AddressFamily != AddressFamily.InterNetworkV6)
 			{
-				throw new ArgumentException(String.Format(Strings.Socket_UnsupportedAddressFamily, local.AddressFamily), "local"); 
+				throw new ArgumentException(String.Format(Strings.Socket_UnsupportedAddressFamily, local.AddressFamily), "local");
 			}
 
 			if (remote.AddressFamily != AddressFamily.InterNetwork &&
 				remote.AddressFamily != AddressFamily.InterNetworkV6)
 			{
-				throw new ArgumentException(String.Format(Strings.Socket_UnsupportedAddressFamily, local.AddressFamily), "remote"); 
+				throw new ArgumentException(String.Format(Strings.Socket_UnsupportedAddressFamily, local.AddressFamily), "remote");
 			}
 
 			if (local.AddressFamily != remote.AddressFamily)
 			{
-				throw new Exception(Strings.Socket_AddressFamilyIncompatible); 
+				throw new Exception(Strings.Socket_AddressFamilyIncompatible);
 			}
 
 			m_LocalAddress = local;
@@ -222,7 +222,7 @@ namespace Rug.Osc
 			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
 			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port);
 
-			m_TimeToLive = timeToLive; 			
+			m_TimeToLive = timeToLive;
 
 			m_IsMulticastEndPoint = IsMulticastAddress(m_RemoteAddress);
 
@@ -241,22 +241,22 @@ namespace Rug.Osc
 
 		}
 
-        /// <summary>
-        /// Create a new socket for an address and port
-        /// </summary>
-        /// <param name="address">The ip address of the local or remote end point</param>
-        /// <param name="port">the port</param>
-        internal OscSocket(IPAddress address, int port)
-        {
+		/// <summary>
+		/// Create a new socket for an address and port
+		/// </summary>
+		/// <param name="address">The ip address of the local or remote end point</param>
+		/// <param name="port">the port</param>
+		internal OscSocket(IPAddress address, int port)
+		{
 			if (address.AddressFamily != AddressFamily.InterNetwork &&
 				address.AddressFamily != AddressFamily.InterNetworkV6)
 			{
 				throw new ArgumentException(String.Format(Strings.Socket_UnsupportedAddressFamily, address.AddressFamily), "address");
 			}
 
-			bool useIpV6 = address.AddressFamily == AddressFamily.InterNetworkV6; 
+			bool useIpV6 = address.AddressFamily == AddressFamily.InterNetworkV6;
 
-            m_Port = port;
+			m_Port = port;
 
 			if (this.OscSocketType == Osc.OscSocketType.Send)
 			{
@@ -269,21 +269,21 @@ namespace Rug.Osc
 				m_RemoteAddress = useIpV6 ? IPAddress.IPv6Any : IPAddress.Any;
 			}
 
-			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port); 
+			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port);
 			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
 
 			m_IsMulticastEndPoint = IsMulticastAddress(m_RemoteAddress);
 
 			m_SocketFlags = System.Net.Sockets.SocketFlags.None;
-        }
+		}
 
-        /// <summary>
-        /// Create a new socket for any local IP address and a port
-        /// </summary>
-        /// <param name="port">the port to bind to</param>
-        internal OscSocket(int port)
-        {
-            m_Port = port;
+		/// <summary>
+		/// Create a new socket for any local IP address and a port
+		/// </summary>
+		/// <param name="port">the port to bind to</param>
+		internal OscSocket(int port)
+		{
+			m_Port = port;
 			m_LocalAddress = IPAddress.Any;
 			m_RemoteAddress = IPAddress.Any;
 
@@ -292,46 +292,46 @@ namespace Rug.Osc
 
 			m_SocketFlags = System.Net.Sockets.SocketFlags.None;
 
-			m_IsMulticastEndPoint = false; 
-        }
+			m_IsMulticastEndPoint = false;
+		}
 
-        #endregion
+		#endregion
 
-        #region Connect
+		#region Connect
 
-        /// <summary>
-        /// Connect the socket
-        /// </summary>
-        public void Connect()
-        {
-            lock (m_Lock)
-            {
-                if (m_State != OscSocketState.NotConnected &&
-                    m_State != OscSocketState.Closed)
-                {
-                    throw new Exception(Strings.Socket_AlreadyOpenOrNotClosed); 
-                }
+		/// <summary>
+		/// Connect the socket
+		/// </summary>
+		public void Connect()
+		{
+			lock (m_Lock)
+			{
+				if (m_State != OscSocketState.NotConnected &&
+					m_State != OscSocketState.Closed)
+				{
+					throw new Exception(Strings.Socket_AlreadyOpenOrNotClosed);
+				}
 
-				bool useIpV6 = m_LocalAddress.AddressFamily == AddressFamily.InterNetworkV6; 
+				bool useIpV6 = m_LocalAddress.AddressFamily == AddressFamily.InterNetworkV6;
 
-                // create the instance of the socket
+				// create the instance of the socket
 				m_Socket = new Socket(useIpV6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-				
-                m_Socket.Blocking = false;                
 
-                if (RemoteAddress == IPAddress.Broadcast)
-                {
-                    m_Socket.EnableBroadcast = true;
+				m_Socket.Blocking = false;
+
+				if (RemoteAddress == IPAddress.Broadcast)
+				{
+					m_Socket.EnableBroadcast = true;
 					m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
-                }
+				}
 
 				m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 16);
 				m_Socket.ExclusiveAddressUse = false;
-				
+
 				m_Socket.Bind(m_LocalEndPoint);
 
-                if (OscSocketType == Osc.OscSocketType.Receive)
-                {						
+				if (OscSocketType == Osc.OscSocketType.Receive)
+				{
 					if (IsMulticastEndPoint == true)
 					{
 						if (useIpV6 == true)
@@ -344,8 +344,8 @@ namespace Rug.Osc
 						}
 					}
 				}
-                else
-                {
+				else
+				{
 					if (IsMulticastEndPoint == true)
 					{
 						if (useIpV6 == true)
@@ -357,64 +357,64 @@ namespace Rug.Osc
 							m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, TimeToLive);
 						}
 					}
-					
+
 					m_Socket.Connect(m_RemoteEndPoint);
 				}
 
-                m_State = OscSocketState.Connected;
+				m_State = OscSocketState.Connected;
 
-                OnConnect();
-            }
-        }
+				OnConnect();
+			}
+		}
 
-        #endregion 
+		#endregion
 
-        /// <summary>
-        /// Called when the socket is connected
-        /// </summary>
-        protected abstract void OnConnect();
+		/// <summary>
+		/// Called when the socket is connected
+		/// </summary>
+		protected abstract void OnConnect();
 
-        /// <summary>
-        /// Called when the socket is closing
-        /// </summary>
-        protected abstract void OnClosing();
+		/// <summary>
+		/// Called when the socket is closing
+		/// </summary>
+		protected abstract void OnClosing();
 
-        #region Close
+		#region Close
 
-        /// <summary>
-        /// Closes the socket and releases all resources associated with it
-        /// </summary>
-        public void Close()
-        {
-            Dispose(); 
-        }
+		/// <summary>
+		/// Closes the socket and releases all resources associated with it
+		/// </summary>
+		public void Close()
+		{
+			Dispose();
+		}
 
-        #endregion 
+		#endregion
 
-        #region Dispose
+		#region Dispose
 
-        /// <summary>
-        /// Closes the socket and releases all resources associated with it
-        /// </summary>
-        public void Dispose()
-        {
-            lock (m_Lock)
-            {
-                if (m_State == OscSocketState.Connected)
-                {
-                    m_State = OscSocketState.Closing;
+		/// <summary>
+		/// Closes the socket and releases all resources associated with it
+		/// </summary>
+		public void Dispose()
+		{
+			lock (m_Lock)
+			{
+				if (m_State == OscSocketState.Connected)
+				{
+					m_State = OscSocketState.Closing;
 
-                    OnClosing();
+					OnClosing();
 
-                    m_Socket.Close();
+					m_Socket.Close();
 
-                    m_Socket = null;
+					m_Socket = null;
 
-                    m_State = OscSocketState.Closed;
-                }
-            }
-        }
+					m_State = OscSocketState.Closed;
+				}
+			}
+		}
 
-        #endregion 
-    }
+		#endregion
+	}
 }

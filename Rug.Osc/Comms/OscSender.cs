@@ -27,14 +27,14 @@ namespace Rug.Osc
 	/// <summary>
 	/// Osc udp sender
 	/// </summary>
-    public sealed class OscSender : OscSocket
-    {
+	public sealed class OscSender : OscSocket
+	{
 		/// <summary>
 		/// The default number of messages that can be queued for sending before messages start to get dropped
 		/// </summary>
-        public const int DefaultMessageBufferSize = 600;
+		public const int DefaultMessageBufferSize = 600;
 
-        #region Private Members
+		#region Private Members
 
 		private readonly object m_Lock = new object();
 		private readonly AutoResetEvent m_QueueEmpty = new AutoResetEvent(true);
@@ -42,68 +42,68 @@ namespace Rug.Osc
 		private readonly byte[] m_Bytes;
 
 		private readonly OscPacket[] m_SendQueue;
-        private int m_WriteIndex = 0;
-        private int m_ReadIndex = 0;
-        private int m_Count = 0;
+		private int m_WriteIndex = 0;
+		private int m_ReadIndex = 0;
+		private int m_Count = 0;
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
 		public override OscSocketType OscSocketType
 		{
 			get { return Osc.OscSocketType.Send; }
 		}
 
-        /// <summary>
-        /// The next queue index to write messages to 
-        /// </summary>
-        private int NextWriteIndex
-        {
-            get
-            {
-                int index = m_WriteIndex + 1;
+		/// <summary>
+		/// The next queue index to write messages to 
+		/// </summary>
+		private int NextWriteIndex
+		{
+			get
+			{
+				int index = m_WriteIndex + 1;
 
-                if (index >= m_SendQueue.Length)
-                {
-                    index -= m_SendQueue.Length; 
-                }
+				if (index >= m_SendQueue.Length)
+				{
+					index -= m_SendQueue.Length;
+				}
 
-                return index;
-            }
-        }
+				return index;
+			}
+		}
 
-        /// <summary>
-        /// The next queue index to read messages from 
-        /// </summary>
-        private int NextReadIndex
-        {
-            get
-            {
-                int index = m_ReadIndex + 1;
+		/// <summary>
+		/// The next queue index to read messages from 
+		/// </summary>
+		private int NextReadIndex
+		{
+			get
+			{
+				int index = m_ReadIndex + 1;
 
-                if (index >= m_SendQueue.Length)
-                {
-                    index -= m_SendQueue.Length;
-                }
+				if (index >= m_SendQueue.Length)
+				{
+					index -= m_SendQueue.Length;
+				}
 
-                return index;
-            }
-        }
+				return index;
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        /// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
-        /// </summary>
-        /// <param name="address">the ip address to send to</param>
-        /// <param name="port">the port to send to</param>
-        public OscSender(IPAddress address, int port)
-            : this(address, port, DefaultMessageBufferSize, DefaultPacketSize) 
-        {
-        }
+		/// <summary>
+		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
+		/// </summary>
+		/// <param name="address">the ip address to send to</param>
+		/// <param name="port">the port to send to</param>
+		public OscSender(IPAddress address, int port)
+			: this(address, port, DefaultMessageBufferSize, DefaultPacketSize)
+		{
+		}
 
 		/// <summary>
 		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
@@ -128,18 +128,18 @@ namespace Rug.Osc
 		{
 		}
 
-        /// <summary>
+		/// <summary>
 		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
-        /// </summary>
-        /// <param name="address">the ip address to send to</param>
-        /// <param name="port">the port to send to</param>		
-        /// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
-        /// <param name="maxPacketSize">the maximum packet size of any message</param>
-        public OscSender(IPAddress address, int port, int messageBufferSize, int maxPacketSize)
-			: this(address.AddressFamily == AddressFamily.InterNetworkV6 ? IPAddress.IPv6Any : IPAddress.Any, 
+		/// </summary>
+		/// <param name="address">the ip address to send to</param>
+		/// <param name="port">the port to send to</param>		
+		/// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+		/// <param name="maxPacketSize">the maximum packet size of any message</param>
+		public OscSender(IPAddress address, int port, int messageBufferSize, int maxPacketSize)
+			: this(address.AddressFamily == AddressFamily.InterNetworkV6 ? IPAddress.IPv6Any : IPAddress.Any,
 					address, port, messageBufferSize, maxPacketSize)
-        {
-        }
+		{
+		}
 
 		/// <summary>
 		/// Create a new Osc UDP sender. Note the underlying soket will not be connected untill Connect is called
@@ -170,110 +170,110 @@ namespace Rug.Osc
 			m_SendQueue = new OscPacket[messageBufferSize];
 		}
 
-        #endregion 
+		#endregion
 
-        #region Protected Overrides
+		#region Protected Overrides
 
-        protected override void OnConnect()
-        {
-            
-        }
+		protected override void OnConnect()
+		{
 
-        protected override void OnClosing()
-        {
-            WaitForAllMessagesToComplete(); 
-        }
+		}
 
-        #endregion
+		protected override void OnClosing()
+		{
+			WaitForAllMessagesToComplete();
+		}
 
-        #region Send
+		#endregion
 
-        /// <summary>
-        /// Add a osc message to the send queue
-        /// </summary>
-        /// <param name="message">message to send</param>
+		#region Send
+
+		/// <summary>
+		/// Add a osc message to the send queue
+		/// </summary>
+		/// <param name="message">message to send</param>
 		public void Send(OscPacket message)
-        {
-            if (State == OscSocketState.Connected)
-            {                
-                lock (m_Lock)
-                {
-                    m_QueueEmpty.Reset();
+		{
+			if (State == OscSocketState.Connected)
+			{
+				lock (m_Lock)
+				{
+					m_QueueEmpty.Reset();
 
-                    if (m_Count >= m_SendQueue.Length)
-                    {
-                        return;
-                    }
-                    
-                    m_SendQueue[m_WriteIndex] = message;
+					if (m_Count >= m_SendQueue.Length)
+					{
+						return;
+					}
 
-                    m_WriteIndex = NextWriteIndex; 
-                    m_Count++;
+					m_SendQueue[m_WriteIndex] = message;
 
-                    if (m_Count == 1)
-                    {
-                        int size = message.Write(m_Bytes);
+					m_WriteIndex = NextWriteIndex;
+					m_Count++;
 
-                        Socket.BeginSend(m_Bytes, 0, size, SocketFlags, Send_Callback, message);
-                    }
-                }
-            }
-        }
+					if (m_Count == 1)
+					{
+						int size = message.Write(m_Bytes);
 
-        #endregion 
+						Socket.BeginSend(m_Bytes, 0, size, SocketFlags, Send_Callback, message);
+					}
+				}
+			}
+		}
 
-        #region Wait For All Messages To Complete
+		#endregion
 
-        /// <summary>
-        /// Wait till all messages in the queue have been sent
-        /// </summary>
-        public void WaitForAllMessagesToComplete()
-        {
-            m_QueueEmpty.WaitOne();
-        }
+		#region Wait For All Messages To Complete
 
-        #endregion
+		/// <summary>
+		/// Wait till all messages in the queue have been sent
+		/// </summary>
+		public void WaitForAllMessagesToComplete()
+		{
+			m_QueueEmpty.WaitOne();
+		}
 
-        #region Private Methods
+		#endregion
 
-        void Send_Callback(IAsyncResult ar)
-        {
-            lock (m_Lock)
-            {
-                try
-                {
-                    SocketError error;
+		#region Private Methods
 
-                    Socket.EndSend(ar, out error);
+		void Send_Callback(IAsyncResult ar)
+		{
+			lock (m_Lock)
+			{
+				try
+				{
+					SocketError error;
+
+					Socket.EndSend(ar, out error);
 
 					if (m_SendQueue[m_ReadIndex].IsSameInstance(ar.AsyncState as OscPacket) == false)
-                    {
-                        Debug.WriteLine("Objects do not match at index " + m_ReadIndex);
-                    }
+					{
+						Debug.WriteLine("Objects do not match at index " + m_ReadIndex);
+					}
 
-                    m_Count--;
-                    m_ReadIndex = NextReadIndex;
+					m_Count--;
+					m_ReadIndex = NextReadIndex;
 
-                    if (m_Count > 0 && State == OscSocketState.Connected)
-                    {
+					if (m_Count > 0 && State == OscSocketState.Connected)
+					{
 						OscPacket packet = m_SendQueue[m_ReadIndex];
 
 						int size = packet.Write(m_Bytes);
 
 						Socket.BeginSend(m_Bytes, 0, size, SocketFlags, Send_Callback, packet);
-                    }
-                    else
-                    {
-                        m_QueueEmpty.Set();
-                    }
-                }
-                catch
-                {
-                    m_QueueEmpty.Set(); 
-                }
-            }
-        }
+					}
+					else
+					{
+						m_QueueEmpty.Set();
+					}
+				}
+				catch
+				{
+					m_QueueEmpty.Set();
+				}
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }
