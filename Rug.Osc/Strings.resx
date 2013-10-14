@@ -246,6 +246,15 @@
   <data name="Socket_AlreadyOpenOrNotClosed" xml:space="preserve">
     <value>The socket is already open or is not fully closed</value>
   </data>
+  <data name="Socket_LocalPortOutOfRange" xml:space="preserve">
+    <value>The valid range for local port numbers is 1 to 65535 or 0 for a dynamically assigned port</value>
+  </data>
+  <data name="Socket_PortOutOfRange" xml:space="preserve">
+    <value>The valid range for port numbers is 1 to 65535</value>
+  </data>
+  <data name="Socket_RemotePortOutOfRange" xml:space="preserve">
+    <value>The valid range for remote port numbers is 1 to 65535</value>
+  </data>
   <data name="Socket_UnsupportedAddressFamily" xml:space="preserve">
     <value>Unsupported address family '{0}'</value>
   </data>
