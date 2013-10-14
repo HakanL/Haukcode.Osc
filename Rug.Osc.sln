@@ -44,6 +44,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IpV6Example", "Examples\IpV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParsingExample", "Examples\ParsingExample\ParsingExample.csproj", "{EB153106-6FBD-46E9-BA0A-509C7E96816D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepeatSender", "Test\RepeatSender\RepeatSender.csproj", "{80FAD21D-AEB9-4E7F-8E81-937F0E91E1B4}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Rug.Osc.vsmdi
@@ -207,6 +209,16 @@ Global
 		{EB153106-6FBD-46E9-BA0A-509C7E96816D}.Release|Mixed Platforms.Build.0 = Release|x86
 		{EB153106-6FBD-46E9-BA0A-509C7E96816D}.Release|x86.ActiveCfg = Release|x86
 		{EB153106-6FBD-46E9-BA0A-509C7E96816D}.Release|x86.Build.0 = Release|x86
+		{80FAD21D-AEB9-4E7F-8E81-937F0E91E1B4}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{80FAD21D-AEB9-4E7F-8E81-937F0E91E1B4}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{80FAD21D-AEB9-4E7F-8E81-937F0E91E1B4}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{80FAD21D-AEB9-4E7F-8E81-937F0E91E1B4}.Debug|x86.ActiveCfg = Debug|x86
+		{80FAD21D-AEB9-4E7F-8E81-937F0E91E1B4}.Debug|x86.Build.0 = Debug|x86
+		{80FAD21D-AEB9-4E7F-8E81-937F0E91E1B4}.Release|Any CPU.ActiveCfg = Release|x86
+		{80FAD21D-AEB9-4E7F-8E81-937F0E91E1B4}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{80FAD21D-AEB9-4E7F-8E81-937F0E91E1B4}.Release|Mixed Platforms.Build.0 = Release|x86
+		{80FAD21D-AEB9-4E7F-8E81-937F0E91E1B4}.Release|x86.ActiveCfg = Release|x86
+		{80FAD21D-AEB9-4E7F-8E81-937F0E91E1B4}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -225,6 +237,7 @@ Global
 		{222A71CA-16C7-44F3-8B69-A2C7EE436A4B} = {510D8309-C9ED-4967-AAD6-0ED85C8FFB0E}
 		{2136CFE7-D8B3-4F44-8E3A-09D16D9DE573} = {510D8309-C9ED-4967-AAD6-0ED85C8FFB0E}
 		{EDAFCF33-7638-446A-BD26-1AD972425562} = {D667575C-2F68-44D0-9063-3401A660CE8C}
+		{80FAD21D-AEB9-4E7F-8E81-937F0E91E1B4} = {D667575C-2F68-44D0-9063-3401A660CE8C}
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\Rug.Osc.ndproj"
