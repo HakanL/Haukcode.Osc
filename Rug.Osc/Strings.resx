@@ -123,6 +123,9 @@
   <data name="Arguments_UnsupportedType" xml:space="preserve">
     <value>Unsupported arguemnt type '{0}'</value>
   </data>
+  <data name="Bundle_InvalidBundleMessageLength" xml:space="preserve">
+    <value>Invalid bundle message length on message {0}</value>
+  </data>
   <data name="Bundle_InvalidIdent" xml:space="preserve">
     <value>Invalid bundle ident '{0}'</value>
   </data>
