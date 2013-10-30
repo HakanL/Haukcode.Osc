@@ -501,7 +501,7 @@ namespace Rug.Osc
 					{
 						// this is an error 				
 						bundle.m_Error = OscPacketError.InvalidBundleMessageLength;
-						bundle.m_ErrorMessage = string.Format(Strings.Bundle_InvalidBundleMessageLength, messages.Count);
+						bundle.m_ErrorMessage = string.Format(Strings.Bundle_InvalidBundleMessageLength);
 
 						bundle.m_Messages = new OscPacket[0]; 
 

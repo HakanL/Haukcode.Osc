@@ -79,7 +79,7 @@ namespace Rug.Osc {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid bundle message length on message {0}.
+        ///   Looks up a localized string similar to Invalid bundle message length.
         /// </summary>
         internal static string Bundle_InvalidBundleMessageLength {
             get {
