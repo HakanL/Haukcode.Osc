@@ -51,6 +51,7 @@ namespace Rug.Osc
 		InvalidBundleIdent,
 		InvalidBundleMessageHeader,
 		ErrorParsingPacket,
+		InvalidBundleMessageLength,
 	}
 
 	#endregion 
