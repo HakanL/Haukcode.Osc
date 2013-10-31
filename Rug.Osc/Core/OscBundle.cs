@@ -497,6 +497,17 @@ namespace Rug.Osc
 
 					int messageLength = Helper.ReadInt32(reader);
 
+					if (stream.Position + messageLength > stream.Length)
+					{
+						// this is an error 				
+						bundle.m_Error = OscPacketError.InvalidBundleMessageLength;
+						bundle.m_ErrorMessage = string.Format(Strings.Bundle_InvalidBundleMessageLength);
+
+						bundle.m_Messages = new OscPacket[0]; 
+
+						return bundle;
+					}
+
 					messages.Add(OscPacket.Read(bytes, index + (int)stream.Position, messageLength));
 
 					stream.Position += messageLength; 

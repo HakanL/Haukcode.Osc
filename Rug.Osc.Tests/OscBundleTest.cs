@@ -115,6 +115,70 @@ namespace Rug.Osc.Tests
 			Assert.IsTrue(actual.Equals(expected)); 
 		}
 
+		/// <summary>
+		///A test for Read
+		///</summary>
+		[TestMethod()]
+		public void ReadTest_Bad_ToLong()
+		{
+			byte[] bytes = new byte[] { 
+				// #bundle 
+				35, 98, 117, 110, 100, 108, 101, 0,
+				
+				// Time-tag
+				197, 146, 134, 227, 3, 18, 110, 152, 
+				
+				// length 
+				0, 0, 0, 64, // 32, 				
+
+				// message body 
+				47, 116, 101, 115, 116, 0, 0, 0,
+				44, 105, 91, 105, 105, 105, 93, 0,
+				
+				26, 42, 58, 74, 26, 42, 58, 74, 
+				90, 106, 122, 138, 154, 170, 186, 202 
+			};
+
+			int index = 0;
+			int count = bytes.Length;
+			OscBundle actual;
+			actual = OscBundle.Read(bytes, index, count);
+
+			Assert.AreEqual(actual.Error, OscPacketError.InvalidBundleMessageLength);
+		}
+
+		/// <summary>
+		///A test for Read
+		///</summary>
+		[TestMethod()]
+		public void ReadTest_Bad_ToShort()
+		{
+			byte[] bytes = new byte[] { 
+				// #bundle 
+				35, 98, 117, 110, 100, 108, 101, 0,
+				
+				// Time-tag
+				197, 146, 134, 227, 3, 18, 110, 152, 
+				
+				// length 
+				0, 0, 0, 24, // 32, 				
+
+				// message body 
+				47, 116, 101, 115, 116, 0, 0, 0,
+				44, 105, 91, 105, 105, 105, 93, 0,
+				
+				26, 42, 58, 74, 26, 42, 58, 74, 
+				90, 106, 122, 138, 154, 170, 186, 202 
+			};
+
+			int index = 0;
+			int count = bytes.Length;
+			OscBundle actual;
+			actual = OscBundle.Read(bytes, index, count);
+
+			Assert.AreEqual(actual.Error, OscPacketError.InvalidBundleMessageLength);
+		}
+
 		/* 
 		/// <summary>
 		///A test for ToByteArray
