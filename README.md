@@ -49,3 +49,5 @@ using (OscSender sender = new OscSender(address, port))
 * If you use this project please rate it on [Ohloh](https://www.ohloh.net/p/rugosc)
 * Feel free to follow us on twitter [@RugCode](https://twitter.com/RugCode)
 * Please donate bitcoin [via Mt.Gox](https://payment.mtgox.com/4dce465b-6348-46a5-abbf-c401255283ce) or [direct](bitcoin:1P8XvVrrBu68P5Rd8SyYHkZ75dHJA8XU3p)
+
+![[direct](bitcoin:1P8XvVrrBu68P5Rd8SyYHkZ75dHJA8XU3p)](https://bitbucket.org/rugcode/rug.osc/src/3bf6012c322e8be73acfbcde015f7ae0754a484e/Bitcoin%20Donations.png)
