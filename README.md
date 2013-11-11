@@ -48,6 +48,6 @@ using (OscSender sender = new OscSender(address, port))
 * [Nuget project page](http://www.nuget.org/packages/Rug.Osc/)
 * If you use this project please rate it on [Ohloh](https://www.ohloh.net/p/rugosc)
 * Feel free to follow us on twitter [@RugCode](https://twitter.com/RugCode)
-* Please donate bitcoin [via Mt.Gox](https://payment.mtgox.com/4dce465b-6348-46a5-abbf-c401255283ce) or [direct](bitcoin:1P8XvVrrBu68P5Rd8SyYHkZ75dHJA8XU3p)
+* Please donate bitcoin [via Mt.Gox](https://payment.mtgox.com/4dce465b-6348-46a5-abbf-c401255283ce) or directly at 1P8XvVrrBu68P5Rd8SyYHkZ75dHJA8XU3p
 
-![QR Code](https://bitbucket.org/rugcode/rug.osc/src/3bf6012c322e8be73acfbcde015f7ae0754a484e/Bitcoin%20Donations.png)
+![QR Code](http://rugcode.com/?attachment_id=101)
