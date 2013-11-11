@@ -50,4 +50,4 @@ using (OscSender sender = new OscSender(address, port))
 * Feel free to follow us on twitter [@RugCode](https://twitter.com/RugCode)
 * Please donate bitcoin [via Mt.Gox](https://payment.mtgox.com/4dce465b-6348-46a5-abbf-c401255283ce) or directly at 1P8XvVrrBu68P5Rd8SyYHkZ75dHJA8XU3p
 
-![QR Code](http://rugcode.com/?attachment_id=101)
+![QR Code](http://rugcode.files.wordpress.com/2013/11/bitcoin-donations.png)
