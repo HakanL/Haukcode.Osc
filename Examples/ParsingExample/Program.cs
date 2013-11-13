@@ -56,8 +56,8 @@ namespace ParsingExample
 
 			// Color
 			Console.WriteLine("Color");
-			CheckPackets(new OscMessage("/foo", Color.Red), "/foo, { Color: Red }");
-			CheckPackets(new OscMessage("/foo", Color.FromArgb(255, 255, 255, 0)), "/foo, { Color: 255, 255, 0, 255 }");
+			CheckPackets(new OscMessage("/foo", OscColor.FromArgb(255, 255, 0, 0)), "/foo, { Color: 255, 255, 0, 0 }");
+			CheckPackets(new OscMessage("/foo", OscColor.FromArgb(255, 255, 255, 0)), "/foo, { Color: 255, 255, 0, 255 }");
 			Console.WriteLine(); 
 
 			// Osc-Null

@@ -17,7 +17,6 @@
  */
 
 using System;
-using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Globalization;
@@ -299,7 +298,7 @@ namespace Rug.Osc
 
 		#region Color
 
-		internal static void Write(BinaryWriter writer, Color value)
+		internal static void Write(BinaryWriter writer, OscColor value)
 		{
 			uint intValue = unchecked((uint)(
 						((byte)value.R << 24) |
@@ -310,7 +309,7 @@ namespace Rug.Osc
 			Write(writer, intValue);
 		}
 
-		internal static Color ReadColor(System.IO.BinaryReader reader)
+		internal static OscColor ReadColor(System.IO.BinaryReader reader)
 		{			
 			uint value = ReadUInt32(reader);
 
@@ -321,7 +320,7 @@ namespace Rug.Osc
 			b = (byte)((value & 0x0000FF00) >> 8);
 			a = (byte)(value & 0x000000FF);
 
-			return Color.FromArgb(a, r, g, b);
+			return OscColor.FromArgb(a, r, g, b);
 		}
 
 		#region Color Helpers
@@ -330,11 +329,15 @@ namespace Rug.Osc
 		{
 			string[] pieces = str.Split(',');
 
+			/*
+			// Removed becasue of System.Drawing
 			if (pieces.Length == 1)
 			{
-				return Color.FromName(str.Trim());
+				return OscColor.FromName(str.Trim());
 			}
-			else if (pieces.Length == 4)
+			else 
+			*/ 
+			if (pieces.Length == 4)
 			{
 				byte a, r, g, b;
 
@@ -343,7 +346,7 @@ namespace Rug.Osc
 				b = byte.Parse(pieces[2].Trim(), System.Globalization.NumberStyles.None, provider);
 				a = byte.Parse(pieces[3].Trim(), System.Globalization.NumberStyles.None, provider);
 
-				return Color.FromArgb(a, r, g, b);
+				return OscColor.FromArgb(a, r, g, b);
 			}
 			else
 			{
@@ -351,16 +354,19 @@ namespace Rug.Osc
 			}
 		}
 
-		public static string ToStringColor(Color color)
+		public static string ToStringColor(OscColor color)
 		{
+			/* 
+			// Removed because of System.Drawing
 			if (color.IsNamedColor == true)
 			{
 				return String.Format("{0}", color.Name);
 			}
 			else
 			{
-				return String.Format("{0}, {1}, {2}, {3}", color.R, color.G, color.B, color.A);
-			}
+			*/ 
+			return String.Format("{0}, {1}, {2}, {3}", color.R, color.G, color.B, color.A);
+			// }
 		}
 
 		#endregion

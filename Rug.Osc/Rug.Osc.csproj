@@ -35,9 +35,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\OscColor.cs" />
     <Compile Include="Comms\OscReader.cs" />
     <Compile Include="Comms\OscWriter.cs" />
     <Compile Include="Core\OscAddressPart.cs" />

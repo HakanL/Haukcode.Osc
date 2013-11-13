@@ -149,7 +149,7 @@ namespace Rug.Osc.Tests
 
 		internal static OscMessage Message_Color_Red()
 		{
-			return new OscMessage("/test", Color.FromArgb(255, 255, 0, 0));
+			return new OscMessage("/test", OscColor.FromArgb(255, 255, 0, 0));
 		}
 
 		internal static byte[] MessageBody_Color_Green = new byte[] 
@@ -164,7 +164,7 @@ namespace Rug.Osc.Tests
 
 		internal static OscMessage Message_Color_Green()
 		{
-			return new OscMessage("/test", Color.FromArgb(255, 0, 255, 0));
+			return new OscMessage("/test", OscColor.FromArgb(255, 0, 255, 0));
 		}
 
 		internal static byte[] MessageBody_Color_Blue = new byte[] 
@@ -179,7 +179,7 @@ namespace Rug.Osc.Tests
 
 		internal static OscMessage Message_Color_Blue()
 		{
-			return new OscMessage("/test", Color.FromArgb(255, 0, 0, 255));
+			return new OscMessage("/test", OscColor.FromArgb(255, 0, 0, 255));
 		}
 
 		internal static byte[] MessageBody_Color_Transparent = new byte[] 
@@ -194,7 +194,7 @@ namespace Rug.Osc.Tests
 
 		internal static OscMessage Message_Color_Transparent()
 		{
-			return new OscMessage("/test", Color.FromArgb(0, 0, 0, 0));
+			return new OscMessage("/test", OscColor.FromArgb(0, 0, 0, 0));
 		}
 
 		#endregion
@@ -782,10 +782,10 @@ namespace Rug.Osc.Tests
 
 					AreEqual(expectedArg, actualArg);
 				}
-				else if (expected[i] is Color)
+				else if (expected[i] is OscColor)
 				{
-					Color expectedArg = (Color)expected[i];
-					Color actualArg = (Color)actual[i];
+					OscColor expectedArg = (OscColor)expected[i];
+					OscColor actualArg = (OscColor)actual[i];
 
 					Assert.AreEqual(expectedArg.R, actualArg.R, "Color arguments at index {0} Red componets do not match", i);
 					Assert.AreEqual(expectedArg.G, actualArg.G, "Color arguments at index {0} Green componets do not match", i);

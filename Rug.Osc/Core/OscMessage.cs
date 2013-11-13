@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -226,7 +225,7 @@ namespace Rug.Osc
 					!(obj is double) &&
 					!(obj is string) &&
 					!(obj is bool) &&
-					!(obj is Color) &&
+					!(obj is OscColor) &&
 					!(obj is OscSymbol) &&
 					!(obj is OscNull) &&
 					!(obj is OscTimeTag) &&
@@ -293,7 +292,7 @@ namespace Rug.Osc
 					(obj is float) ||
 					(obj is OscMidiMessage) ||
 					(obj is byte) ||
-					(obj is Color))
+					(obj is OscColor))
 				{
 					size += 4;
 				}
@@ -519,7 +518,7 @@ namespace Rug.Osc
 				{
 					writer.Write((byte)'c');
 				}
-				else if (obj is Color)
+				else if (obj is OscColor)
 				{
 					writer.Write((byte)'r');
 				}
@@ -619,9 +618,9 @@ namespace Rug.Osc
 					// write the byte
 					Helper.Write(writer, value);
 				}
-				else if (obj is Color)
+				else if (obj is OscColor)
 				{
-					Color value = (Color)obj;
+					OscColor value = (OscColor)obj;
 
 					// write the Color
 					Helper.Write(writer, value);
@@ -1115,7 +1114,7 @@ namespace Rug.Osc
 								return false;
 							}
 
-							Color value = Helper.ReadColor(reader);
+							OscColor value = Helper.ReadColor(reader);
 
 							args[i] = value;
 						}
@@ -1299,9 +1298,9 @@ namespace Rug.Osc
 				{
 					sb.Append("'" + (char)(byte)obj + "'"); 
 				}
-				else if (obj is Color)
+				else if (obj is OscColor)
 				{
-					sb.Append("{ Color: " + Helper.ToStringColor((Color)obj) + " }");
+					sb.Append("{ Color: " + Helper.ToStringColor((OscColor)obj) + " }");
 				}
 				else if (obj is OscTimeTag)
 				{
@@ -1467,10 +1466,10 @@ namespace Rug.Osc
 					}
 				}
 				// is the argument a color
-				else if (array1[i] is Color)
+				else if (array1[i] is OscColor)
 				{
-					Color expectedArg = (Color)array1[i];
-					Color actualArg = (Color)array2[i];
+					OscColor expectedArg = (OscColor)array1[i];
+					OscColor actualArg = (OscColor)array2[i];
 
 					// check the RGBA values
 					if (expectedArg.R != actualArg.R ||
