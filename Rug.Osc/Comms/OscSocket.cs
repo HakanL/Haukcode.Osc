@@ -229,15 +229,9 @@ namespace Rug.Osc
 				throw new Exception(Strings.Socket_AddressFamilyIncompatible);
 			}
 
-			if (remotePort < 1 || remotePort > 65535)
-			{
-				throw new ArgumentOutOfRangeException("remotePort", Strings.Socket_RemotePortOutOfRange);
-			}
+			CheckPortRange(remotePort, "remotePort", Strings.Socket_RemotePortOutOfRange, false);
 
-			if (localPort < 0 || remotePort > 65535)
-			{
-				throw new ArgumentOutOfRangeException("localPort", Strings.Socket_LocalPortOutOfRange);
-			}
+			CheckPortRange(localPort, "localPort", Strings.Socket_LocalPortOutOfRange, true);
 
 			// if the local port is 0 then we are to use dynamic port assignment
 			m_UseDynamicLocalPort = localPort == 0; 
@@ -297,14 +291,11 @@ namespace Rug.Osc
 
 			bool useIpV6 = address.AddressFamily == AddressFamily.InterNetworkV6;
 
-			if (port < 1 || port > 65535)
-			{
-				throw new ArgumentOutOfRangeException("port", Strings.Socket_PortOutOfRange); 
-			}
+			CheckPortRange(port, "port", Strings.Socket_PortOutOfRange, this.OscSocketType == Osc.OscSocketType.Receive);
 
 			m_Port = port;
 			m_LocalPort = port; 			
-			m_UseDynamicLocalPort = false; 
+			m_UseDynamicLocalPort = port == 0; 
 
 			if (this.OscSocketType == Osc.OscSocketType.Send)
 			{
@@ -331,14 +322,11 @@ namespace Rug.Osc
 		/// <param name="port">the port to bind to</param>
 		internal OscSocket(int port)
 		{
-			if (port < 1 || port > 65535)
-			{
-				throw new ArgumentOutOfRangeException("port", Strings.Socket_PortOutOfRange);
-			}
+			CheckPortRange(port, "port", Strings.Socket_PortOutOfRange, this.OscSocketType == Osc.OscSocketType.Receive);
 
 			m_Port = port;
 			m_LocalPort = port;
-			m_UseDynamicLocalPort = false;
+			m_UseDynamicLocalPort = port == 0;
 
 			m_LocalAddress = IPAddress.Any;
 			m_RemoteAddress = IPAddress.Any;			
@@ -349,6 +337,21 @@ namespace Rug.Osc
 			m_SocketFlags = System.Net.Sockets.SocketFlags.None;
 
 			m_IsMulticastEndPoint = false;
+		}
+
+		private void CheckPortRange(int port, string arg, string errorMessage, bool allowZero)
+		{
+			// if zero ports are allowed and the port is zero then just return
+			if (allowZero == true && port == 0) 
+			{
+				return; 
+			}
+
+			// check the range of the port
+			if (port < 1 || port > 65535)
+			{
+				throw new ArgumentOutOfRangeException(arg, errorMessage);
+			}
 		}
 
 		#endregion
@@ -381,6 +384,7 @@ namespace Rug.Osc
 					m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
 				}
 
+				// allow the reuse of addresses
 				m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 16);
 				m_Socket.ExclusiveAddressUse = false;
 
@@ -388,6 +392,7 @@ namespace Rug.Osc
 				{
 					IPEndPoint tempEndPoint = new IPEndPoint(m_LocalEndPoint.Address, 0);
 
+					// bind the the temp local endpoint
 					m_Socket.Bind(tempEndPoint);
 
 					// set the local port from the resolved socket port 
@@ -404,6 +409,7 @@ namespace Rug.Osc
 				}
 				else
 				{
+					// bind the local endpoint
 					m_Socket.Bind(m_LocalEndPoint);
 				}
 
@@ -413,10 +419,12 @@ namespace Rug.Osc
 					{
 						if (useIpV6 == true)
 						{
+							// add to the membership of the IPv6 multicast endpoint
 							m_Socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(m_RemoteAddress));
 						}
 						else
 						{
+							// add to the membership of the IP multicast endpoint
 							m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(m_RemoteAddress));
 						}
 					}
@@ -427,14 +435,17 @@ namespace Rug.Osc
 					{
 						if (useIpV6 == true)
 						{
+							// set the multicast TTL
 							m_Socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.MulticastTimeToLive, TimeToLive);
 						}
 						else
 						{
+							// set the multicast TTL
 							m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, TimeToLive);
 						}
 					}
 
+					// connect to the remote endpoint 
 					m_Socket.Connect(m_RemoteEndPoint);
 				}
 
