@@ -165,6 +165,9 @@
   <data name="OscAddress_UnknownAddressPart" xml:space="preserve">
     <value>Unknown address part '{0}'</value>
   </data>
+  <data name="OscColor_ChannelInvalidValue" xml:space="preserve">
+    <value>The {0} channel has a value of {1}, color channel values must be in the range {2} to {3}</value>
+  </data>
   <data name="Parser_ArgumentEmpty" xml:space="preserve">
     <value>Argument is empty</value>
   </data>

@@ -481,7 +481,7 @@ namespace Rug.Osc
 				{
 					m_State = OscSocketState.Closing;
 
-					OnClosing();
+					OnClosing();					
 
 					m_Socket.Close();
 

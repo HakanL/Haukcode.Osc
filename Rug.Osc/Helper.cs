@@ -17,9 +17,9 @@
  */
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Globalization;
 using System.Text;
 
 namespace Rug.Osc
@@ -329,14 +329,6 @@ namespace Rug.Osc
 		{
 			string[] pieces = str.Split(',');
 
-			/*
-			// Removed becasue of System.Drawing
-			if (pieces.Length == 1)
-			{
-				return OscColor.FromName(str.Trim());
-			}
-			else 
-			*/ 
 			if (pieces.Length == 4)
 			{
 				byte a, r, g, b;
@@ -356,17 +348,7 @@ namespace Rug.Osc
 
 		public static string ToStringColor(OscColor color)
 		{
-			/* 
-			// Removed because of System.Drawing
-			if (color.IsNamedColor == true)
-			{
-				return String.Format("{0}", color.Name);
-			}
-			else
-			{
-			*/ 
-			return String.Format("{0}, {1}, {2}, {3}", color.R, color.G, color.B, color.A);
-			// }
+			return String.Format("{0}, {1}, {2}, {3}", color.R, color.G, color.B, color.A);		
 		}
 
 		#endregion

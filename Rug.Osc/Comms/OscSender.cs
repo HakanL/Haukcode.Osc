@@ -217,7 +217,8 @@ namespace Rug.Osc
 
 		protected override void OnConnect()
 		{
-
+			// set the timeout for send
+			Socket.SendTimeout = 1000; 
 		}
 
 		protected override void OnClosing()
@@ -270,7 +271,7 @@ namespace Rug.Osc
 		/// </summary>
 		public void WaitForAllMessagesToComplete()
 		{
-			m_QueueEmpty.WaitOne();
+			m_QueueEmpty.WaitOne(1000);
 		}
 
 		#endregion
