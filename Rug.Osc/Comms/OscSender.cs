@@ -212,6 +212,7 @@ namespace Rug.Osc
 		public OscSender(IPAddress local, int localPort, IPAddress remote, int remotePort, int timeToLive, int messageBufferSize, int maxPacketSize)
 			: base(local, localPort, remote, remotePort, timeToLive)
 		{
+			// set the default time out
 			DisconnectTimeout = 1000; 
 
 			m_Bytes = new byte[maxPacketSize];

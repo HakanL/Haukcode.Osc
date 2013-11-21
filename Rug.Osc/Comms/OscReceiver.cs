@@ -101,7 +101,7 @@ namespace Rug.Osc
 		/// </summary>
 		/// <param name="address">the local ip address to listen to</param>
 		/// <param name="multicast">a multicast address to join</param>
-		/// <param name="port">the port to listen on</param>
+		/// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
 		/// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
 		/// <param name="maxPacketSize">the maximum packet size of any message</param>
 		public OscReceiver(IPAddress address, IPAddress multicast, int port, int messageBufferSize, int maxPacketSize)
@@ -112,7 +112,6 @@ namespace Rug.Osc
 
 			if (IsMulticastEndPoint == false)
 			{
-				// TODO Fill this in!
 				throw new Exception(Strings.Receiver_NotMulticastAddress); 
 			}
 		}
@@ -121,7 +120,7 @@ namespace Rug.Osc
 		/// Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
         /// </summary>
         /// <param name="address">the local ip address to listen to</param>
-        /// <param name="port">the port to listen on</param>
+		/// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
         /// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
         /// <param name="maxPacketSize">the maximum packet size of any message</param>
         public OscReceiver(IPAddress address, int port, int messageBufferSize, int maxPacketSize)
@@ -146,7 +145,7 @@ namespace Rug.Osc
 		/// </summary>
 		/// <param name="address">the local ip address to listen to</param>
 		/// <param name="multicast">a multicast address to join</param>
-		/// <param name="port">the port to listen on</param>
+		/// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
 		public OscReceiver(IPAddress address, IPAddress multicast, int port)
 			: this(address, multicast, port, DefaultMessageBufferSize, DefaultPacketSize)
 		{
