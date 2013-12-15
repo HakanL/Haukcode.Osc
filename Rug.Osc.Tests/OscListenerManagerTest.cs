@@ -68,7 +68,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 
 				}
@@ -87,7 +87,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 					string address = "/test";
 
@@ -110,7 +110,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 					string address = "/test";
 
@@ -135,7 +135,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 					string address = "/test";
 					OscMessageEvent @event = new OscMessageEvent((OscMessage msg) => { Debug.WriteLine(msg.ToString()); });
@@ -164,7 +164,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 					string address = "/test";
 					OscMessageEvent @event = new OscMessageEvent((OscMessage msg) => { Debug.WriteLine(msg.ToString()); });
@@ -193,7 +193,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 					string address = "/test";
 					OscMessageEvent @event = new OscMessageEvent((OscMessage msg) => { Debug.WriteLine(msg.ToString()); });
@@ -222,7 +222,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 					string address = "/test";
 					OscMessageEvent @event = new OscMessageEvent((OscMessage msg) => { Debug.WriteLine(msg.ToString()); });

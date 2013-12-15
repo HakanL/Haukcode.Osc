@@ -56,7 +56,7 @@ namespace Rug.Osc.Profile.Addresses
 				Parsed_Messages[i] = new OscMessage(StaticObjects.All_Addresses[i]);
 			}
 
-			Mananger = new OscNamespaceManager();
+			Mananger = new OscAddressManager();
 
 			for (int i = 0; i < Good_AddressPatterns.Length; i++)
 			{
@@ -147,7 +147,7 @@ namespace Rug.Osc.Profile.Addresses
 
 		#region Osc Listener Managers
 
-		internal static readonly OscNamespaceManager Mananger;
+		internal static readonly OscAddressManager Mananger;
 
 		internal static void DummyMethod(OscMessage message) { } 
 

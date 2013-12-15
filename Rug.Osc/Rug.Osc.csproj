@@ -35,6 +35,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comms\OscListener.cs" />
     <Compile Include="DataTypes\OscColor.cs" />
     <Compile Include="Comms\OscReader.cs" />
     <Compile Include="Comms\OscWriter.cs" />
@@ -42,8 +43,8 @@
     <Compile Include="Core\OscAddressPartType.cs" />
     <Compile Include="Core\OscAddressType.cs" />
     <Compile Include="Core\OscBundleInvokeMode.cs" />
-    <Compile Include="Core\OscFilter.cs" />
-    <Compile Include="Core\OscListener.cs" />
+    <Compile Include="Core\OscPatternEvent.cs" />
+    <Compile Include="Core\OscLiteralEvent.cs" />
     <Compile Include="Core\OscPacketInvokeAction.cs" />
     <Compile Include="DataTypes\OscNull.cs" />
     <Compile Include="Core\DefaultTimeProvider.cs" />
@@ -52,7 +53,7 @@
     <Compile Include="Core\OscAddress.cs" />
     <Compile Include="Core\OscBundle.cs" />
     <Compile Include="Core\OscPacket.cs" />
-    <Compile Include="Core\OscNamespaceManager.cs" />
+    <Compile Include="Core\OscAddressManager.cs" />
     <Compile Include="DataTypes\OscImpulse.cs" />
     <Compile Include="Core\OscMessage.cs" />
     <Compile Include="DataTypes\OscMidiMessage.cs" />

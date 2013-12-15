@@ -19,7 +19,7 @@
 
 namespace Rug.Osc
 {
-	internal class OscFilter
+	internal class OscPatternEvent
 	{
 		/// <summary>
 		/// The pattern address of the event
@@ -30,7 +30,7 @@ namespace Rug.Osc
 
 		public bool IsNull { get { return Event == null; } }
 
-		internal OscFilter(OscAddress address)
+		internal OscPatternEvent(OscAddress address)
 		{
 			Address = address;
 			Event = null;

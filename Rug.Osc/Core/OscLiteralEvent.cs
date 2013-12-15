@@ -19,7 +19,7 @@
 
 namespace Rug.Osc
 {
-	internal class OscListener
+	internal class OscLiteralEvent
 	{
 		/// <summary>
 		/// The literal address of the event
@@ -30,7 +30,7 @@ namespace Rug.Osc
 
 		public bool IsNull { get { return Event == null; } }
 
-		internal OscListener(string address)
+		internal OscLiteralEvent(string address)
 		{
 			Address = address;
 			Event = null;
