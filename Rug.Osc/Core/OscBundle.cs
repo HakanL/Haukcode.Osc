@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Text;
 
 namespace Rug.Osc
@@ -32,7 +33,9 @@ namespace Rug.Osc
 		#region Private Members
 
 		internal const string BundleIdent = "#bundle";
-		internal const int BundleHeaderSizeInBytes = 16; 
+		internal const int BundleHeaderSizeInBytes = 16;
+
+		private IPEndPoint m_Origin;
 
 		private OscTimeTag m_Timestamp;
 		private OscPacket[] m_Messages;
@@ -41,7 +44,7 @@ namespace Rug.Osc
 		private string m_ErrorMessage;
 
 		private bool m_HasHashCode = false;
-		private int m_HashCode;
+		private int m_HashCode;		
 
 		#endregion
 
@@ -55,7 +58,12 @@ namespace Rug.Osc
 		/// <summary>
 		/// The descriptive string associated with Error
 		/// </summary>
-		public override string ErrorMessage { get { return m_ErrorMessage; } } 
+		public override string ErrorMessage { get { return m_ErrorMessage; } }
+
+		/// <summary>
+		/// The IP end point that the bundle originated from
+		/// </summary>
+		public override IPEndPoint Origin { get { return m_Origin; } } 
 
 		/// <summary>
 		/// Osc timestamp associated with this bundle
@@ -103,6 +111,8 @@ namespace Rug.Osc
 		/// <param name="messages">messages to bundle</param>
 		public OscBundle(OscTimeTag timestamp, params OscPacket[] messages)
 		{
+			m_Origin = Helper.EmptyEndPoint;
+
 			m_Timestamp = timestamp;
 			m_Messages = messages;
 		}
@@ -114,6 +124,8 @@ namespace Rug.Osc
 		/// <param name="messages">messages to bundle</param>
 		public OscBundle(ulong timestamp, params OscPacket[] messages)
 		{
+			m_Origin = Helper.EmptyEndPoint;
+
 			m_Timestamp = new OscTimeTag(timestamp); 
 			m_Messages = messages;
 		}
@@ -125,6 +137,51 @@ namespace Rug.Osc
 		/// <param name="messages">messages to bundle</param>
 		public OscBundle(DateTime timestamp, params OscPacket[] messages)
 		{
+			m_Origin = Helper.EmptyEndPoint;
+
+			m_Timestamp = OscTimeTag.FromDataTime(timestamp);
+			m_Messages = messages;
+		}
+
+
+		/// <summary>
+		/// Create a bundle of messages
+		/// </summary>
+		/// <param name="origin">the origin of the osc bundle</param>
+		/// <param name="timestamp">timestamp</param>
+		/// <param name="messages">messages to bundle</param>
+		public OscBundle(IPEndPoint origin, OscTimeTag timestamp, params OscPacket[] messages)
+		{
+			m_Origin = origin; 
+
+			m_Timestamp = timestamp;
+			m_Messages = messages;
+		}
+
+		/// <summary>
+		/// Create a bundle of messages
+		/// </summary>
+		/// <param name="origin">the origin of the osc bundle</param>
+		/// <param name="timestamp">timestamp</param>
+		/// <param name="messages">messages to bundle</param>
+		public OscBundle(IPEndPoint origin, ulong timestamp, params OscPacket[] messages)
+		{
+			m_Origin = origin; 
+
+			m_Timestamp = new OscTimeTag(timestamp);
+			m_Messages = messages;
+		}
+
+		/// <summary>
+		/// Create a bundle of messages
+		/// </summary>
+		/// <param name="origin">the origin of the osc bundle</param>
+		/// <param name="timestamp">timestamp</param>
+		/// <param name="messages">messages to bundle</param>
+		public OscBundle(IPEndPoint origin, DateTime timestamp, params OscPacket[] messages)
+		{
+			m_Origin = origin; 
+
 			m_Timestamp = OscTimeTag.FromDataTime(timestamp);
 			m_Messages = messages;
 		}
@@ -435,7 +492,7 @@ namespace Rug.Osc
 		/// <returns>the bundle</returns>
 		public static new OscBundle Read(byte[] bytes, int count)
 		{
-			return Read(bytes, 0, count);
+			return Read(bytes, 0, count, Helper.EmptyEndPoint);
 		}
 
 		/// <summary>
@@ -447,6 +504,19 @@ namespace Rug.Osc
 		/// <returns>the bundle</returns>
 		public static new OscBundle Read(byte[] bytes, int index, int count)
 		{
+			return Read(bytes, index, count, Helper.EmptyEndPoint);
+		}
+
+		/// <summary>
+		/// Read a OscBundle from a array of bytes
+		/// </summary>
+		/// <param name="bytes">the array that countains the bundle</param>
+		/// <param name="index">the offset within the array where reading should begin</param>
+		/// <param name="count">the number of bytes in the bundle</param>
+		/// <param name="origin">the origin that is the origin of this bundle</param>
+		/// <returns>the bundle</returns>
+		public static new OscBundle Read(byte[] bytes, int index, int count, IPEndPoint origin)
+		{
 			OscBundle bundle = new OscBundle();
 
 			List<OscPacket> messages = new List<OscPacket>(); 
@@ -454,6 +524,8 @@ namespace Rug.Osc
 			using (MemoryStream stream = new MemoryStream(bytes, index, count))
 			using (BinaryReader reader = new BinaryReader(stream))
 			{
+				bundle.m_Origin = origin; 
+
 				if (stream.Length < BundleHeaderSizeInBytes)
 				{
 					// this is an error 
@@ -508,7 +580,7 @@ namespace Rug.Osc
 						return bundle;
 					}
 
-					messages.Add(OscPacket.Read(bytes, index + (int)stream.Position, messageLength));
+					messages.Add(OscPacket.Read(bytes, index + (int)stream.Position, messageLength, origin));
 
 					stream.Position += messageLength; 
 				}

@@ -125,9 +125,10 @@ namespace Rug.Osc
 
 		private readonly bool m_IsMulticastEndPoint;
 		private readonly int m_TimeToLive;
+		private readonly bool m_UseIpV6;
 
 		private OscSocketState m_State = OscSocketState.NotConnected;
-		private readonly System.Net.Sockets.SocketFlags m_SocketFlags;
+		private readonly System.Net.Sockets.SocketFlags m_SocketFlags;		
 
 		#endregion
 
@@ -169,7 +170,7 @@ namespace Rug.Osc
 		public IPEndPoint RemoteEndPoint { get { return m_RemoteEndPoint; } }
 
 		/// <summary>
-		/// Is the remote endpoint a multicast address
+		/// Is the remote origin a multicast address
 		/// </summary>
 		public bool IsMulticastEndPoint { get { return m_IsMulticastEndPoint; } }
 
@@ -177,6 +178,11 @@ namespace Rug.Osc
 		/// Time to live for multicast packets
 		/// </summary>
 		public int TimeToLive { get { return m_TimeToLive; } }
+
+		/// <summary>
+		/// If true this socket uses IPv6 
+		/// </summary>
+		public bool UseIPv6 { get { return m_UseIpV6; } } 
 
 		/// <summary>
 		/// The current state of the socket
@@ -246,6 +252,8 @@ namespace Rug.Osc
 
 			m_TimeToLive = timeToLive;
 
+			m_UseIpV6 = m_LocalAddress.AddressFamily == AddressFamily.InterNetworkV6;
+
 			m_IsMulticastEndPoint = IsMulticastAddress(m_RemoteAddress);
 
 			m_SocketFlags = System.Net.Sockets.SocketFlags.None;
@@ -289,7 +297,7 @@ namespace Rug.Osc
 				throw new ArgumentException(String.Format(Strings.Socket_UnsupportedAddressFamily, address.AddressFamily), "address");
 			}
 
-			bool useIpV6 = address.AddressFamily == AddressFamily.InterNetworkV6;
+			m_UseIpV6 = address.AddressFamily == AddressFamily.InterNetworkV6;
 
 			CheckPortRange(port, "port", Strings.Socket_PortOutOfRange, this.OscSocketType == Osc.OscSocketType.Receive);
 
@@ -299,13 +307,13 @@ namespace Rug.Osc
 
 			if (this.OscSocketType == Osc.OscSocketType.Send)
 			{
-				m_LocalAddress = useIpV6 ? IPAddress.IPv6Any : IPAddress.Any;
+				m_LocalAddress = m_UseIpV6 ? IPAddress.IPv6Any : IPAddress.Any;
 				m_RemoteAddress = address;
 			}
 			else
 			{
 				m_LocalAddress = address;
-				m_RemoteAddress = useIpV6 ? IPAddress.IPv6Any : IPAddress.Any;
+				m_RemoteAddress = m_UseIpV6 ? IPAddress.IPv6Any : IPAddress.Any;
 			}
 
 			m_LocalEndPoint = new IPEndPoint(LocalAddress, Port);
@@ -335,6 +343,8 @@ namespace Rug.Osc
 			m_RemoteEndPoint = new IPEndPoint(RemoteAddress, Port);
 
 			m_SocketFlags = System.Net.Sockets.SocketFlags.None;
+			
+			m_UseIpV6 = false;
 
 			m_IsMulticastEndPoint = false;
 		}
@@ -369,12 +379,10 @@ namespace Rug.Osc
 					m_State != OscSocketState.Closed)
 				{
 					throw new Exception(Strings.Socket_AlreadyOpenOrNotClosed);
-				}
-
-				bool useIpV6 = m_LocalAddress.AddressFamily == AddressFamily.InterNetworkV6;
+				}				
 
 				// create the instance of the socket
-				m_Socket = new Socket(useIpV6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+				m_Socket = new Socket(m_UseIpV6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
 				m_Socket.Blocking = false;
 
@@ -392,7 +400,7 @@ namespace Rug.Osc
 				{
 					IPEndPoint tempEndPoint = new IPEndPoint(m_LocalEndPoint.Address, 0);
 
-					// bind the the temp local endpoint
+					// bind the the temp local origin
 					m_Socket.Bind(tempEndPoint);
 
 					// set the local port from the resolved socket port 
@@ -409,7 +417,7 @@ namespace Rug.Osc
 				}
 				else
 				{
-					// bind the local endpoint
+					// bind the local origin
 					m_Socket.Bind(m_LocalEndPoint);
 				}
 
@@ -417,14 +425,14 @@ namespace Rug.Osc
 				{
 					if (IsMulticastEndPoint == true)
 					{
-						if (useIpV6 == true)
+						if (m_UseIpV6 == true)
 						{
-							// add to the membership of the IPv6 multicast endpoint
+							// add to the membership of the IPv6 multicast origin
 							m_Socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(m_RemoteAddress));
 						}
 						else
 						{
-							// add to the membership of the IP multicast endpoint
+							// add to the membership of the IP multicast origin
 							m_Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(m_RemoteAddress));
 						}
 					}
@@ -433,7 +441,7 @@ namespace Rug.Osc
 				{
 					if (IsMulticastEndPoint == true)
 					{
-						if (useIpV6 == true)
+						if (m_UseIpV6 == true)
 						{
 							// set the multicast TTL
 							m_Socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.MulticastTimeToLive, TimeToLive);
@@ -445,7 +453,7 @@ namespace Rug.Osc
 						}
 					}
 
-					// connect to the remote endpoint 
+					// connect to the remote origin 
 					m_Socket.Connect(m_RemoteEndPoint);
 				}
 

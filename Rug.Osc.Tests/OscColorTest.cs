@@ -1,6 +1,4 @@
-﻿using Rug.Osc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Rug.Osc.Tests
 {

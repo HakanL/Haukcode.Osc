@@ -4,11 +4,19 @@ using System.Threading;
  
 namespace Rug.Osc
 {
+	/// <summary>
+	/// Preforms common functions needed when listening for osc messages
+	/// </summary>
 	public class OscListener : IDisposable
 	{
 		private readonly OscAddressManager m_Listener = new OscAddressManager();
 		private readonly OscReceiver m_Receiver;
 		private Thread m_Thread;
+
+		/// <summary>
+		/// This event will be raised whenever an unknown address is encountered
+		/// </summary>
+		public event EventHandler<UnknownAddressEventArgs> UnknownAddress; 
 
         #region Constructors
 
@@ -22,7 +30,9 @@ namespace Rug.Osc
 		/// <param name="maxPacketSize">the maximum packet size of any message</param>
 		public OscListener(IPAddress address, IPAddress multicast, int port, int messageBufferSize, int maxPacketSize)		
 		{
-			m_Receiver = new OscReceiver(address, multicast, port, messageBufferSize, maxPacketSize); 
+			m_Receiver = new OscReceiver(address, multicast, port, messageBufferSize, maxPacketSize);
+
+			m_Listener.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
 		}
 
         /// <summary>
@@ -35,6 +45,8 @@ namespace Rug.Osc
         public OscListener(IPAddress address, int port, int messageBufferSize, int maxPacketSize)
         {
 			m_Receiver = new OscReceiver(address, port, messageBufferSize, maxPacketSize);
+
+			m_Listener.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
 		}
 
         /// <summary>
@@ -45,6 +57,8 @@ namespace Rug.Osc
 		public OscListener(IPAddress address, int port)
         {
 			m_Receiver = new OscReceiver(address, port);
+
+			m_Listener.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
         }
 
 		/// <summary>
@@ -56,6 +70,8 @@ namespace Rug.Osc
 		public OscListener(IPAddress address, IPAddress multicast, int port)
 		{
 			m_Receiver = new OscReceiver(address, multicast, port);
+
+			m_Listener.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
 		}
 
         /// <summary>
@@ -67,6 +83,8 @@ namespace Rug.Osc
 		public OscListener(int port, int messageBufferSize, int maxPacketSize)            
         {
 			m_Receiver = new OscReceiver(port, messageBufferSize, maxPacketSize);
+
+			m_Listener.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
 		}
 
         /// <summary>
@@ -76,6 +94,8 @@ namespace Rug.Osc
 		public OscListener(int port)
         {
 			m_Receiver = new OscReceiver(port);
+
+			m_Listener.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
 		}
 
         #endregion
@@ -118,6 +138,14 @@ namespace Rug.Osc
 		public void Detach(string address, OscMessageEvent @event)
 		{
 			m_Listener.Detach(address, @event); 
+		}
+
+		void OnUnknownAddress(object sender, UnknownAddressEventArgs e)
+		{
+			if (UnknownAddress != null)
+			{
+				UnknownAddress(this, e); 
+			}
 		}
 
 		private void ListenLoop()

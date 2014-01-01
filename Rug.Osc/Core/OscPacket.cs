@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Net;
 
 namespace Rug.Osc
 {
@@ -47,6 +48,11 @@ namespace Rug.Osc
 		/// </summary>
 		/// <returns></returns>
 		public abstract byte[] ToByteArray();
+
+		/// <summary>
+		/// The IP end point that the packet originated from
+		/// </summary>
+		public abstract IPEndPoint Origin { get; } 
 
 		#endregion
 
@@ -83,8 +89,20 @@ namespace Rug.Osc
 		/// <param name="count">the number of bytes in the packet</param>
 		/// <returns>the packet</returns>
 		public static OscPacket Read(byte[] bytes, int count)
+		{			
+			return Read(bytes, 0, count, Helper.EmptyEndPoint);
+		}
+
+		/// <summary>
+		/// Read the osc packet from a byte array
+		/// </summary>
+		/// <param name="bytes">array to read from</param>
+		/// <param name="count">the number of bytes in the packet</param>
+		/// <param name="origin">the origin that is the origin of this packet</param>
+		/// <returns>the packet</returns>
+		public static OscPacket Read(byte[] bytes, int count, IPEndPoint origin)
 		{
-			return Read(bytes, 0, count);
+			return Read(bytes, 0, count, origin);
 		}
 
 		/// <summary>
@@ -96,13 +114,26 @@ namespace Rug.Osc
 		/// <returns>the packet</returns>
 		public static OscPacket Read(byte[] bytes, int index, int count)
 		{
+			return Read(bytes, index, count, Helper.EmptyEndPoint);
+		}
+
+		/// <summary>
+		/// Read the osc packet from a byte array
+		/// </summary>
+		/// <param name="bytes">array to read from</param>
+		/// <param name="index">the offset within the array where reading should begin</param>
+		/// <param name="count">the number of bytes in the packet</param>
+		/// <param name="origin">the origin that is the origin of this packet</param>
+		/// <returns>the packet</returns>
+		public static OscPacket Read(byte[] bytes, int index, int count, IPEndPoint origin)
+		{
 			if (OscBundle.IsBundle(bytes, index, count) == true)
 			{
-				return OscBundle.Read(bytes, index, count); 
+				return OscBundle.Read(bytes, index, count, origin);
 			}
 			else
 			{
-				return OscMessage.Read(bytes, index, count); 
+				return OscMessage.Read(bytes, index, count, origin);
 			}
 		}
 		

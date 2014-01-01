@@ -75,12 +75,12 @@ namespace IpV6Example
 
 		static void TestMethodA(OscMessage message)
 		{
-			Console.WriteLine("Test method A called!: " + message[0].ToString());
+			Console.WriteLine("Test method A called by " + message.Origin.ToString() + ": " + message[0].ToString());
 		}
 
 		static void TestMethodB(OscMessage message)
 		{
-			Console.WriteLine("Test method B called!: " + message[0].ToString());
+			Console.WriteLine("Test method B called by " + message.Origin.ToString() + ": " + message[0].ToString());
 		}
 
 		static void ListenLoop()

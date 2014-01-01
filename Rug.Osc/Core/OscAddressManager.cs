@@ -58,6 +58,11 @@ namespace Rug.Osc
 		/// </summary>
 		public OscBundleInvokeMode BundleInvokeMode { get { return m_BundleInvokeMode; } set { m_BundleInvokeMode = value; } }
 
+		/// <summary>
+		/// This event will be raised whenever an unknown address is encountered
+		/// </summary>
+		public event EventHandler<UnknownAddressEventArgs> UnknownAddress; 
+
 		public OscAddressManager()
 		{
 			BundleInvokeMode = OscBundleInvokeMode.InvokeAllBundlesImmediately; 
@@ -334,55 +339,59 @@ namespace Rug.Osc
 			OscAddress oscAddress = null;
 
 			List<OscLiteralEvent> shouldInvoke = new List<OscLiteralEvent>();
-			List<OscPatternEvent> shouldInvoke_Filter = new List<OscPatternEvent>(); 
+			List<OscPatternEvent> shouldInvoke_Filter = new List<OscPatternEvent>();
 
-			lock (m_Lock)
+			do
 			{
-
-				if (OscAddress.IsValidAddressLiteral(message.Address) == true)
+				lock (m_Lock)
 				{
-					OscLiteralEvent container;
 
-					if (m_LiteralAddresses.TryGetValue(message.Address, out container) == true)
+					if (OscAddress.IsValidAddressLiteral(message.Address) == true)
 					{
-						//container.Invoke(message);
-						shouldInvoke.Add(container); 
-						invoked = true;
-					}
-				}
-				else
-				{
-					oscAddress = new OscAddress(message.Address);
+						OscLiteralEvent container;
 
-					foreach (KeyValuePair<string, OscLiteralEvent> value in m_LiteralAddresses)
-					{
-						if (oscAddress.Match(value.Key) == true)
+						if (m_LiteralAddresses.TryGetValue(message.Address, out container) == true)
 						{
-							//value.Value.Invoke(message);
-							shouldInvoke.Add(value.Value); 
+							//container.Invoke(message);
+							shouldInvoke.Add(container);
 							invoked = true;
 						}
 					}
-				}
-
-				if (m_PatternAddresses.Count > 0)
-				{
-					if (oscAddress == null)
+					else
 					{
 						oscAddress = new OscAddress(message.Address);
+
+						foreach (KeyValuePair<string, OscLiteralEvent> value in m_LiteralAddresses)
+						{
+							if (oscAddress.Match(value.Key) == true)
+							{
+								//value.Value.Invoke(message);
+								shouldInvoke.Add(value.Value);
+								invoked = true;
+							}
+						}
 					}
 
-					foreach (KeyValuePair<OscAddress, OscPatternEvent> value in m_PatternAddresses)
+					if (m_PatternAddresses.Count > 0)
 					{
-						if (oscAddress.Match(value.Key) == true)
+						if (oscAddress == null)
 						{
-							//value.Value.Invoke(message);
-							shouldInvoke_Filter.Add(value.Value); 
-							invoked = true;
+							oscAddress = new OscAddress(message.Address);
+						}
+
+						foreach (KeyValuePair<OscAddress, OscPatternEvent> value in m_PatternAddresses)
+						{
+							if (oscAddress.Match(value.Key) == true)
+							{
+								//value.Value.Invoke(message);
+								shouldInvoke_Filter.Add(value.Value);
+								invoked = true;
+							}
 						}
 					}
 				}
 			}
+			while (invoked == false && OnUnknownAddress(message.Address) == true);
 
 			foreach (OscLiteralEvent @event in shouldInvoke)
 			{
@@ -395,6 +404,22 @@ namespace Rug.Osc
 			}
 
 			return invoked; 
+		}
+
+		private bool OnUnknownAddress(string address)
+		{
+			if (UnknownAddress != null)
+			{
+				UnknownAddressEventArgs arg = new UnknownAddressEventArgs(this, address);
+
+				UnknownAddress(this, arg);
+
+				return arg.Retry;
+			}
+			else
+			{
+				return false; 
+			}
 		}
 
 		#endregion

@@ -19,16 +19,25 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Rug.Osc
 {
 	internal static class Helper
-	{
+	{		
 		#region Private Static Members
 
 		private static readonly byte[] m_Padding = new byte[] { 0, 0, 0, 0 };
+
+		#endregion
+
+		#region Empty End Point
+
+		public static IPEndPoint EmptyEndPoint { get { return new IPEndPoint(IPAddress.Any, 0); } }
+
+		public static IPEndPoint EmptyEndPointIPv6 { get { return new IPEndPoint(IPAddress.IPv6Any, 0); } } 
 
 		#endregion
 
