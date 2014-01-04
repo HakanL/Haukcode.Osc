@@ -205,6 +205,15 @@ namespace Rug.Osc {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The {0} channel has a value of {1}, color channel values must be in the range {2} to {3}.
+        /// </summary>
+        internal static string OscColor_ChannelInvalidValue {
+            get {
+                return ResourceManager.GetString("OscColor_ChannelInvalidValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Argument is empty.
         /// </summary>
         internal static string Parser_ArgumentEmpty {

@@ -56,6 +56,11 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
+		/// Use a value greater than 0 to set the disconnect time out in miliseconds use a value less than or equal to 0 for an infinite timeout
+		/// </summary>
+		public int DisconnectTimeout { get; set; } 
+
+		/// <summary>
 		/// The next queue index to write messages to 
 		/// </summary>
 		private int NextWriteIndex
@@ -207,6 +212,9 @@ namespace Rug.Osc
 		public OscSender(IPAddress local, int localPort, IPAddress remote, int remotePort, int timeToLive, int messageBufferSize, int maxPacketSize)
 			: base(local, localPort, remote, remotePort, timeToLive)
 		{
+			// set the default time out
+			DisconnectTimeout = 1000; 
+
 			m_Bytes = new byte[maxPacketSize];
 			m_SendQueue = new OscPacket[messageBufferSize];
 		}
@@ -217,7 +225,8 @@ namespace Rug.Osc
 
 		protected override void OnConnect()
 		{
-
+			// set the timeout for send
+			// Socket.SendTimeout = 1000; 
 		}
 
 		protected override void OnClosing()
@@ -270,7 +279,7 @@ namespace Rug.Osc
 		/// </summary>
 		public void WaitForAllMessagesToComplete()
 		{
-			m_QueueEmpty.WaitOne();
+			m_QueueEmpty.WaitOne(Math.Max(-1, DisconnectTimeout));
 		}
 
 		#endregion

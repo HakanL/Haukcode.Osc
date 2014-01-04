@@ -12,12 +12,11 @@
     <AssemblyName>Rug.Osc</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -25,27 +24,28 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Rug.Osc.XML</DocumentationFile>
-    <NoStdLib>false</NoStdLib>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comms\OscListener.cs" />
+    <Compile Include="Core\UnknownAddressEventArgs.cs" />
+    <Compile Include="DataTypes\OscColor.cs" />
     <Compile Include="Comms\OscReader.cs" />
     <Compile Include="Comms\OscWriter.cs" />
     <Compile Include="Core\OscAddressPart.cs" />
     <Compile Include="Core\OscAddressPartType.cs" />
     <Compile Include="Core\OscAddressType.cs" />
     <Compile Include="Core\OscBundleInvokeMode.cs" />
-    <Compile Include="Core\OscFilter.cs" />
-    <Compile Include="Core\OscListener.cs" />
+    <Compile Include="Core\OscPatternEvent.cs" />
+    <Compile Include="Core\OscLiteralEvent.cs" />
     <Compile Include="Core\OscPacketInvokeAction.cs" />
     <Compile Include="DataTypes\OscNull.cs" />
     <Compile Include="Core\DefaultTimeProvider.cs" />
@@ -54,7 +54,7 @@
     <Compile Include="Core\OscAddress.cs" />
     <Compile Include="Core\OscBundle.cs" />
     <Compile Include="Core\OscPacket.cs" />
-    <Compile Include="Core\OscNamespaceManager.cs" />
+    <Compile Include="Core\OscAddressManager.cs" />
     <Compile Include="DataTypes\OscImpulse.cs" />
     <Compile Include="Core\OscMessage.cs" />
     <Compile Include="DataTypes\OscMidiMessage.cs" />

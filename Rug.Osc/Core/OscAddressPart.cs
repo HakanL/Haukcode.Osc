@@ -61,7 +61,11 @@ namespace Rug.Osc
 						return @"\?";
 					case "\\":
 						return @"\\";
-					default: throw new Exception(Strings.OscAddress_UnexpectedMatch);
+					default: 
+						throw new Exception(Strings.OscAddress_UnexpectedMatch);
+						
+						// This should never be reached but should shut up the Unity compiler. 
+						return null; 
 				}
 			});
 		}

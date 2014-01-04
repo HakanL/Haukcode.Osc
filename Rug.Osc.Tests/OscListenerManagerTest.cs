@@ -1,7 +1,6 @@
-﻿using Rug.Osc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Diagnostics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Rug.Osc.Tests
 {       
@@ -68,7 +67,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 
 				}
@@ -87,7 +86,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 					string address = "/test";
 
@@ -110,7 +109,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 					string address = "/test";
 
@@ -135,7 +134,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 					string address = "/test";
 					OscMessageEvent @event = new OscMessageEvent((OscMessage msg) => { Debug.WriteLine(msg.ToString()); });
@@ -164,7 +163,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 					string address = "/test";
 					OscMessageEvent @event = new OscMessageEvent((OscMessage msg) => { Debug.WriteLine(msg.ToString()); });
@@ -193,7 +192,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 					string address = "/test";
 					OscMessageEvent @event = new OscMessageEvent((OscMessage msg) => { Debug.WriteLine(msg.ToString()); });
@@ -222,7 +221,7 @@ namespace Rug.Osc.Tests
 		{
 			try
 			{
-				using (OscNamespaceManager target = new OscNamespaceManager())
+				using (OscAddressManager target = new OscAddressManager())
 				{
 					string address = "/test";
 					OscMessageEvent @event = new OscMessageEvent((OscMessage msg) => { Debug.WriteLine(msg.ToString()); });

@@ -7,14 +7,14 @@ namespace MulticastExample
 {
 	class Program
 	{		
-		static OscNamespaceManager m_Listener;
+		static OscAddressManager m_Listener;
 		static OscReceiver m_Receiver;
 		static OscSender m_Sender;
 		static Thread m_Thread;
 
 		static void Main(string[] args)
 		{
-			m_Listener = new OscNamespaceManager();
+			m_Listener = new OscAddressManager();
 
 			m_Listener.Attach("/testA", TestMethodA);
 			m_Listener.Attach("/testB", TestMethodB);

@@ -19,9 +19,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Text;
 
 namespace Rug.Osc
@@ -46,12 +46,14 @@ namespace Rug.Osc
         private object[] m_Arguments;
 
         private string m_Address;
-        
+
+		private IPEndPoint m_Origin;
+
         private OscPacketError m_Error = OscPacketError.None;
         private string m_ErrorMessage = String.Empty;
 
 		private bool m_HasHashCode = false;
-		private int m_HashCode = 0; 
+		private int m_HashCode = 0;		
 
 	    #endregion
 
@@ -91,6 +93,11 @@ namespace Rug.Osc
         ///  Error message 
         /// </summary>
 		public override string ErrorMessage { get { return m_ErrorMessage; } }
+
+		/// <summary>
+		/// The IP end point that the message originated from
+		/// </summary>
+		public override IPEndPoint Origin { get { return m_Origin; } } 
 
 		#region Packet Size
 
@@ -176,8 +183,41 @@ namespace Rug.Osc
 		/// <param name="address">An osc address that is the destination for this message</param>
 		/// <param name="args">Object array of OSC argument values. The type tag string will be created automatically according to each argument type</param>
 		/// <example>OscMessage message = new OscMessage("/test/test", 1, 2, 3);</example>
-        public OscMessage(string address, params object[] args)
+		public OscMessage(string address, params object[] args) 
+		{
+			m_Origin = Helper.EmptyEndPoint; 
+
+			m_Address = address;
+			m_Arguments = args;
+
+			if (Helper.IsNullOrWhiteSpace(m_Address) == true)
+			{
+				throw new ArgumentNullException("address");
+			}
+
+			if (OscAddress.IsValidAddressPattern(address) == false)
+			{
+				throw new ArgumentException(String.Format(Strings.OscAddress_NotAValidOscAddress, address), "address");
+			}
+
+			if (args == null)
+			{
+				throw new ArgumentNullException("args");
+			}
+
+			CheckArguments(m_Arguments); 
+		}
+
+		/// <summary>
+		/// Construct a osc message
+		/// </summary>
+		/// <param name="origin">the origin of the osc message</param>
+		/// <param name="address">An osc address that is the destination for this message</param>		
+		/// <param name="args">Object array of OSC argument values. The type tag string will be created automatically according to each argument type</param>
+		/// <example>OscMessage message = new OscMessage("/test/test", 1, 2, 3);</example>
+		public OscMessage(IPEndPoint origin, string address, params object[] args)
         {
+			m_Origin = origin; 
             m_Address = address; 
             m_Arguments = args;
 
@@ -226,7 +266,7 @@ namespace Rug.Osc
 					!(obj is double) &&
 					!(obj is string) &&
 					!(obj is bool) &&
-					!(obj is Color) &&
+					!(obj is OscColor) &&
 					!(obj is OscSymbol) &&
 					!(obj is OscNull) &&
 					!(obj is OscTimeTag) &&
@@ -293,7 +333,7 @@ namespace Rug.Osc
 					(obj is float) ||
 					(obj is OscMidiMessage) ||
 					(obj is byte) ||
-					(obj is Color))
+					(obj is OscColor))
 				{
 					size += 4;
 				}
@@ -519,7 +559,7 @@ namespace Rug.Osc
 				{
 					writer.Write((byte)'c');
 				}
-				else if (obj is Color)
+				else if (obj is OscColor)
 				{
 					writer.Write((byte)'r');
 				}
@@ -619,9 +659,9 @@ namespace Rug.Osc
 					// write the byte
 					Helper.Write(writer, value);
 				}
-				else if (obj is Color)
+				else if (obj is OscColor)
 				{
-					Color value = (Color)obj;
+					OscColor value = (OscColor)obj;
 
 					// write the Color
 					Helper.Write(writer, value);
@@ -683,7 +723,7 @@ namespace Rug.Osc
         /// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
 		public static new OscMessage Read(byte[] bytes, int count)
 		{
-			return Read(bytes, 0, count); 
+			return Read(bytes, 0, count, Helper.EmptyEndPoint); 
 		}
 
 		/// <summary>
@@ -694,8 +734,23 @@ namespace Rug.Osc
 		/// <param name="count">the number of bytes in the message</param>
 		/// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
 		public static new OscMessage Read(byte[] bytes, int index, int count)
+		{
+			return Read(bytes, index, count, Helper.EmptyEndPoint);
+		}
+
+		/// <summary>
+		/// Read a OscMessage from a array of bytes
+		/// </summary>
+		/// <param name="bytes">the array that countains the message</param>
+		/// <param name="index">the offset within the array where reading should begin</param>
+		/// <param name="count">the number of bytes in the message</param>
+		/// <param name="origin">the origin of the packet</param>
+		/// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
+		public static new OscMessage Read(byte[] bytes, int index, int count, IPEndPoint origin)
         {
 			OscMessage msg = new OscMessage();
+
+			msg.m_Origin = origin; 
 
 			using (MemoryStream stream = new MemoryStream(bytes, index, count)) 
             using (BinaryReader reader = new BinaryReader(stream)) 
@@ -1115,7 +1170,7 @@ namespace Rug.Osc
 								return false;
 							}
 
-							Color value = Helper.ReadColor(reader);
+							OscColor value = Helper.ReadColor(reader);
 
 							args[i] = value;
 						}
@@ -1299,9 +1354,9 @@ namespace Rug.Osc
 				{
 					sb.Append("'" + (char)(byte)obj + "'"); 
 				}
-				else if (obj is Color)
+				else if (obj is OscColor)
 				{
-					sb.Append("{ Color: " + Helper.ToStringColor((Color)obj) + " }");
+					sb.Append("{ Color: " + Helper.ToStringColor((OscColor)obj) + " }");
 				}
 				else if (obj is OscTimeTag)
 				{
@@ -1467,10 +1522,10 @@ namespace Rug.Osc
 					}
 				}
 				// is the argument a color
-				else if (array1[i] is Color)
+				else if (array1[i] is OscColor)
 				{
-					Color expectedArg = (Color)array1[i];
-					Color actualArg = (Color)array2[i];
+					OscColor expectedArg = (OscColor)array1[i];
+					OscColor actualArg = (OscColor)array2[i];
 
 					// check the RGBA values
 					if (expectedArg.R != actualArg.R ||
