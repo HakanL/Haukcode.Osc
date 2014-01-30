@@ -303,10 +303,16 @@ namespace Rug.Osc
 			return base.Equals(obj);
 		}
 
-		public abstract bool Equals(object obj);
+		public abstract override bool Equals(object obj);
 
-		public abstract int GetHashCode();
+		public abstract override int GetHashCode();
 
+		/// <summary>
+		/// Check the contents of 2 arrays of bytes are the same
+		/// </summary>
+		/// <param name="expected">The expected contents</param>
+		/// <param name="actual">The actual contents</param>
+		/// <returns>True if the contents are the same</returns>
 		protected bool BytesAreEqual(byte[] expected, byte[] actual)
 		{
 			if (expected.Length != actual.Length)

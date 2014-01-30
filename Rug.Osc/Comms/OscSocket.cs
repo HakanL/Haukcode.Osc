@@ -232,7 +232,7 @@ namespace Rug.Osc
 
 			if (local.AddressFamily != remote.AddressFamily)
 			{
-				throw new Exception(Strings.Socket_AddressFamilyIncompatible);
+				throw new ArgumentException(Strings.Socket_AddressFamilyIncompatible, "remote");
 			}
 
 			CheckPortRange(remotePort, "remotePort", Strings.Socket_RemotePortOutOfRange, false);
@@ -378,7 +378,7 @@ namespace Rug.Osc
 				if (m_State != OscSocketState.NotConnected &&
 					m_State != OscSocketState.Closed)
 				{
-					throw new Exception(Strings.Socket_AlreadyOpenOrNotClosed);
+					throw new OscSocketStateException(this, m_State, Strings.Socket_AlreadyOpenOrNotClosed);
 				}				
 
 				// create the instance of the socket

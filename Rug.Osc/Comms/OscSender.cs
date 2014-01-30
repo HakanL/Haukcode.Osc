@@ -115,7 +115,7 @@ namespace Rug.Osc
 		/// </summary>
 		/// <param name="address">the ip address to send to</param>
 		/// <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>
-		/// <param name="port">the port to send to</param>
+		/// <param name="remotePort">the port to send to</param>
 		public OscSender(IPAddress address, int localPort, int remotePort)
 			: this(address, localPort, remotePort, DefaultMessageBufferSize, DefaultPacketSize)
 		{

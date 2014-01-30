@@ -373,6 +373,10 @@ namespace Rug.Osc
 
 		#region Enumerable
 
+		/// <summary>
+		/// Enumerate all the osc packets contained in this bundle
+		/// </summary>
+		/// <returns>A IEnumerator of osc packets</returns>
 		public IEnumerator<OscPacket> GetEnumerator()
 		{
 			return (m_Messages as IEnumerable<OscPacket>).GetEnumerator();
@@ -656,7 +660,7 @@ namespace Rug.Osc
 		/// <param name="str">a string containing a bundle</param>
 		/// <param name="provider">the format provider to use</param>
 		/// <returns>the parsed bundle</returns>
-		public static OscBundle Parse(string str, IFormatProvider provider)
+		public static new OscBundle Parse(string str, IFormatProvider provider)
 		{
 			if (Helper.IsNullOrWhiteSpace(str) == true)
 			{

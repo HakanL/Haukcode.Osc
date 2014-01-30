@@ -63,6 +63,9 @@ namespace Rug.Osc
 		/// </summary>
 		public event EventHandler<UnknownAddressEventArgs> UnknownAddress; 
 
+		/// <summary>
+		/// Create a osc address manager
+		/// </summary>
 		public OscAddressManager()
 		{
 			BundleInvokeMode = OscBundleInvokeMode.InvokeAllBundlesImmediately; 

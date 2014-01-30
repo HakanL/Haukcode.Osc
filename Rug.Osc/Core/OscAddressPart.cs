@@ -62,12 +62,14 @@ namespace Rug.Osc
 					case "\\":
 						return @"\\";
 					default: 
-						throw new Exception(Strings.OscAddress_UnexpectedMatch);
-						
-						// This should never be reached but should shut up the Unity compiler. 
-						return null; 
+						throw new Exception(Strings.OscAddress_UnexpectedMatch);					
 				}
 			});
+
+#pragma warning disable
+			// This should never be reached but should shut up the Unity compiler. 
+			return null;
+#pragma warning reset
 		}
 
 		private static string EscapeChar(char c)

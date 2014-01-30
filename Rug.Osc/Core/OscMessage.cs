@@ -1735,7 +1735,7 @@ namespace Rug.Osc
 		/// <param name="str">a string containing a message</param>
 		/// <param name="provider">the format provider to use</param>
 		/// <returns>the parsed message</returns>
-		public static OscMessage Parse(string str, IFormatProvider provider)
+		public static new OscMessage Parse(string str, IFormatProvider provider)
 		{
 			if (Helper.IsNullOrWhiteSpace(str) == true)
 			{

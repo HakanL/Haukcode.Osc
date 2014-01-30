@@ -112,7 +112,7 @@ namespace Rug.Osc
 
 			if (IsMulticastEndPoint == false)
 			{
-				throw new Exception(Strings.Receiver_NotMulticastAddress); 
+				throw new ArgumentException(Strings.Receiver_NotMulticastAddress, "multicast"); 
 			}
 		}
 
@@ -296,15 +296,15 @@ namespace Rug.Osc
 			}
 			catch (Exception ex)
 			{
-				throw new Exception(Strings.Receiver_ErrorWhileWaitingForMessage, ex);
+				throw new OscSocketException(this, Strings.Receiver_ErrorWhileWaitingForMessage, ex);
 			}
 
 			if (State == OscSocketState.Connected)
 			{
-				throw new Exception(Strings.Receiver_ErrorWhileWaitingForMessage);
+				throw new OscSocketException(this, Strings.Receiver_ErrorWhileWaitingForMessage);
 			}
 
-			throw new Exception(Strings.Receiver_SocketIsClosed);
+			throw new OscSocketStateException(this, OscSocketState.Closed, Strings.Receiver_SocketIsClosed);
         }
 
         #endregion

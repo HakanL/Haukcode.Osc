@@ -35,6 +35,8 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comms\OscSocketStateException.cs" />
+    <Compile Include="Comms\OscSocketException.cs" />
     <Compile Include="Comms\OscListener.cs" />
     <Compile Include="Core\UnknownAddressEventArgs.cs" />
     <Compile Include="DataTypes\OscColor.cs" />
