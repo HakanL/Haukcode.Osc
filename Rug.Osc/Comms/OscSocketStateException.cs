@@ -17,23 +17,40 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rug.Osc
 {
+	/// <summary>
+	/// Exception thrown when a osc socket is in an incorrect state
+	/// </summary>
 	public class OscSocketStateException : OscSocketException
 	{
 		private OscSocketState m_State; 
 
+		/// <summary>
+		/// The state the socket was in when the exception was thrown
+		/// </summary>
 		public OscSocketState State { get { return m_State; } } 
 
+		/// <summary>
+		/// Creates a new osc socket state exception
+		/// </summary>
+		/// <param name="socket">The socket that this exception relates to</param>
+		/// <param name="state">The state the socket was in when the exception was thrown</param>
+		/// <param name="message">A message string</param>
 		public OscSocketStateException(OscSocket socket, OscSocketState state, string message)
 			: base(socket, message)
 		{
 			m_State = state;
 		}
 
+		/// <summary>
+		/// Creates a new osc socket state exception
+		/// </summary>
+		/// <param name="socket">The socket that this exception relates to</param>
+		/// <param name="state">The state the socket was in when the exception was thrown</param>
+		/// <param name="message">A message string</param>
+		/// <param name="innerException">An inner exception</param>
 		public OscSocketStateException(OscSocket socket, OscSocketState state, string message, Exception innerException)
 			: base(socket, message, innerException)
 		{

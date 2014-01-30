@@ -20,12 +20,21 @@ using System;
 
 namespace Rug.Osc
 {
+	/// <summary>
+	/// Default implementation of IOscTimeProvider
+	/// </summary>
 	public sealed class DefaultTimeProvider : IOscTimeProvider
 	{
 		private double m_FrameSizeInSeconds; 
 
+		/// <summary>
+		/// Immutable instance 
+		/// </summary>
 		public static readonly DefaultTimeProvider Instance = new DefaultTimeProvider();
 
+		/// <summary>
+		/// Frame size in seconds
+		/// </summary>
 		public double FrameSizeInSeconds { get { return m_FrameSizeInSeconds; } set { m_FrameSizeInSeconds = value; } }
 
 		/// <summary>
@@ -33,6 +42,9 @@ namespace Rug.Osc
 		/// </summary>
 		public OscTimeTag Now { get { return OscTimeTag.FromDataTime(DateTime.UtcNow); } }
 
+		/// <summary>
+		/// Create a new instance of DefaultTimeProvider
+		/// </summary>
 		public DefaultTimeProvider() { FrameSizeInSeconds = 1; }
 
 		/// <summary>

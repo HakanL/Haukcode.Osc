@@ -236,7 +236,7 @@ namespace Rug.Osc
         /// <summary>
         /// Receive a osc message, this method is blocking and will only return once a message is recived
         /// </summary>
-        /// <returns>an osc message</returns>
+        /// <returns>an osc message</returns>		
         public OscPacket Receive()
         {
 			try

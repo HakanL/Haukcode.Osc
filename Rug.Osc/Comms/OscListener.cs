@@ -118,6 +118,9 @@ namespace Rug.Osc
 
         #endregion
 
+		/// <summary>
+		/// Connect the receiver and start listening
+		/// </summary>
 		public void Connect()
 		{
 			m_Receiver.Connect();
@@ -127,11 +130,17 @@ namespace Rug.Osc
 			m_Thread.Start();
 		}
 
+		/// <summary>
+		/// Close the receiver
+		/// </summary>
 		public void Close()
 		{
 			m_Receiver.Close(); 			
 		}
 
+		/// <summary>
+		/// Dispose of all resources
+		/// </summary>
 		public void Dispose()
 		{
 			m_Receiver.Dispose();

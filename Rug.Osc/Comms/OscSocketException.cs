@@ -17,23 +17,38 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rug.Osc
 {
+	/// <summary>
+	/// Exception that relates explictly to osc socket instance
+	/// </summary>
 	public class OscSocketException : Exception
 	{
 		private OscSocket m_Socket; 
 
+		/// <summary>
+		/// The socket that threw the exception 
+		/// </summary>
 		public OscSocket Socket { get { return m_Socket; } } 
 
+		/// <summary>
+		/// Creates a new osc socket exception
+		/// </summary>
+		/// <param name="socket">The socket that this exception relates to</param>
+		/// <param name="message">A message string</param>
 		public OscSocketException(OscSocket socket, string message)
 			: base(message)
 		{
 			m_Socket = socket;
 		}
 
+		/// <summary>
+		/// Creates a new osc socket exception
+		/// </summary>
+		/// <param name="socket">The socket that this exception relates to</param>
+		/// <param name="message">A message string</param>
+		/// <param name="innerException">An inner exception</param>
 		public OscSocketException(OscSocket socket, string message, Exception innerException)
 			: base(message, innerException)
 		{
