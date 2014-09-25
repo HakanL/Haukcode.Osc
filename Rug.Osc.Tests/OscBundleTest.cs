@@ -239,6 +239,80 @@ namespace Rug.Osc.Tests
 		} 
 		*/
 
+
+		/// <summary>
+		///A test for ToByteArray
+		///</summary>
+		[TestMethod()]
+		public void Nested_ToArrayTest()
+		{
+			OscBundle target = UnitTestHelper.DoubleNestedBundle(); 
+			byte[] expected = UnitTestHelper.DoubleNestedBundleBody; 
+			byte[] actual;
+			actual = target.ToByteArray();
+
+			Assert.AreEqual(expected.Length, actual.Length);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+		/// <summary>
+		///A test for ToString
+		///</summary>
+		[TestMethod()]
+		public void Nested_ToStringTest()
+		{
+			OscBundle target = UnitTestHelper.DoubleNestedBundle();
+			string expected = UnitTestHelper.DoubleNestedBundleString;
+			string actual;
+			actual = target.ToString();
+			Assert.AreEqual(expected, actual);
+		}
+
+
+		/// <summary>
+		///A test for Write
+		///</summary>
+		[TestMethod()]
+		public void Nested_WriteTest()
+		{
+			OscBundle target = UnitTestHelper.DoubleNestedBundle();
+			byte[] data = new byte[UnitTestHelper.DoubleNestedBundleBody.Length]; 
+			int index = 0;
+			int expected = UnitTestHelper.DoubleNestedBundleBody.Length; 
+			int actual;
+			actual = target.Write(data, index);
+
+			Assert.AreEqual(expected, actual);
+			UnitTestHelper.AreEqual(data, UnitTestHelper.DoubleNestedBundleBody);
+		}
+
+		/// <summary>
+		///A test for Write
+		///</summary>
+		[TestMethod()]
+		public void Nested_ReadTest()
+		{
+			OscBundle expected = UnitTestHelper.DoubleNestedBundle();
+			byte[] bytes = UnitTestHelper.DoubleNestedBundleBody;
+
+			int count = bytes.Length;
+			OscBundle actual;
+
+			actual = OscBundle.Read(bytes, count);
+
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
+		[TestMethod()]
+		public void Nested_ParseTest()
+		{
+			string str = UnitTestHelper.DoubleNestedBundleString;
+			OscBundle expected = UnitTestHelper.DoubleNestedBundle();
+			OscBundle actual;
+			actual = OscBundle.Parse(str);
+			UnitTestHelper.AreEqual(expected, actual);
+		}
+
 		/// <summary>
 		///A test for TryParse
 		///</summary>

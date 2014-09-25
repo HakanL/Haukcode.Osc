@@ -659,7 +659,66 @@ namespace Rug.Osc.Tests
 		}
 
 		internal static string BundleString_Int = "#bundle, 00:00:34.3532, { /test, 1, 2, 3 }";
-				
+		
+		internal static byte[] DoubleNestedBundleBody = new byte[] 
+			{ 
+				35,	 98,  117, 110, 100, 108, 101, 0,	// #bundle\0
+				0,	 0,	  0,   0,   0,   0,   0,   0,	// time-tag (0)
+
+				0,   0,   0,   32,						// length (32)
+				35,  98,  117, 110,	100, 108, 101, 0,	// #bundle\0
+				0,	 0,	  0,   0,   0,   0,   0,   0,	// time-tag (0)
+
+				0,   0,   0,   12,						// length (12)
+				47,  97,  97,  0,						// /aa\0
+				44,  105, 0,   0,						// ,i\0\0
+				255, 255, 255, 255,						// int32 (-1)
+
+				0,   0,   0,   32,						// length (32)
+				35,	 98,  117, 110, 100, 108, 101, 0,	// #bundle\0
+				0,	 0,	  0,   0,   0,   0,   0,   0,	// time-tag (0)
+
+				0,   0,   0,   12,						// length (12)
+				47,  97,  97,  0,						// /aa\0
+				44,  105, 0,   0,						// ,i\0\0
+				255, 255, 255, 255,						// int32 (-1)
+			};
+
+			internal static byte[] DoubleNestedBundleBody_Hex = new byte[] 
+			{ 
+				0x23, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x00,	// #bundle\0
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	// time-tag (0)
+
+				0x00, 0x00, 0x00, 0x40,							// length (32)
+				0x23, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x00,	// #bundle\0
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	// time-tag (0)
+
+				0x00, 0x00, 0x00, 0x0c,							// length (12)
+				0x2f, 0x61, 0x61, 0x00,							// /aa\0
+				0x2c, 0x69, 0x00, 0x00, 						// ,i\0\0
+				0xff, 0xff, 0xff, 0xff,							// int32 (-1)
+
+				0x00, 0x00, 0x00, 0x40,							// length (32)
+				0x23, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x00, // #bundle\0
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	// time-tag (0)
+
+				0x00, 0x00, 0x00, 0x0c,							// length (12)
+				0x2f, 0x61, 0x61, 0x00,							// /aa\0
+				0x2c, 0x69, 0x00, 0x00,							// ,i\0\0
+				0xff, 0xff, 0xff, 0xff,							// int32 (-1)
+			};
+
+		internal static OscBundle DoubleNestedBundle()
+		{
+			return new OscBundle(new OscTimeTag(0),
+				new OscBundle(new OscTimeTag(0), new OscMessage("/aa", -1)),
+				new OscBundle(new OscTimeTag(0), new OscMessage("/aa", -1))
+			);
+		}
+
+		internal static string DoubleNestedBundleString = "#bundle, 01-01-1900 00:00:00.0000Z, { #bundle, 01-01-1900 00:00:00.0000Z, { /aa, -1 } }, { #bundle, 01-01-1900 00:00:00.0000Z, { /aa, -1 } }";
+
+		
 		internal static OscBundle Bundle_MultiLineString()
 		{
 			StringBuilder sb = new StringBuilder();
@@ -680,6 +739,8 @@ namespace Rug.Osc.Tests
 			"#bundle, 00:00:34.3532Z,\r\n{ /test, 1, 2, 3 },\r\n{ /test, 1, 2, 3 }",
 			"#bundle, 00:00:34.3532Z, { \r\n/test, 1, 2, 3\r\n}",
 			"#bundle, 00:00:34.3532Z, { \r\n/test,\r\n1,\r\n2,\r\n3\r\n}",
+			"#bundle, 01-01-1900 00:00:00.0000Z, { #bundle, 01-01-1900 00:01:33.4140Z, }",
+			"#bundle, 01-01-1900 00:00:00.0000Z, { #bundle, 01-01-1900 00:01:33.4140Z }",
 		};
 
 		//Fixed Issue #3,
@@ -695,6 +756,8 @@ namespace Rug.Osc.Tests
 			"#bundle, 00:00:34.3532Z, { /test, \"THIS TEST IS ON\r\nSEPERATE LINES",
 			"#bundle, 00:00:34.3532Z, { /test, \"THIS TEST IS ON\r\nSEPERATE LINES\" ",
 			"#bundle, 00:00:34.3532Z, { /\r\ntest, 1, 2, 3}",
+			"#bundle, 01-01-1900 00:00:00.0000Z { #bundle, 01-01-1900 00:01:33.4140Z, }",
+			"#bundle, 01-01-1900 00:00:00.0000Z { #bundle, 01-01-1900 00:01:33.4140Z }",
 		};
 
 		#endregion 

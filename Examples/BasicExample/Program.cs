@@ -24,7 +24,7 @@ namespace BasicExample
 			m_Sender = new OscSender(IPAddress.Loopback, 12345); 
 			
 			m_Thread = new Thread(new ThreadStart(ListenLoop));
-
+			
 			Console.WriteLine("Connecting");
 			m_Receiver.Connect();
 			m_Sender.Connect();

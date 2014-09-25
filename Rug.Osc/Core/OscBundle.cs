@@ -687,16 +687,28 @@ namespace Rug.Osc
 
 			end = str.IndexOf(',', start);
 
+			if (end < 0)
+			{
+				end = str.Length;
+			}
+
+			/*
 			if (end <= start)
 			{
 				throw new Exception(String.Format(Strings.Bundle_InvalidTimestamp, ""));
 			}
+			*/ 
 
 			string timeStampStr = str.Substring(start, end - start);
 
 			OscTimeTag timeStamp = OscTimeTag.Parse(timeStampStr.Trim(), provider);
 
 			start = end + 1;
+
+			if (start >= str.Length)
+			{
+				return new OscBundle(timeStamp); 
+			}
 
 			end = str.IndexOf('{', start);
 
