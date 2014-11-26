@@ -29,9 +29,17 @@ namespace Rug.Osc
 	{		
 		#region Private Static Members
 
+		private static bool m_IsRunningOnMono;
 		private static readonly byte[] m_Padding = new byte[] { 0, 0, 0, 0 };
 
 		#endregion
+		
+		public static bool IsRunningOnMono { get { return m_IsRunningOnMono; } }
+
+		static Helper()
+		{
+			m_IsRunningOnMono = Type.GetType("Mono.Runtime") != null;
+		}
 
 		#region Empty End Point
 

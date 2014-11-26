@@ -264,6 +264,13 @@ namespace Rug.Osc
 					{
 						int size = message.Write(m_Bytes);
 
+						if (Statistics != null)
+						{
+							message.IncrementSendStatistics(Statistics); 
+
+							Statistics.BytesSent.Increment(size);
+						}
+
 						Socket.BeginSend(m_Bytes, 0, size, SocketFlags, Send_Callback, message);
 					}
 				}

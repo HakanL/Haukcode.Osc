@@ -17,6 +17,8 @@
  */
 
 using System;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace Rug.Osc
 {
@@ -27,7 +29,8 @@ namespace Rug.Osc
 	/// This is a poor replacement for System.Drawing.Color but unfortunatly many platforms do not support 
 	/// the System.Drawing namespace. 
 	/// </remarks>
-	public struct OscColor
+	[Serializable] 
+	public struct OscColor : ISerializable
 	{
 		private const int AlphaMask = 0x18; 
 		private const int RedMask = 0x10;
@@ -92,6 +95,16 @@ namespace Rug.Osc
 		public OscColor(int value) 
 		{
 			m_Value = value; 
+		}
+
+		public OscColor(SerializationInfo info, StreamingContext context)
+		{
+			if (info == null)
+			{
+				throw new System.ArgumentNullException("info");
+			}
+
+			m_Value = (int)info.GetValue("Value", typeof(int));
 		}
 
 		public override bool Equals(object obj)
@@ -164,5 +177,20 @@ namespace Rug.Osc
 				throw new ArgumentException(String.Format(Strings.OscColor_ChannelInvalidValue, new object[] { name, value, 0, 0xff }), name);
 			}
 		}
+
+		#region ISerializable Members
+
+		[SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			if (info == null)
+			{
+				throw new System.ArgumentNullException("info");
+			}
+
+			info.AddValue("Value", m_Value);
+		}
+
+		#endregion
 	}
 }

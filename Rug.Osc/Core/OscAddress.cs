@@ -18,6 +18,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -25,8 +27,9 @@ namespace Rug.Osc
 {
 	/// <summary>
 	/// Encompasses an entire osc address
-	/// </summary>
-	public sealed class OscAddress
+	/// </summary>	
+	[Serializable]
+	public sealed class OscAddress : ISerializable
 	{
 		#region Private Static Members
 
@@ -60,10 +63,10 @@ namespace Rug.Osc
 
 		#region Private Members
 
-		private readonly string m_OrigialString;
-		private readonly OscAddressPart[] m_Parts;
-		private readonly OscAddressType m_Type;
-		private readonly Regex m_Regex; 
+		private string m_OrigialString;
+		private OscAddressPart[] m_Parts;
+		private OscAddressType m_Type;
+		private Regex m_Regex; 
 
 		#endregion 
 
@@ -100,6 +103,23 @@ namespace Rug.Osc
 		/// </summary>
 		/// <param name="address">the address string</param>
 		public OscAddress(string address)
+		{
+			ParseAddress(address);
+		}
+
+		protected OscAddress(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+			{
+                throw new System.ArgumentNullException("info");
+			}
+
+            string address = (string)info.GetValue("Address", typeof(string));
+            
+			ParseAddress(address);
+        }
+
+		private void ParseAddress(string address)
 		{
 			// Ensure address is valid
 			if (IsValidAddressPattern(address) == false)
@@ -400,6 +420,21 @@ namespace Rug.Osc
 
 			// return the result
 			return pattern.Match(address); 		
+		}
+
+		#endregion
+
+		#region Serializable
+
+		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			if (info == null)
+			{
+				throw new System.ArgumentNullException("info");
+			}
+
+			info.AddValue("Address", m_OrigialString);
 		}
 
 		#endregion

@@ -16,12 +16,16 @@
  * 
  */
 
+using System;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 namespace Rug.Osc
 {
 	/// <summary>
 	/// Osc Null Singleton
 	/// </summary>
-	public sealed class OscNull
+	[Serializable]
+	public sealed class OscNull : ISerializable
 	{
 		public static readonly OscNull Value = new OscNull();
 
@@ -41,6 +45,31 @@ namespace Rug.Osc
 			isTrue |= "Nil".Equals(str, System.StringComparison.InvariantCultureIgnoreCase);
 
 			return isTrue;
+		}
+
+		#region ISerializable Members
+
+		[SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.SetType(typeof(OscNullSerializationHelper));
+		}
+
+		#endregion
+	}
+
+
+	[Serializable]
+	//[PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
+	[SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+	internal sealed class OscNullSerializationHelper : IObjectReference
+	{
+		// GetRealObject is called after this object is deserialized.
+		public Object GetRealObject(StreamingContext context)
+		{
+			// When deserialiing this object, return a reference to 
+			// the Singleton object instead.
+			return OscNull.Value;
 		}
 	}
 }

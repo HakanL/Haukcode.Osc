@@ -19,13 +19,16 @@
 
 using System;
 using System.Globalization;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace Rug.Osc
 {
 	/// <summary>
 	/// Osc time tag
 	/// </summary>
-	public struct OscTimeTag
+	[Serializable]
+	public struct OscTimeTag : ISerializable
 	{
 		/// <summary>
 		/// The miniumn date for any Osc time tag
@@ -37,6 +40,10 @@ namespace Rug.Osc
 		/// </summary>
 		public ulong Value;
 
+		public uint Seconds { get { return (uint)((Value & 0xFFFFFFFF00000000) >> 32); } }
+
+		public uint Fraction { get { return (uint)(Value & 0xFFFFFFFF); } } 
+
 		/// <summary>
 		/// Build a osc timetag from a Ntp 64 bit integer 
 		/// </summary>
@@ -45,6 +52,17 @@ namespace Rug.Osc
 		{
 			Value = value;
 		}
+
+		public OscTimeTag(SerializationInfo info, StreamingContext context)
+		{
+			if (info == null)
+			{
+				throw new System.ArgumentNullException("info");
+			}
+
+			Value = (ulong)info.GetValue("Value", typeof(ulong));
+		}
+
 
 		/// <summary>
 		/// Does this OSC-timetag equal another object
@@ -91,9 +109,9 @@ namespace Rug.Osc
 		{
 			// Kas: http://stackoverflow.com/questions/5206857/convert-ntp-timestamp-to-utc
 
-			uint seconds = (uint)((Value & 0xFFFFFFFF00000000) >> 32);
+			uint seconds = Seconds; // (uint)((Value & 0xFFFFFFFF00000000) >> 32);
 
-			uint fraction = (uint)(Value & 0xFFFFFFFF);
+			uint fraction = Fraction; // (uint)(Value & 0xFFFFFFFF);
 
 			double milliseconds = ((double)fraction / (double)UInt32.MaxValue) * 1000;
 			
@@ -234,6 +252,21 @@ namespace Rug.Osc
 
 				return false;
 			}
+		}
+
+		#endregion
+
+		#region ISerializable Members
+
+		[SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			if (info == null)
+			{
+				throw new System.ArgumentNullException("info");
+			}
+
+			info.AddValue("Value", Value);
 		}
 
 		#endregion

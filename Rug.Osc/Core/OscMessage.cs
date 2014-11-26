@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 using System.Text;
 
 namespace Rug.Osc
@@ -29,7 +31,8 @@ namespace Rug.Osc
 	/// <summary>
 	/// Any osc message
 	/// </summary>
-	public sealed class OscMessage : OscPacket, IEnumerable<object>
+	[Serializable]
+	public sealed class OscMessage : OscPacket, IEnumerable<object>, ISerializable, ICloneable
 	{
 		public static readonly OscMessage ParseError;
 
@@ -46,8 +49,6 @@ namespace Rug.Osc
 		private object[] m_Arguments;
 
 		private string m_Address;
-
-		private IPEndPoint m_Origin;
 
 		private OscPacketError m_Error = OscPacketError.None;
 		private string m_ErrorMessage = String.Empty;
@@ -95,9 +96,9 @@ namespace Rug.Osc
 		public override string ErrorMessage { get { return m_ErrorMessage; } }
 
 		/// <summary>
-		/// The IP end point that the message originated from
+		/// Optional time tag, will be non-null if this message was extracted from a bundle
 		/// </summary>
-		public override IPEndPoint Origin { get { return m_Origin; } }
+		public OscTimeTag? TimeTag { get; set; } 
 
 		#region Packet Size
 
@@ -185,7 +186,7 @@ namespace Rug.Osc
 		/// <example>OscMessage message = new OscMessage("/test/test", 1, 2, 3);</example>
 		public OscMessage(string address, params object[] args)
 		{
-			m_Origin = Helper.EmptyEndPoint;
+			Origin = Helper.EmptyEndPoint;
 
 			m_Address = address;
 			m_Arguments = args;
@@ -217,7 +218,7 @@ namespace Rug.Osc
 		/// <example>OscMessage message = new OscMessage("/test/test", 1, 2, 3);</example>
 		public OscMessage(IPEndPoint origin, string address, params object[] args)
 		{
-			m_Origin = origin;
+			Origin = origin;
 			m_Address = address;
 			m_Arguments = args;
 
@@ -238,6 +239,46 @@ namespace Rug.Osc
 
 			CheckArguments(m_Arguments);
 		}
+
+		protected OscMessage(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+			{
+                throw new System.ArgumentNullException("info");
+			}
+
+            string address = (string)info.GetValue("Address", typeof(string));
+			object[] arguments = (object[])info.GetValue("Arguments", typeof(object[]));
+			OscPacketError error = (OscPacketError)info.GetValue("Error", typeof(OscPacketError));
+			string errorMessage = (string)info.GetValue("ErrorMessage", typeof(string));
+			OscTimeTag? timeTag = (OscTimeTag?)info.GetValue("TimeTag", typeof(OscTimeTag?));
+			IPEndPoint origin = (IPEndPoint)info.GetValue("Origin", typeof(IPEndPoint));
+			
+			Origin = origin;
+			TimeTag = timeTag; 
+
+			m_Address = address;
+			m_Arguments = arguments;
+			m_Error = error;
+			m_ErrorMessage = errorMessage;
+
+			if (Helper.IsNullOrWhiteSpace(m_Address) == true)
+			{
+				throw new ArgumentNullException("address");
+			}
+
+			if (OscAddress.IsValidAddressPattern(address) == false)
+			{
+				throw new ArgumentException(String.Format(Strings.OscAddress_NotAValidOscAddress, address), "address");
+			}
+
+			if (arguments == null)
+			{
+				throw new ArgumentNullException("args");
+			}
+
+			CheckArguments(m_Arguments);
+        }
 
 		private OscMessage()
 		{
@@ -437,10 +478,10 @@ namespace Rug.Osc
 
 		#endregion
 
-		#region Write
+		#region Send
 
 		/// <summary>
-		/// Write the message body into a byte array 
+		/// Send the message body into a byte array 
 		/// </summary>
 		/// <param name="data">an array ouf bytes to write the message body into</param>
 		/// <returns>the number of bytes in the message</returns>
@@ -450,7 +491,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Write the message body into a byte array 
+		/// Send the message body into a byte array 
 		/// </summary>
 		/// <param name="data">an array ouf bytes to write the message body into</param>
 		/// <param name="index">the index within the array where writing should begin</param>
@@ -484,7 +525,7 @@ namespace Rug.Osc
 
 				if (m_Arguments.Length == 0)
 				{
-					// Write the comma 
+					// Send the comma 
 					writer.Write((byte)',');
 
 					// write null terminator
@@ -493,7 +534,7 @@ namespace Rug.Osc
 					// padding
 					Helper.WritePadding(writer, stream.Position);
 
-					return (int)stream.Position;
+					return (int)stream.Position - index;
 				}
 
 				#endregion
@@ -501,7 +542,7 @@ namespace Rug.Osc
 
 				#region Type Tag
 
-				// Write the comma 
+				// Send the comma 
 				writer.Write((byte)',');
 
 				// iterate through arguments and write their types
@@ -515,7 +556,7 @@ namespace Rug.Osc
 
 				#endregion
 
-				#region Write Argument Values
+				#region Send Argument Values
 
 				WriteValues(writer, stream, m_Arguments);
 
@@ -525,7 +566,7 @@ namespace Rug.Osc
 			}
 		}
 
-		#region Write Type Tag
+		#region Send Type Tag
 
 		private void WriteTypeTag(BinaryWriter writer, object[] args)
 		{
@@ -613,7 +654,7 @@ namespace Rug.Osc
 
 		#endregion
 
-		#region Write Values
+		#region Send Values
 
 		private void WriteValues(BinaryWriter writer, Stream stream, object[] args)
 		{
@@ -748,9 +789,23 @@ namespace Rug.Osc
 		/// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
 		public static new OscMessage Read(byte[] bytes, int index, int count, IPEndPoint origin)
 		{
+			return Read(bytes, index, count, origin, null);
+		}
+
+		/// <summary>
+		/// Read a OscMessage from a array of bytes
+		/// </summary>
+		/// <param name="bytes">the array that countains the message</param>
+		/// <param name="index">the offset within the array where reading should begin</param>
+		/// <param name="count">the number of bytes in the message</param>
+		/// <param name="origin">the origin of the packet</param>
+		/// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
+		public static new OscMessage Read(byte[] bytes, int index, int count, IPEndPoint origin, OscTimeTag? timeTag)
+		{
 			OscMessage msg = new OscMessage();
 
-			msg.m_Origin = origin;
+			msg.Origin = origin;
+			msg.TimeTag = timeTag; 
 
 			using (MemoryStream stream = new MemoryStream(bytes, index, count))
 			using (BinaryReader reader = new BinaryReader(stream))
@@ -1406,7 +1461,7 @@ namespace Rug.Osc
 			return sb.ToString();
 		}
 
-		private void ArgumentsToString(StringBuilder sb, IFormatProvider provider, object[] args)
+		private static void ArgumentsToString(StringBuilder sb, IFormatProvider provider, object[] args)
 		{
 			bool first = true;
 
@@ -2094,6 +2149,18 @@ namespace Rug.Osc
 
 		public static bool operator ==(OscMessage msg1, OscMessage msg2)
 		{
+			// If both are null, or both are same instance, return true.
+			if (System.Object.ReferenceEquals(msg1, msg2))
+			{
+				return true;
+			}
+
+			// If one is null, but not both, return false.
+			if (((object)msg1 == null) || ((object)msg2 == null))
+			{
+				return false;
+			}
+
 			return msg1.Equals(msg2) == true;
 		}
 
@@ -2103,5 +2170,62 @@ namespace Rug.Osc
 		}
 
 		#endregion
+
+		#region Serializable
+
+		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
+		{			
+			if (info == null)
+			{
+				throw new System.ArgumentNullException("info");
+			}
+
+			info.AddValue("Address", Address);
+			info.AddValue("Arguments", m_Arguments);
+			info.AddValue("Error", m_Error);
+			info.AddValue("ErrorMessage", m_ErrorMessage);
+			info.AddValue("TimeTag", TimeTag);
+			info.AddValue("Origin", Origin);
+		}
+
+		#endregion
+
+		public OscMessage Clone()
+		{
+			string address = m_Address; 
+			object[] args = m_Arguments.Clone() as object[]; 
+
+			OscMessage message = new OscMessage(address, args);
+	
+			message.Origin = Origin;
+			message.TimeTag = TimeTag; 
+			
+			return message;
+		}
+
+		object ICloneable.Clone()
+		{
+			return Clone();
+		}
+
+		public static string ArgumentsToString(object[] args)
+		{
+			return ArgumentsToString(args, CultureInfo.InvariantCulture);
+		}
+
+		public static string ArgumentsToString(object[] args, IFormatProvider provider)
+		{
+			if (args == null || args.Length == 0)
+			{
+				return string.Empty;
+			}
+
+			StringBuilder sb = new StringBuilder();
+
+			ArgumentsToString(sb, provider, args);
+
+			return sb.ToString();
+		}
 	}
 }

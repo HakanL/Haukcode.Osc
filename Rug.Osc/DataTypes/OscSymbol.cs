@@ -16,12 +16,17 @@
  * 
  */
 
+using System;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
+
 namespace Rug.Osc
 {
 	/// <summary>
 	/// Osc symbol 
 	/// </summary>
-	public struct OscSymbol
+	[Serializable]
+	public struct OscSymbol : ISerializable
 	{
 		/// <summary>
 		/// The string value of the symbol
@@ -35,6 +40,16 @@ namespace Rug.Osc
 		public OscSymbol(string value)
 		{
 			Value = value; 
+		}
+
+		public OscSymbol(SerializationInfo info, StreamingContext context)
+		{
+			if (info == null)
+			{
+				throw new System.ArgumentNullException("info");
+			}
+
+			Value = (string)info.GetValue("Value", typeof(string));
 		}
 
 		public override string ToString()
@@ -58,5 +73,20 @@ namespace Rug.Osc
 		{
 			return Value.GetHashCode();
 		}
+
+		#region ISerializable Members
+
+		[SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			if (info == null)
+			{
+				throw new System.ArgumentNullException("info");
+			}
+
+			info.AddValue("Value", Value);
+		}
+
+		#endregion
 	}
 }

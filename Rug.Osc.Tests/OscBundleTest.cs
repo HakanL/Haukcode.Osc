@@ -61,7 +61,6 @@ namespace Rug.Osc.Tests
 		//
 		#endregion
 
-
 		/// <summary>
 		///A test for OscBundle Constructor
 		///</summary>
@@ -74,6 +73,30 @@ namespace Rug.Osc.Tests
 
 			Assert.AreEqual(timestamp, target.Timestamp);
 			UnitTestHelper.AreEqual(messages, target.ToArray()); 
+		}
+
+		[TestMethod()]
+		public void OscBundleManyMessagesTest_1()
+		{
+			OscBundle target = OscBundle.Parse("#bundle, 0, { /ping }, { /moop }, { /ping }, { /ping }, { /ping }");
+			OscBundle expected = new OscBundle(new OscTimeTag(0),
+				new OscMessage("/ping"), new OscMessage("/moop"), new OscMessage("/ping"), new OscMessage("/ping"), new OscMessage("/ping"));
+
+			UnitTestHelper.AreEqual(target, expected); 
+		}
+
+		[TestMethod()]
+		public void OscBundleManyMessagesTest_2()
+		{
+			OscBundle target = OscBundle.Parse("#bundle, 0, { /ping }, { /moop }, { /ping }, { /ping }, { /ping }");
+			OscBundle expected = new OscBundle(new OscTimeTag(0),
+				new OscMessage("/ping"), new OscMessage("/moop"), new OscMessage("/ping"), new OscMessage("/ping"), new OscMessage("/ping"));
+
+			byte[] targetBytes = target.ToByteArray();
+
+			OscBundle actual = OscBundle.Read(targetBytes, targetBytes.Length);
+
+			UnitTestHelper.AreEqual(actual, expected);
 		}
 
 		/* 

@@ -37,4 +37,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.2.5.*")]
 [assembly: AssemblyFileVersion("1.2.5.0")]
 
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Rug.Osc.Tests")]
+//[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Rug.Osc.Tests")]

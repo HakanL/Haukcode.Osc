@@ -331,6 +331,11 @@ namespace Rug.Osc
 
 				int count = Socket.EndReceiveFrom(ar, ref origin);
 
+				if (Statistics != null)
+				{
+					Statistics.BytesReceived.Increment(count);
+				}
+
 				OscPacket message = OscPacket.Read(m_Bytes, count, (IPEndPoint)origin);
 
                 lock (m_Lock)
@@ -366,5 +371,5 @@ namespace Rug.Osc
         }
 
         #endregion
-    }
+	}
 }

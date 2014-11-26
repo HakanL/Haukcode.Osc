@@ -18,13 +18,19 @@
 
 using System;
 using System.Net;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
+using System.Xml.Serialization;
 
 namespace Rug.Osc
 {
 	/// <summary>
 	/// Base class for all osc packets
-	/// </summary>
-	public abstract class OscPacket
+	/// </summary>	
+	[Serializable]
+	[XmlInclude(typeof(OscBundle))]
+	[XmlInclude(typeof(OscMessage))]
+	public abstract class OscPacket : ISerializable
 	{
 		#region Properties
 
@@ -52,7 +58,7 @@ namespace Rug.Osc
 		/// <summary>
 		/// The IP end point that the packet originated from
 		/// </summary>
-		public abstract IPEndPoint Origin { get; } 
+		public IPEndPoint Origin { get; protected set; } 
 
 		#endregion
 
@@ -61,17 +67,17 @@ namespace Rug.Osc
 
 		}
 
-		#region Write
+		#region Send
 
 		/// <summary>
-		/// Write the packet into a byte array
+		/// Send the packet into a byte array
 		/// </summary>
 		/// <param name="data">the destination for the packet</param>
 		/// <returns>the length of the packet in bytes</returns>
 		public abstract int Write(byte[] data);
 
 		/// <summary>
-		/// Write the packet into a byte array
+		/// Send the packet into a byte array
 		/// </summary>
 		/// <param name="data">the destination for the packet</param>
 		/// <param name="index">the offset within the array where writing should begin</param>
@@ -127,13 +133,27 @@ namespace Rug.Osc
 		/// <returns>the packet</returns>
 		public static OscPacket Read(byte[] bytes, int index, int count, IPEndPoint origin)
 		{
+			return Read(bytes, index, count, origin, null);
+		}
+
+		/// <summary>
+		/// Read the osc packet from a byte array
+		/// </summary>
+		/// <param name="bytes">array to read from</param>
+		/// <param name="index">the offset within the array where reading should begin</param>
+		/// <param name="count">the number of bytes in the packet</param>
+		/// <param name="origin">the origin that is the origin of this packet</param>
+		/// <param name="timeTag">the time tag asociated with the parent</param>
+		/// <returns>the packet</returns>
+		public static OscPacket Read(byte[] bytes, int index, int count, IPEndPoint origin, OscTimeTag? timeTag)
+		{
 			if (OscBundle.IsBundle(bytes, index, count) == true)
 			{
 				return OscBundle.Read(bytes, index, count, origin);
 			}
 			else
 			{
-				return OscMessage.Read(bytes, index, count, origin);
+				return OscMessage.Read(bytes, index, count, origin, timeTag);
 			}
 		}
 		
@@ -331,6 +351,39 @@ namespace Rug.Osc
 			return true;
 		}
 
+		public void IncrementSendStatistics(OscCommunicationStatistics stats)
+		{
+			stats.PacketsSent.Increment(1); 
+
+			if (this is OscMessage)
+			{
+				stats.MessagesSent.Increment(1); 
+			}
+			else if (this is OscBundle)
+			{
+				stats.BundlesSent.Increment(1); 
+
+				IncrementSendStatistics(this as OscBundle, stats);
+			}
+		}
+
+		private void IncrementSendStatistics(OscBundle bundle, OscCommunicationStatistics stats)
+		{
+			foreach (OscPacket packet in bundle)
+			{
+				if (packet is OscMessage)
+				{
+					stats.MessagesSent.Increment(1);
+				}
+				else if (packet is OscBundle)
+				{
+					stats.BundlesSent.Increment(1); 
+
+					IncrementSendStatistics(packet as OscBundle, stats);
+				}
+			}
+		}
+
 		#region Operators
 
 		public static bool operator ==(OscPacket packet1, OscPacket packet2)
@@ -364,6 +417,13 @@ namespace Rug.Osc
 				return true;
 			}	
 		}
+
+		#endregion
+
+		#region Serializable
+
+		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+		public abstract void GetObjectData(SerializationInfo info, StreamingContext context);
 
 		#endregion
 	}

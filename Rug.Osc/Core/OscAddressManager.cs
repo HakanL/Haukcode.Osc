@@ -48,6 +48,8 @@ namespace Rug.Osc
 
 		#endregion
 
+		public OscCommunicationStatistics Statistics { get; set; }
+
 		/// <summary>
 		/// Osc time provider, used for filtering bundles by time, if null then the DefaultTimeProvider is used 
 		/// </summary>
@@ -61,14 +63,14 @@ namespace Rug.Osc
 		/// <summary>
 		/// This event will be raised whenever an unknown address is encountered
 		/// </summary>
-		public event EventHandler<UnknownAddressEventArgs> UnknownAddress; 
+		public event EventHandler<UnknownAddressEventArgs> UnknownAddress;
 
 		/// <summary>
 		/// Create a osc address manager
 		/// </summary>
 		public OscAddressManager()
 		{
-			BundleInvokeMode = OscBundleInvokeMode.InvokeAllBundlesImmediately; 
+			BundleInvokeMode = OscBundleInvokeMode.InvokeAllBundlesImmediately;
 		}
 
 		#region Attach
@@ -295,6 +297,11 @@ namespace Rug.Osc
 		/// <returns>true if any thing was invoked</returns>
 		public bool Invoke(OscPacket packet)
 		{
+			if (Statistics != null)
+			{
+				Statistics.PacketsReceived.Increment(1);
+			}
+
 			if (packet is OscMessage)
 			{
 				return Invoke(packet as OscMessage); 
@@ -318,14 +325,30 @@ namespace Rug.Osc
 		{			
 			bool result = false;
 
-			foreach (OscMessage message in bundle)
+			if (Statistics != null)
 			{
-				if (message.Error != OscPacketError.None)
+				Statistics.BundlesReceived.Increment(1);
+			}
+
+			foreach (OscPacket packet in bundle)
+			{
+				if (packet.Error != OscPacketError.None)
 				{
 					continue;
 				}
 
-				result |= Invoke(message); 
+				if (packet is OscMessage)
+				{
+					result |= Invoke(packet as OscMessage);
+				}
+				else if (packet is OscBundle)
+				{
+					result |= Invoke(packet as OscBundle);
+				}
+				else
+				{
+					throw new Exception(String.Format(Strings.Listener_UnknownOscPacketType, packet.ToString()));
+				}
 			}
 
 			return result;
@@ -343,6 +366,11 @@ namespace Rug.Osc
 
 			List<OscLiteralEvent> shouldInvoke = new List<OscLiteralEvent>();
 			List<OscPatternEvent> shouldInvoke_Filter = new List<OscPatternEvent>();
+
+			if (Statistics != null)
+			{
+				Statistics.MessagesReceived.Increment(1);
+			}
 
 			do
 			{
@@ -394,7 +422,7 @@ namespace Rug.Osc
 					}
 				}
 			}
-			while (invoked == false && OnUnknownAddress(message.Address) == true);
+			while (invoked == false && OnUnknownAddress(message.Address, message) == true);
 
 			foreach (OscLiteralEvent @event in shouldInvoke)
 			{
@@ -409,11 +437,11 @@ namespace Rug.Osc
 			return invoked; 
 		}
 
-		private bool OnUnknownAddress(string address)
+		private bool OnUnknownAddress(string address, OscPacket packet)
 		{
 			if (UnknownAddress != null)
 			{
-				UnknownAddressEventArgs arg = new UnknownAddressEventArgs(this, address);
+				UnknownAddressEventArgs arg = new UnknownAddressEventArgs(this, address, packet);
 
 				UnknownAddress(this, arg);
 
@@ -453,5 +481,6 @@ namespace Rug.Osc
 		}
 
 		#endregion
+
 	}
 }

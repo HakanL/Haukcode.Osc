@@ -21,6 +21,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 using System.Text;
 
 namespace Rug.Osc
@@ -28,14 +30,13 @@ namespace Rug.Osc
 	/// <summary>
 	/// Bundle of osc messages
 	/// </summary>
-	public sealed class OscBundle : OscPacket, IEnumerable<OscPacket>
+	[Serializable] 
+	public sealed class OscBundle : OscPacket, IEnumerable<OscPacket>, ISerializable
 	{
 		#region Private Members
 
 		internal const string BundleIdent = "#bundle";
 		internal const int BundleHeaderSizeInBytes = 16;
-
-		private IPEndPoint m_Origin;
 
 		private OscTimeTag m_Timestamp;
 		private OscPacket[] m_Messages;
@@ -59,11 +60,6 @@ namespace Rug.Osc
 		/// The descriptive string associated with Error
 		/// </summary>
 		public override string ErrorMessage { get { return m_ErrorMessage; } }
-
-		/// <summary>
-		/// The IP end point that the bundle originated from
-		/// </summary>
-		public override IPEndPoint Origin { get { return m_Origin; } } 
 
 		/// <summary>
 		/// Osc timestamp associated with this bundle
@@ -111,7 +107,7 @@ namespace Rug.Osc
 		/// <param name="messages">messages to bundle</param>
 		public OscBundle(OscTimeTag timestamp, params OscPacket[] messages)
 		{
-			m_Origin = Helper.EmptyEndPoint;
+			Origin = Helper.EmptyEndPoint;
 
 			m_Timestamp = timestamp;
 			m_Messages = messages;
@@ -124,7 +120,7 @@ namespace Rug.Osc
 		/// <param name="messages">messages to bundle</param>
 		public OscBundle(ulong timestamp, params OscPacket[] messages)
 		{
-			m_Origin = Helper.EmptyEndPoint;
+			Origin = Helper.EmptyEndPoint;
 
 			m_Timestamp = new OscTimeTag(timestamp); 
 			m_Messages = messages;
@@ -137,7 +133,7 @@ namespace Rug.Osc
 		/// <param name="messages">messages to bundle</param>
 		public OscBundle(DateTime timestamp, params OscPacket[] messages)
 		{
-			m_Origin = Helper.EmptyEndPoint;
+			Origin = Helper.EmptyEndPoint;
 
 			m_Timestamp = OscTimeTag.FromDataTime(timestamp);
 			m_Messages = messages;
@@ -152,7 +148,7 @@ namespace Rug.Osc
 		/// <param name="messages">messages to bundle</param>
 		public OscBundle(IPEndPoint origin, OscTimeTag timestamp, params OscPacket[] messages)
 		{
-			m_Origin = origin; 
+			Origin = origin; 
 
 			m_Timestamp = timestamp;
 			m_Messages = messages;
@@ -166,7 +162,7 @@ namespace Rug.Osc
 		/// <param name="messages">messages to bundle</param>
 		public OscBundle(IPEndPoint origin, ulong timestamp, params OscPacket[] messages)
 		{
-			m_Origin = origin; 
+			Origin = origin; 
 
 			m_Timestamp = new OscTimeTag(timestamp);
 			m_Messages = messages;
@@ -180,10 +176,30 @@ namespace Rug.Osc
 		/// <param name="messages">messages to bundle</param>
 		public OscBundle(IPEndPoint origin, DateTime timestamp, params OscPacket[] messages)
 		{
-			m_Origin = origin; 
+			Origin = origin; 
 
 			m_Timestamp = OscTimeTag.FromDataTime(timestamp);
 			m_Messages = messages;
+		}
+
+		protected OscBundle(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+			{
+                throw new System.ArgumentNullException("info");
+			}
+
+			OscTimeTag timestamp = (OscTimeTag)info.GetValue("Timestamp", typeof(OscTimeTag));
+			OscPacket[] messages = (OscPacket[])info.GetValue("Messages", typeof(OscPacket[]));
+			OscPacketError error = (OscPacketError)info.GetValue("Error", typeof(OscPacketError));
+			string errorMessage = (string)info.GetValue("ErrorMessage", typeof(string));			
+			IPEndPoint origin = (IPEndPoint)info.GetValue("Origin", typeof(IPEndPoint));
+
+			Origin = origin;
+			m_Timestamp = timestamp;
+			m_Messages = messages;
+			m_Error = error;
+			m_ErrorMessage = errorMessage;
 		}
 
 		private OscBundle() { }
@@ -415,10 +431,10 @@ namespace Rug.Osc
 
 		#endregion
 
-		#region Write
+		#region Send
 		
 		/// <summary>
-		/// Write the bundle into a byte array 
+		/// Send the bundle into a byte array 
         /// </summary>
 		/// <param name="data">an array ouf bytes to write the bundle into</param>
         /// <returns>the number of bytes in the message</returns>
@@ -428,7 +444,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Write the bundle into a byte array 
+		/// Send the bundle into a byte array 
         /// </summary>
         /// <param name="data">an array ouf bytes to write the bundle into</param>
 		/// <param name="index">the index within the array where writing should begin</param>
@@ -528,7 +544,7 @@ namespace Rug.Osc
 			using (MemoryStream stream = new MemoryStream(bytes, index, count))
 			using (BinaryReader reader = new BinaryReader(stream))
 			{
-				bundle.m_Origin = origin; 
+				bundle.Origin = origin; 
 
 				if (stream.Length < BundleHeaderSizeInBytes)
 				{
@@ -573,7 +589,10 @@ namespace Rug.Osc
 
 					int messageLength = Helper.ReadInt32(reader);
 
-					if (stream.Position + messageLength > stream.Length)
+
+					if (stream.Position + messageLength > stream.Length || 
+						messageLength < 0||
+						messageLength % 4 != 0) 
 					{
 						// this is an error 				
 						bundle.m_Error = OscPacketError.InvalidBundleMessageLength;
@@ -582,9 +601,9 @@ namespace Rug.Osc
 						bundle.m_Messages = new OscPacket[0]; 
 
 						return bundle;
-					}
+					}					
 
-					messages.Add(OscPacket.Read(bytes, index + (int)stream.Position, messageLength, origin));
+					messages.Add(OscPacket.Read(bytes, index + (int)stream.Position, messageLength, origin, bundle.m_Timestamp));
 
 					stream.Position += messageLength; 
 				}
@@ -768,6 +787,25 @@ namespace Rug.Osc
 		public static bool operator !=(OscBundle bundle1, OscBundle bundle2)
 		{
 			return bundle1.Equals(bundle2) == false;
+		}
+
+		#endregion
+
+		#region Serializable
+
+		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
+		{			
+			if (info == null)
+			{
+				throw new System.ArgumentNullException("info");
+			}
+
+			info.AddValue("Timestamp", Timestamp);
+			info.AddValue("Messages", m_Messages);
+			info.AddValue("Error", m_Error);
+			info.AddValue("ErrorMessage", m_ErrorMessage);			
+			info.AddValue("Origin", Origin);
 		}
 
 		#endregion

@@ -181,7 +181,7 @@ namespace Rug.Osc
 			{
 				while (m_Receiver.State != OscSocketState.Closed)
 				{
-					// if we are in a state to recieve
+					// if we are in a state to receive
 					if (m_Receiver.State == OscSocketState.Connected)
 					{
 						// get the next message 

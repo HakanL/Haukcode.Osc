@@ -74,7 +74,7 @@ namespace Rug.Osc
 
 		#endregion 
 
-		#region Write
+		#region Send
 
 		/// <summary>
 		/// Writes a single packet to the stream at the current position.

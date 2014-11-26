@@ -26,15 +26,19 @@ namespace Rug.Osc
 
 		public readonly object Sender;
 
-		public readonly string Address; 
+		public readonly string Address;
 
-		public UnknownAddressEventArgs(object sender, string address)
+		public readonly OscPacket Packet; 
+
+		public UnknownAddressEventArgs(object sender, string address, OscPacket packet)
 		{
 			Retry = false;
 			
 			Sender = sender;
 
-			Address = address; 
+			Address = address;
+
+			Packet = packet; 
 		}
 	}
 }

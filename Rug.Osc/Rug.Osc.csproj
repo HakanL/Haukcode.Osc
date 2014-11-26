@@ -31,13 +31,29 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Rug.Osc.XML</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Rug.Osc.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comms\IOscPacketReceiver.cs" />
+    <Compile Include="Comms\IOscPacketSender.cs" />
+    <Compile Include="Comms\OscCommunicationStatistics.cs" />
+    <Compile Include="Comms\OscPacketEvent.cs" />
+    <Compile Include="Comms\OscSerial.cs" />
     <Compile Include="Comms\OscSocketStateException.cs" />
     <Compile Include="Comms\OscSocketException.cs" />
     <Compile Include="Comms\OscListener.cs" />
+    <Compile Include="Comms\OscUdp.cs" />
+    <Compile Include="Slip\SlipBytes.cs" />
+    <Compile Include="Slip\SlipPacketReader.cs" />
+    <Compile Include="Slip\SlipPacketWriter.cs" />
     <Compile Include="Core\UnknownAddressEventArgs.cs" />
     <Compile Include="DataTypes\OscColor.cs" />
     <Compile Include="Comms\OscReader.cs" />
@@ -85,6 +101,9 @@
   <ItemGroup>
     <Content Include="LICENSE.txt" />
     <Content Include="README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Rug.Osc.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

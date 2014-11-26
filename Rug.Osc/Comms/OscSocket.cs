@@ -194,6 +194,8 @@ namespace Rug.Osc
 		/// </summary>
 		public abstract OscSocketType OscSocketType { get; }
 
+		public OscCommunicationStatistics Statistics { get; set; }
+
 		/// <summary>
 		/// The instance of the socket 
 		/// </summary>
@@ -202,7 +204,7 @@ namespace Rug.Osc
 		/// <summary>
 		/// Flags for the socket
 		/// </summary>
-		protected System.Net.Sockets.SocketFlags SocketFlags { get { return m_SocketFlags; } }
+		protected System.Net.Sockets.SocketFlags SocketFlags { get { return m_SocketFlags; } }		
 
 		#endregion
 
