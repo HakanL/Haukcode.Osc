@@ -31,8 +31,7 @@ namespace Rug.Osc
 	/// <summary>
 	/// Any osc message
 	/// </summary>
-	[Serializable]
-	public sealed class OscMessage : OscPacket, IEnumerable<object>, ISerializable, ICloneable
+	public sealed class OscMessage : OscPacket, IEnumerable<object>, ICloneable
 	{
 		public static readonly OscMessage ParseError;
 
@@ -239,46 +238,6 @@ namespace Rug.Osc
 
 			CheckArguments(m_Arguments);
 		}
-
-		protected OscMessage(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null)
-			{
-                throw new System.ArgumentNullException("info");
-			}
-
-            string address = (string)info.GetValue("Address", typeof(string));
-			object[] arguments = (object[])info.GetValue("Arguments", typeof(object[]));
-			OscPacketError error = (OscPacketError)info.GetValue("Error", typeof(OscPacketError));
-			string errorMessage = (string)info.GetValue("ErrorMessage", typeof(string));
-			OscTimeTag? timeTag = (OscTimeTag?)info.GetValue("TimeTag", typeof(OscTimeTag?));
-			IPEndPoint origin = (IPEndPoint)info.GetValue("Origin", typeof(IPEndPoint));
-			
-			Origin = origin;
-			TimeTag = timeTag; 
-
-			m_Address = address;
-			m_Arguments = arguments;
-			m_Error = error;
-			m_ErrorMessage = errorMessage;
-
-			if (Helper.IsNullOrWhiteSpace(m_Address) == true)
-			{
-				throw new ArgumentNullException("address");
-			}
-
-			if (OscAddress.IsValidAddressPattern(address) == false)
-			{
-				throw new ArgumentException(String.Format(Strings.OscAddress_NotAValidOscAddress, address), "address");
-			}
-
-			if (arguments == null)
-			{
-				throw new ArgumentNullException("args");
-			}
-
-			CheckArguments(m_Arguments);
-        }
 
 		private OscMessage()
 		{
@@ -1461,7 +1420,7 @@ namespace Rug.Osc
 			return sb.ToString();
 		}
 
-		private static void ArgumentsToString(StringBuilder sb, IFormatProvider provider, object[] args)
+		internal static void ArgumentsToString(StringBuilder sb, IFormatProvider provider, object[] args)
 		{
 			bool first = true;
 
@@ -1530,11 +1489,11 @@ namespace Rug.Osc
 				}
 				else if (obj is string)
 				{
-					sb.Append("\"" + obj.ToString() + "\"");
+					sb.Append("\"" + OscHelper.EscapeString(obj.ToString()) + "\"");
 				}
 				else if (obj is OscSymbol)
 				{
-					sb.Append(obj.ToString());
+					sb.Append(OscHelper.EscapeString(obj.ToString()));
 				}
 				else if (obj is byte[])
 				{
@@ -1949,7 +1908,7 @@ namespace Rug.Osc
 		/// <param name="str">string contain the argument to parse</param>
 		/// <param name="provider">format provider to use</param>
 		/// <returns>the parsed argument</returns>
-		private static object ParseArgument(string str, IFormatProvider provider)
+		internal static object ParseArgument(string str, IFormatProvider provider)
 		{
 			int value_Int32;
 			long value_Int64;
@@ -2079,11 +2038,11 @@ namespace Rug.Osc
 					throw new Exception(String.Format(Strings.Parser_MalformedStringArgument, argString));
 				}
 
-				return argString.Substring(1, argString.Length - 2);
+				return OscHelper.UnescapeString(argString.Substring(1, argString.Length - 2));
 			}
 
 			// if all else fails then its a symbol i guess (?!?) 
-			return new OscSymbol(argString);
+			return new OscSymbol(OscHelper.UnescapeString(argString));
 		}
 
 		#endregion
@@ -2171,26 +2130,6 @@ namespace Rug.Osc
 
 		#endregion
 
-		#region Serializable
-
-		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
-		{			
-			if (info == null)
-			{
-				throw new System.ArgumentNullException("info");
-			}
-
-			info.AddValue("Address", Address);
-			info.AddValue("Arguments", m_Arguments);
-			info.AddValue("Error", m_Error);
-			info.AddValue("ErrorMessage", m_ErrorMessage);
-			info.AddValue("TimeTag", TimeTag);
-			info.AddValue("Origin", Origin);
-		}
-
-		#endregion
-
 		public OscMessage Clone()
 		{
 			string address = m_Address; 
@@ -2207,25 +2146,6 @@ namespace Rug.Osc
 		object ICloneable.Clone()
 		{
 			return Clone();
-		}
-
-		public static string ArgumentsToString(object[] args)
-		{
-			return ArgumentsToString(args, CultureInfo.InvariantCulture);
-		}
-
-		public static string ArgumentsToString(object[] args, IFormatProvider provider)
-		{
-			if (args == null || args.Length == 0)
-			{
-				return string.Empty;
-			}
-
-			StringBuilder sb = new StringBuilder();
-
-			ArgumentsToString(sb, provider, args);
-
-			return sb.ToString();
-		}
+		}		
 	}
 }

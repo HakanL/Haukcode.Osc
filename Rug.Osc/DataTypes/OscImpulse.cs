@@ -19,13 +19,13 @@
 using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+
 namespace Rug.Osc
 {
 	/// <summary>
 	/// Osc Impulse Singleton
 	/// </summary>
-	[Serializable] 
-	public sealed class OscImpulse : ISerializable
+	public sealed class OscImpulse
 	{
 		public static readonly OscImpulse Value = new OscImpulse();
 
@@ -54,30 +54,6 @@ namespace Rug.Osc
 			isTrue |= "Impulse".Equals(str, System.StringComparison.InvariantCultureIgnoreCase);
 
 			return isTrue; 
-		}
-
-		#region ISerializable Members
-		
-		[SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			info.SetType(typeof(OscImpulseSerializationHelper));
-		}
-
-		#endregion
-	}
-
-	[Serializable]
-	//[PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-	[SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-	internal sealed class OscImpulseSerializationHelper : IObjectReference
-	{
-		// GetRealObject is called after this object is deserialized.
-		public Object GetRealObject(StreamingContext context)
-		{
-			// When deserialiing this object, return a reference to 
-			// the Singleton object instead.
-			return OscImpulse.Value;
 		}
 	}
 }

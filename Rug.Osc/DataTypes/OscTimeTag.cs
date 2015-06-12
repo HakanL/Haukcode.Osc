@@ -27,13 +27,22 @@ namespace Rug.Osc
 	/// <summary>
 	/// Osc time tag
 	/// </summary>
-	[Serializable]
-	public struct OscTimeTag : ISerializable
+	public struct OscTimeTag
 	{
 		/// <summary>
 		/// The miniumn date for any Osc time tag
 		/// </summary>
 		public static readonly DateTime BaseDate = new DateTime(1900, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+		/// <summary>
+		/// Gets a OscTimeTag object that is set to the current date and time on this computer, expressed as the local time.
+		/// </summary>	
+		public static OscTimeTag Now { get { return FromDataTime(DateTime.Now); } }
+
+		/// <summary>
+		/// Gets a OscTimeTag object that is set to the current date and time on this computer, expressed as the Coordinated Universal Time (UTC).
+		/// </summary>
+		public static OscTimeTag UtcNow { get { return FromDataTime(DateTime.UtcNow); } }
 
 		/// <summary>
 		/// Ntp Timestamp value
@@ -52,17 +61,6 @@ namespace Rug.Osc
 		{
 			Value = value;
 		}
-
-		public OscTimeTag(SerializationInfo info, StreamingContext context)
-		{
-			if (info == null)
-			{
-				throw new System.ArgumentNullException("info");
-			}
-
-			Value = (ulong)info.GetValue("Value", typeof(ulong));
-		}
-
 
 		/// <summary>
 		/// Does this OSC-timetag equal another object
@@ -252,21 +250,6 @@ namespace Rug.Osc
 
 				return false;
 			}
-		}
-
-		#endregion
-
-		#region ISerializable Members
-
-		[SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			if (info == null)
-			{
-				throw new System.ArgumentNullException("info");
-			}
-
-			info.AddValue("Value", Value);
 		}
 
 		#endregion

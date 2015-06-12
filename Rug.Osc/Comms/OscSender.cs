@@ -96,6 +96,8 @@ namespace Rug.Osc
 			}
 		}
 
+		public string DEBUG_ConnectedState { get { return Socket != null ? "Socket Connected: " + Socket.Connected : "NO SOCKET"; } }
+
 		#endregion
 
 		#region Constructors
@@ -295,6 +297,8 @@ namespace Rug.Osc
 
 		void Send_Callback(IAsyncResult ar)
 		{
+			bool shouldClose = false; 
+
 			lock (m_Lock)
 			{
 				try
@@ -307,6 +311,8 @@ namespace Rug.Osc
 					{
 						Debug.WriteLine("Objects do not match at index " + m_ReadIndex);
 					}
+
+					shouldClose = Socket.Connected == false;
 
 					m_Count--;
 					m_ReadIndex = NextReadIndex;
@@ -328,6 +334,11 @@ namespace Rug.Osc
 				{
 					m_QueueEmpty.Set();
 				}
+			}
+
+			if (shouldClose == true)
+			{
+				Dispose();
 			}
 		}
 

@@ -144,6 +144,15 @@
   <data name="Container_IsValidContainerAddress" xml:space="preserve">
     <value>Invalid container address '{0}'</value>
   </data>
+  <data name="Escape_InvalidEscapeSequence" xml:space="preserve">
+    <value>Invalid escape sequence at char '{0}'.</value>
+  </data>
+  <data name="Escape_InvalidEscapeSequence_InvalidHexDigit" xml:space="preserve">
+    <value>Invalid escape sequence at char '{0}' "{1}" is not a valid hex digit.</value>
+  </data>
+  <data name="Escape_InvalidEscapeSequence_MissingHexValue" xml:space="preserve">
+    <value>Invalid escape sequence at char '{0}' missing hex value.</value>
+  </data>
   <data name="Listener_UnknownOscPacketType" xml:space="preserve">
     <value>Unknown osc packet type '{0}'</value>
   </data>

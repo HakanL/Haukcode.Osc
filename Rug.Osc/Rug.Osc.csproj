@@ -32,25 +32,27 @@
     <DocumentationFile>bin\Release\Rug.Osc.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Rug.Osc.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comms\OscFileReader.cs" />
     <Compile Include="Comms\IOscPacketReceiver.cs" />
     <Compile Include="Comms\IOscPacketSender.cs" />
     <Compile Include="Comms\OscCommunicationStatistics.cs" />
+    <Compile Include="Comms\OscFileWriter.cs" />
     <Compile Include="Comms\OscPacketEvent.cs" />
     <Compile Include="Comms\OscSerial.cs" />
     <Compile Include="Comms\OscSocketStateException.cs" />
     <Compile Include="Comms\OscSocketException.cs" />
     <Compile Include="Comms\OscListener.cs" />
     <Compile Include="Comms\OscUdp.cs" />
+    <Compile Include="OscHelper.cs" />
     <Compile Include="Slip\SlipBytes.cs" />
     <Compile Include="Slip\SlipPacketReader.cs" />
     <Compile Include="Slip\SlipPacketWriter.cs" />

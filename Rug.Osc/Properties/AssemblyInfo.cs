@@ -34,7 +34,7 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("f25d1825-a5f6-40dd-aceb-011df354a562")]
 
-[assembly: AssemblyVersion("1.2.5.*")]
-[assembly: AssemblyFileVersion("1.2.5.0")]
+[assembly: AssemblyVersion("1.2.6.*")]
+[assembly: AssemblyFileVersion("1.2.6.0")]
 
-//[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Rug.Osc.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Rug.Osc.Tests, PublicKey=002400000480000094000000060200000024000052534131000400000100010079dddfb55fbd803694a2baee8abb336f1a57e03e29ef8efc35626d1f2fb54bae6113ad7f162a7fe5ca7f792201d6ea9baaa2467f765d7ab19f905c669826681a35bf9f64d3e3df5c1fe6c55c2a36183d05fa8b7731ac2c73b557704bef699525f31ca5e34e1a30435e593be1f7e0adc328599d3c446d0360c4a2932e3c994ab0")]

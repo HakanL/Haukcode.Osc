@@ -76,8 +76,7 @@ namespace Rug.Osc
 	/// Midi Message
 	/// </summary>
 	[StructLayout(LayoutKind.Explicit)]
-	[Serializable]
-	public struct OscMidiMessage : ISerializable
+	public struct OscMidiMessage
 	{
 		#region Fields
 
@@ -136,21 +135,6 @@ namespace Rug.Osc
 			Data2 = 0;
 
 			FullMessage = value; 
-		}
-
-		public OscMidiMessage(SerializationInfo info, StreamingContext context)
-		{
-			if (info == null)
-			{
-				throw new System.ArgumentNullException("info");
-			}
-
-			PortID = 0;
-			StatusByte = 0;
-			Data1 = 0;
-			Data2 = 0;
-
-			FullMessage = (uint)info.GetValue("FullMessage", typeof(uint));
 		}
 
 		/// <summary>
@@ -425,21 +409,6 @@ namespace Rug.Osc
 
 				return false;
 			}
-		}
-
-		#endregion
-
-		#region ISerializable Members
-
-		[SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			if (info == null)
-			{
-				throw new System.ArgumentNullException("info");
-			}
-
-			info.AddValue("FullMessage", FullMessage);
 		}
 
 		#endregion

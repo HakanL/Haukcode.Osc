@@ -33,7 +33,12 @@ namespace Rug.Osc
 		private readonly OscPacketFormat m_Format;
 		private readonly BinaryReader m_BinaryReader;
 		private readonly StreamReader m_StringReader;
-
+		private readonly Slip.SlipPacketReader m_SlipReader;
+		
+		private readonly byte[] m_SlipByteCache;
+		private int m_SlipByteIndex; 
+		private int m_SlipByteCount;
+		
 		#endregion 
 
 		#region Properties
@@ -64,6 +69,10 @@ namespace Rug.Osc
 				{
 					return BaseStream.Position >= BaseStream.Length; 
 				}
+				else if (m_Format == OscPacketFormat.Slip)
+				{
+					return BaseStream.Position >= BaseStream.Length && m_SlipByteIndex >= m_SlipByteCount;
+				}
 				else
 				{
 					return m_StringReader.EndOfStream;
@@ -88,6 +97,15 @@ namespace Rug.Osc
 			if (m_Format == OscPacketFormat.Binary)
 			{
 				m_BinaryReader = new BinaryReader(m_Stream);
+			}
+			else if (m_Format == OscPacketFormat.Slip) 
+			{
+				m_BinaryReader = new BinaryReader(m_Stream);
+				m_SlipReader = new Slip.SlipPacketReader(1024);
+
+				m_SlipByteCache = new byte[1024];    
+				m_SlipByteIndex = 0;
+				m_SlipByteCount = 0; 
 			}
 			else
 			{
@@ -115,6 +133,33 @@ namespace Rug.Osc
 
 				return OscPacket.Read(bytes, length); 
 			}
+			else if (Format == OscPacketFormat.Slip)
+			{
+				byte[] packetBytes = new byte[m_SlipReader.BufferSize]; 
+				int packetLength = 0;
+
+				do
+				{
+					if (m_SlipByteCount - m_SlipByteIndex == 0)
+					{
+						m_SlipByteIndex = 0;
+
+						m_SlipByteCount = m_BinaryReader.Read(m_SlipByteCache, 0, m_SlipByteCache.Length);
+					}
+
+					m_SlipByteIndex += m_SlipReader.ProcessBytes(m_SlipByteCache, m_SlipByteIndex, m_SlipByteCount - m_SlipByteIndex, ref packetBytes, out packetLength);
+				}
+				while (packetLength < 0 && EndOfStream == false);
+
+				if (packetLength > 0) 
+				{
+					return OscPacket.Read(packetBytes, packetLength); 
+				}
+				else 
+				{
+					return OscMessage.ParseError;
+				}				
+			}
 			else
 			{
 				string line = m_StringReader.ReadLine();
@@ -124,7 +169,7 @@ namespace Rug.Osc
 				{
 					StringBuilder sb = new StringBuilder();
 
-					sb.AppendLine(line); 
+					sb.AppendLine(line);
 
 					while (EndOfStream == false)
 					{
@@ -132,16 +177,16 @@ namespace Rug.Osc
 
 						if (OscPacket.TryParse(sb.ToString(), out packet) == true)
 						{
-							return packet; 
+							return packet;
 						}
 
-						sb.AppendLine(); 
+						sb.AppendLine();
 					}
 
-					return OscMessage.ParseError; 
+					return OscMessage.ParseError;
 				}
 
-				return packet; 
+				return packet;
 			}
 		}
 
@@ -162,7 +207,7 @@ namespace Rug.Osc
 		/// </summary>
 		public void Dispose()
 		{
-			if (m_Format == OscPacketFormat.Binary)
+			if (m_Format != OscPacketFormat.String)
 			{
 				m_BinaryReader.Close();
 			}

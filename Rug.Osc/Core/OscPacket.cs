@@ -20,17 +20,13 @@ using System;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using System.Xml.Serialization;
 
 namespace Rug.Osc
 {
 	/// <summary>
 	/// Base class for all osc packets
 	/// </summary>	
-	[Serializable]
-	[XmlInclude(typeof(OscBundle))]
-	[XmlInclude(typeof(OscMessage))]
-	public abstract class OscPacket : ISerializable
+	public abstract class OscPacket
 	{
 		#region Properties
 
@@ -417,13 +413,6 @@ namespace Rug.Osc
 				return true;
 			}	
 		}
-
-		#endregion
-
-		#region Serializable
-
-		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-		public abstract void GetObjectData(SerializationInfo info, StreamingContext context);
 
 		#endregion
 	}

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Rug.Osc.Tests")]
-[assembly: AssemblyDescription("Rug.Osc unit tests")]
+[assembly: AssemblyTitle("Rug.Osc.Hola")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Rugland Digital Systems")]
-[assembly: AssemblyProduct("Rug.Osc")]
-[assembly: AssemblyCopyright("Copyright © Phill Tew 2013")]
+[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyProduct("Rug.Osc.Hola")]
+[assembly: AssemblyCopyright("Copyright © Microsoft 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("066f9d72-2381-4596-bec4-06dbaefe81d6")]
+[assembly: Guid("a980a52d-2336-4201-b12a-9f138bd4e0e8")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -31,5 +31,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
+// [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

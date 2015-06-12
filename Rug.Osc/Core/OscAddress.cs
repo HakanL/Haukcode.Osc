@@ -28,8 +28,7 @@ namespace Rug.Osc
 	/// <summary>
 	/// Encompasses an entire osc address
 	/// </summary>	
-	[Serializable]
-	public sealed class OscAddress : ISerializable
+	public sealed class OscAddress
 	{
 		#region Private Static Members
 
@@ -106,18 +105,6 @@ namespace Rug.Osc
 		{
 			ParseAddress(address);
 		}
-
-		protected OscAddress(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null)
-			{
-                throw new System.ArgumentNullException("info");
-			}
-
-            string address = (string)info.GetValue("Address", typeof(string));
-            
-			ParseAddress(address);
-        }
 
 		private void ParseAddress(string address)
 		{
@@ -420,21 +407,6 @@ namespace Rug.Osc
 
 			// return the result
 			return pattern.Match(address); 		
-		}
-
-		#endregion
-
-		#region Serializable
-
-		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			if (info == null)
-			{
-				throw new System.ArgumentNullException("info");
-			}
-
-			info.AddValue("Address", m_OrigialString);
 		}
 
 		#endregion

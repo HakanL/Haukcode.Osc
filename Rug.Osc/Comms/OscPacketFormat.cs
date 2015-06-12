@@ -23,5 +23,6 @@ namespace Rug.Osc
 	{		
 		String = 0,
 		Binary = 1, 
+		Slip = 2, 
 	}
 }

@@ -1,4 +1,22 @@
-﻿using System;
+﻿/* 
+ * Rug.Osc 
+ * 
+ * Copyright (C) 2013 Phill Tew (peatew@gmail.com)
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ * IN THE SOFTWARE.
+ * 
+ */
+
+using System;
 using System.IO.Ports;
 using System.Threading;
 using Rug.Osc.Slip;
@@ -11,7 +29,7 @@ namespace Rug.Osc
 		private Thread m_Thread;
 		private SerialPort m_SerialPort;
 		private SlipPacketReader m_Reader;
-		private SlipPacketWriter m_Writer;
+		//private SlipPacketWriter m_Writer;
 
 		private byte[] m_PacketBytes;
 		private byte[] m_ReadBuffer;
@@ -43,7 +61,7 @@ namespace Rug.Osc
 			StopBits = stopBits;
 
 			m_Reader = new SlipPacketReader(slipBufferSize);
-			m_Writer = new SlipPacketWriter();
+			//m_Writer = new SlipPacketWriter();
 
 			m_PacketBytes = new byte[m_Reader.BufferSize];
 			m_ReadBuffer = new byte[m_Reader.BufferSize];
@@ -92,7 +110,7 @@ namespace Rug.Osc
 			}
 
 			byte[] packetBytes = packet.ToByteArray();
-			byte[] slippedBytes = m_Writer.Write(packetBytes, 0, packetBytes.Length);
+			byte[] slippedBytes = SlipPacketWriter.Write(packetBytes, 0, packetBytes.Length);
 
 			if (Statistics != null)
 			{
@@ -153,6 +171,11 @@ namespace Rug.Osc
 				if (packetLength > 0)
 				{
 					OscPacket oscPacket = OscPacket.Read(packetBytes, packetLength);
+
+					if (Statistics != null && oscPacket.Error != OscPacketError.None)
+					{
+						Statistics.ReceiveErrors.Increment(1);
+					}
 
 					if (PacketRecived != null)
 					{

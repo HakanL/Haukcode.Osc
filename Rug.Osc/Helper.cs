@@ -87,7 +87,7 @@ namespace Rug.Osc
 
 		#region Byte
 
-		internal static void Write(System.IO.BinaryWriter writer, byte value)
+		public static void Write(System.IO.BinaryWriter writer, byte value)
 		{
 			writer.Write(value);
 			writer.Write((byte)0);
@@ -95,7 +95,7 @@ namespace Rug.Osc
 			writer.Write((byte)0);
 		}
 
-		internal static byte ReadByte(BinaryReader reader)
+		public static byte ReadByte(BinaryReader reader)
 		{
 			byte value = reader.ReadByte();
 			reader.ReadByte();
@@ -109,14 +109,14 @@ namespace Rug.Osc
 
 		#region Int 32
 
-		internal static void Write(System.IO.BinaryWriter writer, int value)
+		public static void Write(System.IO.BinaryWriter writer, int value)
 		{
 			uint allBits = unchecked((uint)value);
 
 			Write(writer, allBits);								
 		}
 
-		internal static int ReadInt32(System.IO.BinaryReader reader)
+		public static int ReadInt32(System.IO.BinaryReader reader)
 		{
 			uint value = ReadUInt32(reader);
 
@@ -127,7 +127,7 @@ namespace Rug.Osc
 
 		#region UInt 32
 
-		internal static void Write(System.IO.BinaryWriter writer, uint value)
+		public static void Write(System.IO.BinaryWriter writer, uint value)
 		{
 			value = unchecked((value & 0xFF000000) >> 24 |
 							   (value & 0x00FF0000) >> 8 |
@@ -137,7 +137,7 @@ namespace Rug.Osc
 			writer.Write(value); 
 		}
 
-		internal static uint ReadUInt32(System.IO.BinaryReader reader)
+		public static uint ReadUInt32(System.IO.BinaryReader reader)
 		{
 			uint value = reader.ReadUInt32();
 			value = unchecked((value & 0xFF000000) >> 24 |
@@ -152,7 +152,7 @@ namespace Rug.Osc
 
 		#region Single (float)
 
-		internal static void Write(System.IO.BinaryWriter writer, float value)
+		public static void Write(System.IO.BinaryWriter writer, float value)
 		{
 			FloatAndUIntUnion v = default(FloatAndUIntUnion);
 
@@ -161,7 +161,7 @@ namespace Rug.Osc
 			Write(writer, v.UInt32Bits); 
 		}
 
-		internal static float ReadSingle(System.IO.BinaryReader reader)
+		public static float ReadSingle(System.IO.BinaryReader reader)
 		{
 			FloatAndUIntUnion v = default(FloatAndUIntUnion);
 
@@ -174,14 +174,14 @@ namespace Rug.Osc
 
 		#region Int 64
 
-		internal static void Write(System.IO.BinaryWriter writer, long value)
+		public static void Write(System.IO.BinaryWriter writer, long value)
 		{
 			ulong allBits = unchecked((ulong)value);
 
 			Write(writer, allBits);
 		}
 
-		internal static long ReadInt64(System.IO.BinaryReader reader)
+		public static long ReadInt64(System.IO.BinaryReader reader)
 		{
 			ulong value = ReadUInt64(reader);
 
@@ -192,7 +192,7 @@ namespace Rug.Osc
 
 		#region Uint 64
 
-		internal static void Write(System.IO.BinaryWriter writer, ulong value)
+		public static void Write(System.IO.BinaryWriter writer, ulong value)
 		{
 			value = unchecked((value & 0xFF00000000000000) >> 56 |
 							   (value & 0x00FF000000000000) >> 40 |
@@ -206,7 +206,7 @@ namespace Rug.Osc
 			writer.Write(value); 
 		}
 
-		internal static ulong ReadUInt64(System.IO.BinaryReader reader)
+		public static ulong ReadUInt64(System.IO.BinaryReader reader)
 		{
 			ulong value = reader.ReadUInt64();
 			value = unchecked((value & 0xFF00000000000000) >> 56 |
@@ -225,7 +225,7 @@ namespace Rug.Osc
 
 		#region Double
 
-		internal static void Write(System.IO.BinaryWriter writer, double value)
+		public static void Write(System.IO.BinaryWriter writer, double value)
 		{
 			long setofBits = BitConverter.DoubleToInt64Bits(value);
 
@@ -234,7 +234,7 @@ namespace Rug.Osc
 			Write(writer, allBits);
 		}
 
-		internal static double ReadDouble(System.IO.BinaryReader reader)
+		public static double ReadDouble(System.IO.BinaryReader reader)
 		{
 			ulong value = ReadUInt64(reader);
 
@@ -315,7 +315,7 @@ namespace Rug.Osc
 
 		#region Color
 
-		internal static void Write(BinaryWriter writer, OscColor value)
+		public static void Write(BinaryWriter writer, OscColor value)
 		{
 			uint intValue = unchecked((uint)(
 						((byte)value.R << 24) |
@@ -326,7 +326,7 @@ namespace Rug.Osc
 			Write(writer, intValue);
 		}
 
-		internal static OscColor ReadColor(System.IO.BinaryReader reader)
+		public static OscColor ReadColor(System.IO.BinaryReader reader)
 		{			
 			uint value = ReadUInt32(reader);
 
@@ -374,12 +374,12 @@ namespace Rug.Osc
 
 		#region OscTimeTag
 
-		internal static void Write(BinaryWriter writer, OscTimeTag value)
+		public static void Write(BinaryWriter writer, OscTimeTag value)
 		{
 			Write(writer, value.Value); 
 		}
 
-		internal static OscTimeTag ReadOscTimeTag(System.IO.BinaryReader reader)
+		public static OscTimeTag ReadOscTimeTag(System.IO.BinaryReader reader)
 		{
 			ulong value = ReadUInt64(reader);
 
@@ -390,12 +390,12 @@ namespace Rug.Osc
 
 		#region OscMidiMessage
 
-		internal static void Write(BinaryWriter writer, OscMidiMessage value)
+		public static void Write(BinaryWriter writer, OscMidiMessage value)
 		{
 			Write(writer, value.FullMessage); 
 		}
 
-		internal static OscMidiMessage ReadOscMidiMessage(System.IO.BinaryReader reader)
+		public static OscMidiMessage ReadOscMidiMessage(System.IO.BinaryReader reader)
 		{
 			uint value = ReadUInt32(reader);
 
@@ -406,7 +406,7 @@ namespace Rug.Osc
 
 		#region Padding
 
-		internal static void WritePadding(System.IO.BinaryWriter writer, long position)
+		public static void WritePadding(System.IO.BinaryWriter writer, long position)
 		{
 			int nullCount = 4 - (int)(position % 4);
 
@@ -416,7 +416,7 @@ namespace Rug.Osc
 			}
 		}
 
-		internal static bool SkipPadding(Stream stream)
+		public static bool SkipPadding(Stream stream)
 		{
 			if (stream.Position % 4 != 0)
 			{

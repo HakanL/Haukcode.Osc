@@ -338,6 +338,11 @@ namespace Rug.Osc
 
 				OscPacket message = OscPacket.Read(m_Bytes, count, (IPEndPoint)origin);
 
+				if (Statistics != null && message.Error != OscPacketError.None)
+				{
+					Statistics.ReceiveErrors.Increment(1);
+				}
+
                 lock (m_Lock)
                 {
                     if (m_Count < m_ReceiveQueue.Length)

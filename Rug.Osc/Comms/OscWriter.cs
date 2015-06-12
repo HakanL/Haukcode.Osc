@@ -62,7 +62,7 @@ namespace Rug.Osc
 			m_Stream = stream;
 			m_Format = format;
 
-			if (m_Format == OscPacketFormat.Binary)
+			if (m_Format != OscPacketFormat.String)
 			{
 				m_BinaryWriter = new BinaryWriter(m_Stream);
 			}
@@ -92,10 +92,18 @@ namespace Rug.Osc
 				// write the packet
 				m_BinaryWriter.Write(bytes); 
 			}
+			else if (Format == OscPacketFormat.Slip)
+			{
+				byte[] preSlipBytes = packet.ToByteArray(); 
+				byte[] bytes = Slip.SlipPacketWriter.Write(preSlipBytes, 0, preSlipBytes.Length);
+
+				// write the packet
+				m_BinaryWriter.Write(bytes); 
+			}
 			else
 			{
 				// write as a string
-				m_StringWriter.WriteLine(packet.ToString()); 
+				m_StringWriter.WriteLine(packet.ToString());
 			}
 		}
 
@@ -116,7 +124,7 @@ namespace Rug.Osc
 		/// </summary>
 		public void Dispose()
 		{
-			if (m_Format == OscPacketFormat.Binary)
+			if (m_Format != OscPacketFormat.String)
 			{
 				m_BinaryWriter.Close();
 			}

@@ -30,8 +30,7 @@ namespace Rug.Osc
 	/// <summary>
 	/// Bundle of osc messages
 	/// </summary>
-	[Serializable] 
-	public sealed class OscBundle : OscPacket, IEnumerable<OscPacket>, ISerializable
+	public sealed class OscBundle : OscPacket, IEnumerable<OscPacket>
 	{
 		#region Private Members
 
@@ -180,26 +179,6 @@ namespace Rug.Osc
 
 			m_Timestamp = OscTimeTag.FromDataTime(timestamp);
 			m_Messages = messages;
-		}
-
-		protected OscBundle(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null)
-			{
-                throw new System.ArgumentNullException("info");
-			}
-
-			OscTimeTag timestamp = (OscTimeTag)info.GetValue("Timestamp", typeof(OscTimeTag));
-			OscPacket[] messages = (OscPacket[])info.GetValue("Messages", typeof(OscPacket[]));
-			OscPacketError error = (OscPacketError)info.GetValue("Error", typeof(OscPacketError));
-			string errorMessage = (string)info.GetValue("ErrorMessage", typeof(string));			
-			IPEndPoint origin = (IPEndPoint)info.GetValue("Origin", typeof(IPEndPoint));
-
-			Origin = origin;
-			m_Timestamp = timestamp;
-			m_Messages = messages;
-			m_Error = error;
-			m_ErrorMessage = errorMessage;
 		}
 
 		private OscBundle() { }
@@ -787,25 +766,6 @@ namespace Rug.Osc
 		public static bool operator !=(OscBundle bundle1, OscBundle bundle2)
 		{
 			return bundle1.Equals(bundle2) == false;
-		}
-
-		#endregion
-
-		#region Serializable
-
-		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
-		{			
-			if (info == null)
-			{
-				throw new System.ArgumentNullException("info");
-			}
-
-			info.AddValue("Timestamp", Timestamp);
-			info.AddValue("Messages", m_Messages);
-			info.AddValue("Error", m_Error);
-			info.AddValue("ErrorMessage", m_ErrorMessage);			
-			info.AddValue("Origin", Origin);
 		}
 
 		#endregion
