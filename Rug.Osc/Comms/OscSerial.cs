@@ -76,14 +76,16 @@ namespace Rug.Osc
 			// Open serial port
 			m_SerialPort = new SerialPort(PortName, BaudRate, Parity, DataBits, StopBits);
 
-			//m_SerialPort.WriteTimeout = 100;
-
 			if (RtsCtsEnabled == true)
 			{
 				// Only set these if hardware flow control is enabled 
 				m_SerialPort.Handshake = Handshake.RequestToSend;								
 			}
 
+            // Set timeout to avoid infinate wait if RTS input is never un-asserted
+            m_SerialPort.WriteTimeout = 100;
+
+            // Always un-assert CTS output regardless of hardware flow control mode 
 			m_SerialPort.DtrEnable = true;
 
 			m_SerialPort.Open();
