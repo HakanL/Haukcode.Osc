@@ -29,7 +29,6 @@ namespace Rug.Osc
 		private Thread m_Thread;
 		private SerialPort m_SerialPort;
 		private SlipPacketReader m_Reader;
-		//private SlipPacketWriter m_Writer;
 
 		private byte[] m_PacketBytes;
 		private byte[] m_ReadBuffer;
@@ -39,6 +38,7 @@ namespace Rug.Osc
 		public Parity Parity { get; private set; }
 		public int DataBits { get; private set; }
 		public StopBits StopBits { get; private set; }
+        public int WriteTimeout { get; private set; }
 
 		public bool RtsCtsEnabled { get; private set; } 
 
@@ -50,7 +50,7 @@ namespace Rug.Osc
 			bool rtsCtsEnabled, 
 			Parity parity, 
 			int dataBits, StopBits stopBits, 			
-			int slipBufferSize)
+			int slipBufferSize, int writeTimeout = 1000)
 		{
 			PortName = portName;
 			BaudRate = baudRate;
@@ -59,6 +59,7 @@ namespace Rug.Osc
 			Parity = parity;
 			DataBits = dataBits;
 			StopBits = stopBits;
+            WriteTimeout = writeTimeout; 
 
 			m_Reader = new SlipPacketReader(slipBufferSize);
 			//m_Writer = new SlipPacketWriter();
@@ -82,8 +83,8 @@ namespace Rug.Osc
 				m_SerialPort.Handshake = Handshake.RequestToSend;								
 			}
 
-            // Set timeout to avoid infinate wait if RTS input is never un-asserted
-            m_SerialPort.WriteTimeout = 100;
+            // Set timeout to avoid infinite wait if RTS input is never un-asserted
+            m_SerialPort.WriteTimeout = WriteTimeout;
 
             // Always un-assert CTS output regardless of hardware flow control mode 
 			m_SerialPort.DtrEnable = true;
@@ -94,7 +95,7 @@ namespace Rug.Osc
 
 			if (Helper.IsRunningOnMono == false)
 			{
-				m_SerialPort.DataReceived += new SerialDataReceivedEventHandler(m_SerialPort_DataReceived);
+				m_SerialPort.DataReceived += m_SerialPort_DataReceived;
 			}
 			else
 			{
@@ -199,21 +200,30 @@ namespace Rug.Osc
 				throw new Exception("THIS IS A NON-ERRROR, SHOULD NOT HAPPEN IN WINDOWS!!!");
 			}
 
-			if (m_SerialPort != null &&
-				m_SerialPort.IsOpen == true)
+            if (m_SerialPort != null &&
+                m_SerialPort.IsOpen == true)
 			{
-				// we need to discard the contents of the the in and out buffer, 
-				// otherwise this thread will hang indefinatly when hardware flow 
-				// control prevents transmission.
-				m_SerialPort.DiscardInBuffer();
-				m_SerialPort.DiscardOutBuffer(); 
-				
-				// should be safe to close now 
-				m_SerialPort.Close();
+                if (Helper.IsRunningOnMono == false)
+                {
+                    m_SerialPort.DataReceived -= m_SerialPort_DataReceived;
+                }
+
+                SerialPort port = m_SerialPort;
+
+                m_SerialPort = null;
+
+                // we need to discard the contents of the in and out buffer, 
+                // otherwise this thread will hang indefinitely when hardware flow 
+                // control prevents transmission.
+                port.DiscardInBuffer();
+                port.DiscardOutBuffer();
+
+                // should be safe to close now 
+                port.Close();
 			}
 
-			m_SerialPort = null;
-		}
+            m_SerialPort = null;
+        }
 
 		public void Dispose()
 		{

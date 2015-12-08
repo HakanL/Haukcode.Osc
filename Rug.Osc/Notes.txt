@@ -1,0 +1,2 @@
+﻿
+Type cast OSC messages? Direct memory cast? Big endien? 

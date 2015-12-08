@@ -122,7 +122,7 @@ namespace Rug.Osc
 				size += m_Address.Length + 1;
 
 				// padding 
-				int nullCount = 4 - (int)(size % 4);
+				int nullCount = 4 - (size % 4);
 
 				if (nullCount < 4)
 				{
@@ -152,7 +152,7 @@ namespace Rug.Osc
 				size++;
 
 				// padding
-				nullCount = 4 - (int)(size % 4);
+				nullCount = 4 - (size % 4);
 
 				if (nullCount < 4)
 				{
@@ -197,7 +197,7 @@ namespace Rug.Osc
 
 			if (OscAddress.IsValidAddressPattern(address) == false)
 			{
-				throw new ArgumentException(String.Format(Strings.OscAddress_NotAValidOscAddress, address), "address");
+				throw new ArgumentException(string.Format(Strings.OscAddress_NotAValidOscAddress, address), "address");
 			}
 
 			if (args == null)
@@ -208,14 +208,14 @@ namespace Rug.Osc
 			CheckArguments(m_Arguments);
 		}
 
-		/// <summary>
-		/// Construct a osc message
-		/// </summary>
-		/// <param name="origin">the origin of the osc message</param>
-		/// <param name="address">An osc address that is the destination for this message</param>		
-		/// <param name="args">Object array of OSC argument values. The type tag string will be created automatically according to each argument type</param>
-		/// <example>OscMessage message = new OscMessage("/test/test", 1, 2, 3);</example>
-		public OscMessage(IPEndPoint origin, string address, params object[] args)
+        /// <summary>
+        /// Construct a OSC message
+        /// </summary>
+        /// <param name="origin">the origin of the OSC message</param>
+        /// <param name="address">An OSC address that is the destination for this message</param>		
+        /// <param name="args">Object array of OSC argument values. The type tag string will be created automatically according to each argument type</param>
+        /// <example>OscMessage message = new OscMessage("/test/test", 1, 2, 3);</example>
+        public OscMessage(IPEndPoint origin, string address, params object[] args)
 		{
 			Origin = origin;
 			m_Address = address;
@@ -228,7 +228,7 @@ namespace Rug.Osc
 
 			if (OscAddress.IsValidAddressPattern(address) == false)
 			{
-				throw new ArgumentException(String.Format(Strings.OscAddress_NotAValidOscAddress, address), "address");
+				throw new ArgumentException(string.Format(Strings.OscAddress_NotAValidOscAddress, address), "address");
 			}
 
 			if (args == null)
@@ -275,7 +275,7 @@ namespace Rug.Osc
 					!(obj is byte) &&
 					!(obj is byte[]))
 				{
-					throw new ArgumentException("args");
+					throw new ArgumentException("Argument is of an invalid type.", "args");
 				}
 			}
 		}
@@ -452,7 +452,7 @@ namespace Rug.Osc
 		/// <summary>
 		/// Send the message body into a byte array 
 		/// </summary>
-		/// <param name="data">an array ouf bytes to write the message body into</param>
+		/// <param name="data">an array of bytes to write the message body into</param>
 		/// <param name="index">the index within the array where writing should begin</param>
 		/// <returns>the number of bytes in the message</returns>
 		public override int Write(byte[] data, int index)
@@ -529,7 +529,7 @@ namespace Rug.Osc
 
 		private void WriteTypeTag(BinaryWriter writer, object[] args)
 		{
-			foreach (object obj in args)
+            foreach (object obj in args)
 			{
 				if (obj is object[])
 				{
@@ -606,7 +606,7 @@ namespace Rug.Osc
 				}
 				else
 				{
-					throw new Exception(String.Format(Strings.Arguments_UnsupportedType, obj.GetType().ToString()));
+					throw new Exception(string.Format(Strings.Arguments_UnsupportedType, obj.GetType().ToString()));
 				}
 			}
 		}
@@ -718,48 +718,48 @@ namespace Rug.Osc
 		/// <summary>
 		/// Read a OscMessage from a array of bytes
 		/// </summary>
-		/// <param name="bytes">the array that countains the message</param>
+		/// <param name="bytes">the array that contains the message</param>
 		/// <param name="count">the number of bytes in the message</param>
-		/// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
+		/// <returns>the parsed OSC message or an empty message if their was an error while parsing</returns>
 		public static new OscMessage Read(byte[] bytes, int count)
 		{
 			return Read(bytes, 0, count, Helper.EmptyEndPoint);
 		}
 
-		/// <summary>
-		/// Read a OscMessage from a array of bytes
-		/// </summary>
-		/// <param name="bytes">the array that countains the message</param>
-		/// <param name="index">the offset within the array where reading should begin</param>
-		/// <param name="count">the number of bytes in the message</param>
-		/// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
-		public static new OscMessage Read(byte[] bytes, int index, int count)
+        /// <summary>
+        /// Read a OscMessage from a array of bytes
+        /// </summary>
+        /// <param name="bytes">the array that contains the message</param>
+        /// <param name="index">the offset within the array where reading should begin</param>
+        /// <param name="count">the number of bytes in the message</param>
+        /// <returns>the parsed OSC message or an empty message if their was an error while parsing</returns>
+        public static new OscMessage Read(byte[] bytes, int index, int count)
 		{
 			return Read(bytes, index, count, Helper.EmptyEndPoint);
 		}
 
-		/// <summary>
-		/// Read a OscMessage from a array of bytes
-		/// </summary>
-		/// <param name="bytes">the array that countains the message</param>
-		/// <param name="index">the offset within the array where reading should begin</param>
-		/// <param name="count">the number of bytes in the message</param>
-		/// <param name="origin">the origin of the packet</param>
-		/// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
-		public static new OscMessage Read(byte[] bytes, int index, int count, IPEndPoint origin)
+        /// <summary>
+        /// Read a OscMessage from a array of bytes
+        /// </summary>
+        /// <param name="bytes">the array that contains the message</param>
+        /// <param name="index">the offset within the array where reading should begin</param>
+        /// <param name="count">the number of bytes in the message</param>
+        /// <param name="origin">the origin of the packet</param>
+        /// <returns>the parsed OSC message or an empty message if their was an error while parsing</returns>
+        public static new OscMessage Read(byte[] bytes, int index, int count, IPEndPoint origin)
 		{
 			return Read(bytes, index, count, origin, null);
 		}
 
-		/// <summary>
-		/// Read a OscMessage from a array of bytes
-		/// </summary>
-		/// <param name="bytes">the array that countains the message</param>
-		/// <param name="index">the offset within the array where reading should begin</param>
-		/// <param name="count">the number of bytes in the message</param>
-		/// <param name="origin">the origin of the packet</param>
-		/// <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
-		public static new OscMessage Read(byte[] bytes, int index, int count, IPEndPoint origin, OscTimeTag? timeTag)
+        /// <summary>
+        /// Read a OscMessage from a array of bytes
+        /// </summary>
+        /// <param name="bytes">the array that contains the message</param>
+        /// <param name="index">the offset within the array where reading should begin</param>
+        /// <param name="count">the number of bytes in the message</param>
+        /// <param name="origin">the origin of the packet</param>
+        /// <returns>the parsed OSC message or an empty message if their was an error while parsing</returns>
+        public static new OscMessage Read(byte[] bytes, int index, int count, IPEndPoint origin, OscTimeTag? timeTag)
 		{
 			OscMessage msg = new OscMessage();
 
@@ -926,7 +926,7 @@ namespace Rug.Osc
 					return msg;
 				}
 
-				// alocate the arguments array 
+				// allocate the arguments array 
 				msg.m_Arguments = new object[typeTag_Count];
 
 				// Advance to the arguments
@@ -1375,7 +1375,7 @@ namespace Rug.Osc
 				}
 			}
 
-			// alocate the arguments array 
+			// allocate the arguments array 
 			object[] array = new object[typeTag_Count];
 
 			if (ReadArguments(msg, bytes, offset, stream, reader, ref tagIndex, typeTag_Count, array) == false)
@@ -1521,7 +1521,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Does a deep comparison of the suppied object and this instance
+		/// Does a deep comparison of the supplied object and this instance
 		/// </summary>
 		/// <param name="obj">An object</param>
 		/// <returns>true if the objects are equivalent</returns>
@@ -1537,7 +1537,7 @@ namespace Rug.Osc
 			{
 				return MessagesAreEqual(obj as OscMessage, this);
 			}
-			// if the onbject is a byte array
+			// if the object is a byte array
 			else if (obj is byte[])
 			{
 				// check the bytes against the bytes of this message
@@ -1591,7 +1591,7 @@ namespace Rug.Osc
 		/// <returns>true if the object arrays are equivalent</returns>
 		private bool ArgumentsAreEqual(object[] array1, object[] array2)
 		{
-			// ensure the arrays the same langth
+			// ensure the arrays the same length
 			if (array1.Length != array2.Length)
 			{
 				return false;

@@ -42,7 +42,7 @@ namespace Rug.Osc
 			OscPacket packet = m_Reader.Read();
 
 			long newPosition = m_Reader.BaseStream.Position;
-
+            
 			if (Statistics != null)
 			{
 				Statistics.BytesReceived.Increment((int)(newPosition - position));

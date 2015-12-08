@@ -56,7 +56,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Use a value greater than 0 to set the disconnect time out in miliseconds use a value less than or equal to 0 for an infinite timeout
+		/// Use a value greater than 0 to set the disconnect time out in milliseconds use a value less than or equal to 0 for an infinite timeout
 		/// </summary>
 		public int DisconnectTimeout { get; set; } 
 
@@ -103,7 +103,7 @@ namespace Rug.Osc
 		#region Constructors
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
 		/// </summary>
 		/// <param name="address">the ip address to send to</param>
 		/// <param name="port">the port to send to</param>
@@ -113,7 +113,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
 		/// </summary>
 		/// <param name="address">the ip address to send to</param>
 		/// <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>
@@ -124,7 +124,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
 		/// </summary>
 		/// <param name="local">the ip address to send from</param>
 		/// <param name="remote">the ip address to send to</param>
@@ -135,7 +135,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
 		/// </summary>
 		/// <param name="local">the ip address to send from</param>
 		/// <param name="remote">the ip address to send to</param>
@@ -147,7 +147,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
 		/// </summary>
 		/// <param name="address">the ip address to send to</param>
 		/// <param name="port">the port to send to</param>		
@@ -160,7 +160,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
 		/// </summary>
 		/// <param name="address">the ip address to send to</param>
 		/// <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>
@@ -174,7 +174,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
 		/// </summary>
 		/// <param name="local">the ip address to send from</param>
 		/// <param name="remote">the ip address to send to</param>
@@ -187,7 +187,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
 		/// </summary>
 		/// <param name="local">the ip address to send from</param>
 		/// <param name="remote">the ip address to send to</param>
@@ -202,7 +202,7 @@ namespace Rug.Osc
 		}
 
 		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
 		/// </summary>
 		/// <param name="local">the ip address to send from</param>
 		/// <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>

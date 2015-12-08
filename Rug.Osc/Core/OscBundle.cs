@@ -415,7 +415,7 @@ namespace Rug.Osc
 		/// <summary>
 		/// Send the bundle into a byte array 
         /// </summary>
-		/// <param name="data">an array ouf bytes to write the bundle into</param>
+		/// <param name="data">an array of bytes to write the bundle into</param>
         /// <returns>the number of bytes in the message</returns>
 		public override int Write(byte[] data)
 		{
@@ -509,7 +509,7 @@ namespace Rug.Osc
 		/// <summary>
 		/// Read a OscBundle from a array of bytes
 		/// </summary>
-		/// <param name="bytes">the array that countains the bundle</param>
+		/// <param name="bytes">the array that contains the bundle</param>
 		/// <param name="index">the offset within the array where reading should begin</param>
 		/// <param name="count">the number of bytes in the bundle</param>
 		/// <param name="origin">the origin that is the origin of this bundle</param>

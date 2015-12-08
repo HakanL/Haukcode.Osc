@@ -149,7 +149,7 @@ namespace Rug.Osc
 
 					m_SlipByteIndex += m_SlipReader.ProcessBytes(m_SlipByteCache, m_SlipByteIndex, m_SlipByteCount - m_SlipByteIndex, ref packetBytes, out packetLength);
 				}
-				while (packetLength < 0 && EndOfStream == false);
+				while (packetLength <= 0 && EndOfStream == false);
 
 				if (packetLength > 0) 
 				{

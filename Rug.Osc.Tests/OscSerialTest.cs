@@ -64,7 +64,7 @@ namespace Rug.Osc.Tests
 		//
 		#endregion
 
-
+        /*
 		/// <summary>
 		///A test for Send
 		///</summary>
@@ -83,5 +83,6 @@ namespace Rug.Osc.Tests
 			target.Send(packet);
 			Assert.Inconclusive("A method that does not return a value cannot be verified.");
 		}
+        */ 
 	}
 }

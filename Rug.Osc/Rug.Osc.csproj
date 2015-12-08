@@ -32,7 +32,7 @@
     <DocumentationFile>bin\Release\Rug.Osc.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Rug.Osc.snk</AssemblyOriginatorKeyFile>
@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Content Include="Notes.txt" />
     <Content Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
