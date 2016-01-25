@@ -16,16 +16,13 @@
  * 
  */
 
-using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace Rug.Osc
 {
-	/// <summary>
-	/// Osc Impulse Singleton
-	/// </summary>
-	public sealed class OscImpulse
+    /// <summary>
+    /// Osc Impulse Singleton
+    /// </summary>
+    public sealed class OscImpulse
 	{
 		public static readonly OscImpulse Value = new OscImpulse();
 

@@ -21,30 +21,28 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 using System.Text;
 
 namespace Rug.Osc
 {
-	/// <summary>
-	/// Bundle of osc messages
-	/// </summary>
-	public sealed class OscBundle : OscPacket, IEnumerable<OscPacket>
+    /// <summary>
+    /// Bundle of osc messages
+    /// </summary>
+    public sealed class OscBundle : OscPacket, IEnumerable<OscPacket>
 	{
 		#region Private Members
 
 		internal const string BundleIdent = "#bundle";
 		internal const int BundleHeaderSizeInBytes = 16;
 
-		private OscTimeTag m_Timestamp;
-		private OscPacket[] m_Messages;
+		OscTimeTag timestamp;
+		OscPacket[] packets;
 
-		private OscPacketError m_Error;
-		private string m_ErrorMessage;
+		OscPacketError error;
+		string errorMessage;
 
-		private bool m_HasHashCode = false;
-		private int m_HashCode;		
+		bool hasHashCode = false;
+		int hashCode;		
 
 		#endregion
 
@@ -53,29 +51,29 @@ namespace Rug.Osc
 		/// <summary>
 		/// If anything other than OscPacketError.None then an error occured while the packet was being parsed
 		/// </summary>
-		public override OscPacketError Error { get { return m_Error; } }
+		public override OscPacketError Error { get { return error; } }
 
 		/// <summary>
 		/// The descriptive string associated with Error
 		/// </summary>
-		public override string ErrorMessage { get { return m_ErrorMessage; } }
+		public override string ErrorMessage { get { return errorMessage; } }
 
 		/// <summary>
 		/// Osc timestamp associated with this bundle
 		/// </summary>
-		public OscTimeTag Timestamp { get { return m_Timestamp; } }
+		public OscTimeTag Timestamp { get { return timestamp; } }
 
 		/// <summary>
 		/// Access bundle messages by index 
 		/// </summary>
 		/// <param name="index">the index of the message</param>
 		/// <returns>message at the supplied index</returns>
-		public OscPacket this[int index] { get { return m_Messages[index]; } }
+		public OscPacket this[int index] { get { return packets[index]; } }
 
 		/// <summary>
 		/// The number of messages in the bundle
 		/// </summary>
-		public int Count { get { return m_Messages.Length; } }
+		public int Count { get { return packets.Length; } }
 
 		/// <summary>
 		/// The size of the packet in bytes
@@ -108,8 +106,8 @@ namespace Rug.Osc
 		{
 			Origin = Helper.EmptyEndPoint;
 
-			m_Timestamp = timestamp;
-			m_Messages = messages;
+			this.timestamp = timestamp;
+			this.packets = messages;
 		}
 
 		/// <summary>
@@ -121,8 +119,8 @@ namespace Rug.Osc
 		{
 			Origin = Helper.EmptyEndPoint;
 
-			m_Timestamp = new OscTimeTag(timestamp); 
-			m_Messages = messages;
+			this.timestamp = new OscTimeTag(timestamp); 
+			this.packets = messages;
 		}
 
 		/// <summary>
@@ -134,8 +132,8 @@ namespace Rug.Osc
 		{
 			Origin = Helper.EmptyEndPoint;
 
-			m_Timestamp = OscTimeTag.FromDataTime(timestamp);
-			m_Messages = messages;
+			this.timestamp = OscTimeTag.FromDataTime(timestamp);
+			this.packets = messages;
 		}
 
 
@@ -149,8 +147,8 @@ namespace Rug.Osc
 		{
 			Origin = origin; 
 
-			m_Timestamp = timestamp;
-			m_Messages = messages;
+			this.timestamp = timestamp;
+			this.packets = messages;
 		}
 
 		/// <summary>
@@ -163,8 +161,8 @@ namespace Rug.Osc
 		{
 			Origin = origin; 
 
-			m_Timestamp = new OscTimeTag(timestamp);
-			m_Messages = messages;
+			this.timestamp = new OscTimeTag(timestamp);
+			this.packets = messages;
 		}
 
 		/// <summary>
@@ -177,8 +175,8 @@ namespace Rug.Osc
 		{
 			Origin = origin; 
 
-			m_Timestamp = OscTimeTag.FromDataTime(timestamp);
-			m_Messages = messages;
+			this.timestamp = OscTimeTag.FromDataTime(timestamp);
+			this.packets = messages;
 		}
 
 		private OscBundle() { }
@@ -351,17 +349,17 @@ namespace Rug.Osc
 		public override int GetHashCode()
 		{
 			// if no has code has been created
-			if (m_HasHashCode == false)
+			if (hasHashCode == false)
 			{
 				// assign the hashcode from the string form (TODO: do something better?!)
-				m_HashCode = this.ToString().GetHashCode();
+				hashCode = this.ToString().GetHashCode();
 
 				// indicate that a hashcode has been created
-				m_HasHashCode = true;
+				hasHashCode = true;
 			}
 
 			// return the hashcode
-			return m_HashCode;
+			return hashCode;
 		}
 
 		#endregion
@@ -374,12 +372,12 @@ namespace Rug.Osc
 		/// <returns>A IEnumerator of osc packets</returns>
 		public IEnumerator<OscPacket> GetEnumerator()
 		{
-			return (m_Messages as IEnumerable<OscPacket>).GetEnumerator();
+			return (packets as IEnumerable<OscPacket>).GetEnumerator();
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			return (m_Messages as System.Collections.IEnumerable).GetEnumerator();
+			return (packets as System.Collections.IEnumerable).GetEnumerator();
 		}
 
 		#endregion
@@ -388,7 +386,7 @@ namespace Rug.Osc
 
 		public OscPacket[] ToArray()
 		{
-			return m_Messages; 
+			return packets; 
 		}
 
 		#endregion
@@ -438,7 +436,7 @@ namespace Rug.Osc
 				writer.Write(Encoding.UTF8.GetBytes(BundleIdent));
 				writer.Write((byte)0); 
 
-				Helper.Write(writer, m_Timestamp);
+				Helper.Write(writer, timestamp);
 
 				foreach (OscPacket message in this)
 				{
@@ -528,10 +526,10 @@ namespace Rug.Osc
 				if (stream.Length < BundleHeaderSizeInBytes)
 				{
 					// this is an error 
-					bundle.m_Error = OscPacketError.MissingBundleIdent;
-					bundle.m_ErrorMessage = Strings.Bundle_MissingIdent;
+					bundle.error = OscPacketError.MissingBundleIdent;
+					bundle.errorMessage = Strings.Bundle_MissingIdent;
 
-					bundle.m_Messages = new OscPacket[0]; 
+					bundle.packets = new OscPacket[0]; 
 
 					return bundle;
 				}
@@ -541,27 +539,27 @@ namespace Rug.Osc
 				if (BundleIdent.Equals(ident, System.StringComparison.InvariantCulture) == false)
 				{
 					// this is an error 
-					bundle.m_Error = OscPacketError.InvalidBundleIdent;
-					bundle.m_ErrorMessage = String.Format(Strings.Bundle_InvalidIdent, ident);
+					bundle.error = OscPacketError.InvalidBundleIdent;
+					bundle.errorMessage = String.Format(Strings.Bundle_InvalidIdent, ident);
 
-					bundle.m_Messages = new OscPacket[0]; 
+					bundle.packets = new OscPacket[0]; 
 
 					return bundle;
 				}
 
 				stream.Position = BundleIdent.Length + 1;
 
-				bundle.m_Timestamp = Helper.ReadOscTimeTag(reader);
+				bundle.timestamp = Helper.ReadOscTimeTag(reader);
 
 				while (stream.Position < stream.Length)
 				{
 					if (stream.Position + 4 > stream.Length)
 					{
 						// this is an error
-						bundle.m_Error = OscPacketError.InvalidBundleMessageHeader;
-						bundle.m_ErrorMessage = Strings.Bundle_InvalidMessageHeader;
+						bundle.error = OscPacketError.InvalidBundleMessageHeader;
+						bundle.errorMessage = Strings.Bundle_InvalidMessageHeader;
 
-						bundle.m_Messages = new OscPacket[0]; 
+						bundle.packets = new OscPacket[0]; 
 
 						return bundle;
 					}
@@ -574,20 +572,20 @@ namespace Rug.Osc
 						messageLength % 4 != 0) 
 					{
 						// this is an error 				
-						bundle.m_Error = OscPacketError.InvalidBundleMessageLength;
-						bundle.m_ErrorMessage = string.Format(Strings.Bundle_InvalidBundleMessageLength);
+						bundle.error = OscPacketError.InvalidBundleMessageLength;
+						bundle.errorMessage = string.Format(Strings.Bundle_InvalidBundleMessageLength);
 
-						bundle.m_Messages = new OscPacket[0]; 
+						bundle.packets = new OscPacket[0]; 
 
 						return bundle;
 					}					
 
-					messages.Add(OscPacket.Read(bytes, index + (int)stream.Position, messageLength, origin, bundle.m_Timestamp));
+					messages.Add(OscPacket.Read(bytes, index + (int)stream.Position, messageLength, origin, bundle.timestamp));
 
 					stream.Position += messageLength; 
 				}
 
-				bundle.m_Messages = messages.ToArray(); 
+				bundle.packets = messages.ToArray(); 
 			}
 
 			return bundle;

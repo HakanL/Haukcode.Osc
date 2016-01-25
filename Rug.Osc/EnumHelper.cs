@@ -31,7 +31,7 @@ namespace Rug.Osc
 	{
 		#region Private Static Members
 
-		private static readonly char[] m_EnumSeperators = new char[] { ',', ';', '+', '|', ' ' };
+		private static readonly char[] enumSeperators = new char[] { ',', ';', '+', '|', ' ' };
 
 		#endregion
 
@@ -139,13 +139,13 @@ namespace Rug.Osc
 			Array values = Enum.GetValues(type);
 
 			// some enums like System.CodeDom.MemberAttributes *are* flags but are not declared with Flags...
-			if ((!type.IsDefined(typeof(FlagsAttribute), true)) && (input.IndexOfAny(m_EnumSeperators) < 0))
+			if ((!type.IsDefined(typeof(FlagsAttribute), true)) && (input.IndexOfAny(enumSeperators) < 0))
 			{
 				return ToObject(type, underlyingType, names, values, input, ignoreCase, out value);
 			}
 
 			// multi value enum
-			string[] tokens = input.Split(m_EnumSeperators, StringSplitOptions.RemoveEmptyEntries);
+			string[] tokens = input.Split(enumSeperators, StringSplitOptions.RemoveEmptyEntries);
 			if (tokens.Length == 0)
 			{
 				value = Activator.CreateInstance(type);

@@ -25,7 +25,7 @@ namespace Rug.Osc
 	/// </summary>
 	public sealed class DefaultTimeProvider : IOscTimeProvider
 	{
-		private double m_FrameSizeInSeconds; 
+		double frameSizeInSeconds; 
 
 		/// <summary>
 		/// Immutable instance 
@@ -35,7 +35,7 @@ namespace Rug.Osc
 		/// <summary>
 		/// Frame size in seconds
 		/// </summary>
-		public double FrameSizeInSeconds { get { return m_FrameSizeInSeconds; } set { m_FrameSizeInSeconds = value; } }
+		public double FrameSizeInSeconds { get { return frameSizeInSeconds; } set { frameSizeInSeconds = value; } }
 
 		/// <summary>
 		/// Get the current time 

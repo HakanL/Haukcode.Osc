@@ -18,15 +18,13 @@
 
 using System;
 using System.Net;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace Rug.Osc
 {
-	/// <summary>
-	/// Base class for all osc packets
-	/// </summary>	
-	public abstract class OscPacket
+    /// <summary>
+    /// Base class for all osc packets
+    /// </summary>	
+    public abstract class OscPacket
 	{
 		#region Properties
 

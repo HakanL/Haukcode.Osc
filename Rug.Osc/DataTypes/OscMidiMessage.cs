@@ -19,12 +19,10 @@
 using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace Rug.Osc
 {
-	/* 
+    /* 
 	Note Off 	 0x8# 	 note number 	 velocity 
 	Note On 	 0x9# 	 note number 	 velocity 
 	Poly Pressure 	 0xa# 	 note number 	 value 
@@ -43,9 +41,9 @@ namespace Rug.Osc
 	Stop 	 0xfc 		
 	Active Sense 	 0xfe 		
 	System Reset 	 0xff
-	*/ 
+	*/
 
-	public enum OscMidiMessageType : byte
+    public enum OscMidiMessageType : byte
 	{
 		NoteOff = 0x80,
 		NoteOn = 0x90,

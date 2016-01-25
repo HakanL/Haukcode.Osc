@@ -185,7 +185,24 @@ namespace Rug.Osc
 			return new string(chars, 0, j);
 		}
 
-		public static bool IsValidEscape(string str)
+        public static string ToStringBlob(byte[] bytes)
+        {
+            // if the default is to be Base64 encoded
+            // return "64x" + System.Convert.ToBase64String(bytes); 
+
+            StringBuilder sb = new StringBuilder((bytes.Length * 2) + 2);
+
+            sb.Append("0x");
+
+            foreach (byte b in bytes)
+            {
+                sb.Append(b.ToString("X2"));
+            }
+
+            return sb.ToString();
+        }
+
+        public static bool IsValidEscape(string str)
 		{
 			bool isEscaped = false;
 			bool parseHexNext = false;

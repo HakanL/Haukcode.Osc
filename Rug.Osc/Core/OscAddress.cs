@@ -18,17 +18,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Rug.Osc
 {
-	/// <summary>
-	/// Encompasses an entire osc address
-	/// </summary>	
-	public sealed class OscAddress
+    /// <summary>
+    /// Encompasses an entire osc address
+    /// </summary>	
+    public sealed class OscAddress
 	{
 		#region Private Static Members
 
@@ -62,10 +60,10 @@ namespace Rug.Osc
 
 		#region Private Members
 
-		private string m_OrigialString;
-		private OscAddressPart[] m_Parts;
-		private OscAddressType m_Type;
-		private Regex m_Regex; 
+		string origialString;
+		OscAddressPart[] parts;
+		OscAddressType type;
+		Regex regex; 
 
 		#endregion 
 
@@ -74,24 +72,24 @@ namespace Rug.Osc
 		/// <summary>
 		/// The string used to create the address 
 		/// </summary>
-		public string OrigialString { get { return m_OrigialString; } } 
+		public string OrigialString { get { return origialString; } } 
 
 		/// <summary>
 		/// The number of parts in the address
 		/// </summary>
-		public int Count { get { return m_Parts.Length; } } 
+		public int Count { get { return parts.Length; } } 
 
 		/// <summary>
 		/// Address parts
 		/// </summary>
 		/// <param name="index">the index of the part</param>
 		/// <returns>the address part at the given index</returns>
-		public OscAddressPart this[int index] { get { return m_Parts[index]; } }
+		public OscAddressPart this[int index] { get { return parts[index]; } }
 
 		/// <summary>
 		/// Is this address a literal
 		/// </summary>
-		public bool IsLiteral { get { return m_Type == OscAddressType.Literal; } } 
+		public bool IsLiteral { get { return type == OscAddressType.Literal; } } 
 
 		#endregion
 
@@ -115,7 +113,7 @@ namespace Rug.Osc
 			}
 
 			// stash the original string
-			m_OrigialString = address;
+			origialString = address;
 
 			// is this address non-literal (an address pattern)
 			bool nonLiteral = false;
@@ -194,17 +192,17 @@ namespace Rug.Osc
 			}
 
 			// set the type
-			m_Type = nonLiteral ? OscAddressType.Pattern : OscAddressType.Literal;
+			type = nonLiteral ? OscAddressType.Pattern : OscAddressType.Literal;
 
 			// set the parts array
-			m_Parts = addressParts.ToArray();
+			this.parts = addressParts.ToArray();
 
 			// build the regex if one is needed
-			if (m_Type != OscAddressType.Literal)
+			if (type != OscAddressType.Literal)
 			{
 				StringBuilder regex = new StringBuilder();
 
-				if (m_Parts[0].Type == OscAddressPartType.AddressWildcard)
+				if (this.parts[0].Type == OscAddressPartType.AddressWildcard)
 				{
 					// dont care where the start is 
 					regex.Append("(");
@@ -215,7 +213,7 @@ namespace Rug.Osc
 					regex.Append("^(");
 				}
 
-				foreach (OscAddressPart part in m_Parts)
+				foreach (OscAddressPart part in this.parts)
 				{
 					// match the part
 					regex.Append(part.PartRegex);
@@ -225,7 +223,7 @@ namespace Rug.Osc
 				regex.Append(")$");
 
 				// aquire the regex
-				m_Regex = OscAddressRegexCache.Aquire(regex.ToString()); // new Regex(regex.ToString(), RegexOptions.None);
+				this.regex = OscAddressRegexCache.Aquire(regex.ToString()); // new Regex(regex.ToString(), RegexOptions.None);
 			}
 		}
 
@@ -241,15 +239,15 @@ namespace Rug.Osc
 		public bool Match(string address) 
 		{
 			// if this address in a literal 
-			if (m_Type == OscAddressType.Literal)
+			if (type == OscAddressType.Literal)
 			{
 				// if the original string is the same then we are good
-				return m_OrigialString.Equals(address); 
+				return origialString.Equals(address); 
 			}
 			else
 			{
 				// use the pattern regex to determin a match
-				return m_Regex.IsMatch(address);
+				return regex.IsMatch(address);
 			}
 		}
 
@@ -261,25 +259,25 @@ namespace Rug.Osc
 		public bool Match(OscAddress address) 
 		{
 			// if both addresses are literals then we can match on original string 			 
-			if (m_Type == OscAddressType.Literal && 
-				address.m_Type == OscAddressType.Literal)
+			if (type == OscAddressType.Literal && 
+				address.type == OscAddressType.Literal)
 			{
-				return m_OrigialString.Equals(address.m_OrigialString);
+				return origialString.Equals(address.origialString);
 			}
 			// if this address is a literal then use the others regex 
-			else if (m_Type == OscAddressType.Literal)
+			else if (type == OscAddressType.Literal)
 			{
-				return address.m_Regex.IsMatch(m_OrigialString);
+				return address.regex.IsMatch(origialString);
 			}
 			// if the other is a literal use this ones regex 
-			else if (address.m_Type == OscAddressType.Literal)
+			else if (address.type == OscAddressType.Literal)
 			{
-				return m_Regex.IsMatch(address.m_OrigialString);
+				return regex.IsMatch(address.origialString);
 			}
 			// if both are patterns then we just match on pattern original strings
 			else
 			{
-				return m_OrigialString.Equals(address.m_OrigialString);
+				return origialString.Equals(address.origialString);
 			}
 		}
 
@@ -289,7 +287,7 @@ namespace Rug.Osc
 
 		public override string ToString()
 		{
- 			 return m_OrigialString;
+ 			 return origialString;
 		}
 
 		/// <summary>
@@ -300,7 +298,7 @@ namespace Rug.Osc
 		{
 			StringBuilder sb = new StringBuilder(); 			
 
-			foreach (OscAddressPart part in m_Parts) 
+			foreach (OscAddressPart part in parts) 
 			{
 				sb.Append(part.Interpreted);
 			}
@@ -314,12 +312,12 @@ namespace Rug.Osc
 
 		public override bool Equals(object obj)
 		{
- 			 return m_OrigialString.Equals(obj.ToString());
+ 			 return origialString.Equals(obj.ToString());
 		}
 
 		public override int GetHashCode()
 		{
-			return m_OrigialString.GetHashCode();
+			return origialString.GetHashCode();
 		}
 
 		#endregion

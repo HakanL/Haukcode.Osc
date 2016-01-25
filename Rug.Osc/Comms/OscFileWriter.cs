@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 
 namespace Rug.Osc
 {
-	public class OscFileWriter : IDisposable, IOscPacketSender
+    public class OscFileWriter : IDisposable, IOscPacketSender
 	{
-		private FileStream m_File;
-		private OscWriter m_Writer;
+		private FileStream file;
+		private OscWriter writer;
 
 		public OscCommunicationStatistics Statistics { get; set; }
 
 		public OscFileWriter(string filePath, FileMode fileMode, OscPacketFormat format)
 		{
-			m_File = new FileStream(filePath, fileMode, FileAccess.Write); 			
-			m_Writer = new OscWriter(m_File, format); 
+			file = new FileStream(filePath, fileMode, FileAccess.Write); 			
+			writer = new OscWriter(file, format); 
 		}
 
 		public void Send(OscPacket packet)
@@ -25,15 +23,15 @@ namespace Rug.Osc
 				packet.IncrementSendStatistics(Statistics);
 			}
 
-			m_Writer.Write(packet);
-			m_File.Flush(); 
+			writer.Write(packet);
+			file.Flush(); 
 		}
 
 		public void Dispose()
 		{
-			m_Writer.Dispose();
-			m_File.Close();
-			m_File.Dispose(); 
+			writer.Dispose();
+			file.Close();
+			file.Dispose(); 
 		}
 	}
 }

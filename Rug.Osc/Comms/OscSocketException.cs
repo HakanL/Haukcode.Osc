@@ -21,16 +21,16 @@ using System;
 namespace Rug.Osc
 {
 	/// <summary>
-	/// Exception that relates explictly to osc socket instance
+	/// Exception that relates explicitly to osc socket instance
 	/// </summary>
 	public class OscSocketException : Exception
 	{
-		private OscSocket m_Socket; 
+		OscSocket socket; 
 
 		/// <summary>
 		/// The socket that threw the exception 
 		/// </summary>
-		public OscSocket Socket { get { return m_Socket; } } 
+		public OscSocket Socket { get { return socket; } } 
 
 		/// <summary>
 		/// Creates a new osc socket exception
@@ -40,7 +40,7 @@ namespace Rug.Osc
 		public OscSocketException(OscSocket socket, string message)
 			: base(message)
 		{
-			m_Socket = socket;
+			this.socket = socket;
 		}
 
 		/// <summary>
@@ -52,7 +52,7 @@ namespace Rug.Osc
 		public OscSocketException(OscSocket socket, string message, Exception innerException)
 			: base(message, innerException)
 		{
-			m_Socket = socket;
+			this.socket = socket;
 		}
 	}
 }

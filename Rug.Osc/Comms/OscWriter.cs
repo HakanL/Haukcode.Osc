@@ -26,13 +26,12 @@ namespace Rug.Osc
 	/// </summary>
 	public sealed class OscWriter : IDisposable
 	{
-		#region Private Memebers
+		#region Private Members
 
-		private readonly Stream m_Stream;
-		private readonly BinaryWriter m_BinaryWriter;
-		private readonly StreamWriter m_StringWriter;
-
-		private readonly OscPacketFormat m_Format;
+		readonly Stream stream;
+		readonly BinaryWriter binaryWriter;
+		readonly StreamWriter stringWriter;
+		readonly OscPacketFormat format;
 
 		#endregion
 
@@ -41,12 +40,12 @@ namespace Rug.Osc
 		/// <summary>
 		/// Exposes access to the underlying stream of the OscWriter.
 		/// </summary>
-		public Stream BaseStream { get { return m_Stream; } }
+		public Stream BaseStream { get { return stream; } }
 
 		/// <summary>
 		/// Packet format 
 		/// </summary>
-		public OscPacketFormat Format { get { return m_Format; } }
+		public OscPacketFormat Format { get { return format; } }
 
 		#endregion
 
@@ -59,16 +58,16 @@ namespace Rug.Osc
 		/// <param name="format">packet format</param>
 		public OscWriter(Stream stream, OscPacketFormat format)
 		{
-			m_Stream = stream;
-			m_Format = format;
+			this.stream = stream;
+			this.format = format;
 
-			if (m_Format != OscPacketFormat.String)
+			if (this.format != OscPacketFormat.String)
 			{
-				m_BinaryWriter = new BinaryWriter(m_Stream);
+                binaryWriter = new BinaryWriter(this.stream);
 			}
 			else
 			{
-				m_StringWriter = new StreamWriter(m_Stream); 
+                stringWriter = new StreamWriter(this.stream); 
 			}
 		}
 
@@ -87,10 +86,10 @@ namespace Rug.Osc
 				byte[] bytes = packet.ToByteArray();
 
 				// write the length
-				Helper.Write(m_BinaryWriter, bytes.Length);
+				Helper.Write(binaryWriter, bytes.Length);
 
 				// write the packet
-				m_BinaryWriter.Write(bytes); 
+				binaryWriter.Write(bytes); 
 			}
 			else if (Format == OscPacketFormat.Slip)
 			{
@@ -98,12 +97,12 @@ namespace Rug.Osc
 				byte[] bytes = Slip.SlipPacketWriter.Write(preSlipBytes, 0, preSlipBytes.Length);
 
 				// write the packet
-				m_BinaryWriter.Write(bytes); 
+				binaryWriter.Write(bytes); 
 			}
 			else
 			{
 				// write as a string
-				m_StringWriter.WriteLine(packet.ToString());
+				stringWriter.WriteLine(packet.ToString());
 			}
 		}
 
@@ -124,13 +123,13 @@ namespace Rug.Osc
 		/// </summary>
 		public void Dispose()
 		{
-			if (m_Format != OscPacketFormat.String)
+			if (format != OscPacketFormat.String)
 			{
-				m_BinaryWriter.Close();
+				binaryWriter.Close();
 			}
 			else
 			{
-				m_StringWriter.Close();
+				stringWriter.Close();
 			}
 		}
 

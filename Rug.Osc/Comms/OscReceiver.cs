@@ -35,17 +35,18 @@ namespace Rug.Osc
 
         #region Private Members
 
-		private readonly object m_Lock = new object();
-		private readonly AutoResetEvent m_MessageReceived = new AutoResetEvent(false);
+		readonly object syncLock = new object();
+		readonly AutoResetEvent messageReceived = new AutoResetEvent(false);
 
-		private readonly byte[] m_Bytes;
+		readonly byte[] buffer;
 
-		private readonly OscPacket[] m_ReceiveQueue;
-        private int m_WriteIndex = 0;
-        private int m_ReadIndex = 0;
-        private int m_Count = 0;
+		readonly OscPacket[] receiveQueue;
+
+        int writeIndex = 0;
+        int readIndex = 0;
+        int count = 0;
         
-        private bool m_IsReceiving = false;
+        bool isReceiving = false;
 
         #endregion 
 
@@ -63,11 +64,11 @@ namespace Rug.Osc
         {
             get
             {
-                int index = m_WriteIndex + 1;
+                int index = writeIndex + 1;
 
-                if (index >= m_ReceiveQueue.Length)
+                if (index >= receiveQueue.Length)
                 {
-                    index -= m_ReceiveQueue.Length;
+                    index -= receiveQueue.Length;
                 }
 
                 return index;
@@ -81,11 +82,11 @@ namespace Rug.Osc
         {
             get
             {
-                int index = m_ReadIndex + 1;
+                int index = readIndex + 1;
 
-                if (index >= m_ReceiveQueue.Length)
+                if (index >= receiveQueue.Length)
                 {
-                    index -= m_ReceiveQueue.Length;
+                    index -= receiveQueue.Length;
                 }
 
                 return index;
@@ -107,8 +108,8 @@ namespace Rug.Osc
 		public OscReceiver(IPAddress address, IPAddress multicast, int port, int messageBufferSize, int maxPacketSize)
 			: base(address, multicast, port)
 		{
-			m_Bytes = new byte[maxPacketSize];
-			m_ReceiveQueue = new OscPacket[messageBufferSize];
+			buffer = new byte[maxPacketSize];
+			receiveQueue = new OscPacket[messageBufferSize];
 
 			if (IsMulticastEndPoint == false)
 			{
@@ -126,8 +127,8 @@ namespace Rug.Osc
         public OscReceiver(IPAddress address, int port, int messageBufferSize, int maxPacketSize)
             : base(address, port)
         {
-            m_Bytes = new byte[maxPacketSize];
-            m_ReceiveQueue = new OscPacket[messageBufferSize];
+            buffer = new byte[maxPacketSize];
+            receiveQueue = new OscPacket[messageBufferSize];
         }
 
         /// <summary>
@@ -160,8 +161,8 @@ namespace Rug.Osc
         public OscReceiver(int port, int messageBufferSize, int maxPacketSize)
             : base(port)
         {
-            m_Bytes = new byte[maxPacketSize];
-            m_ReceiveQueue = new OscPacket[messageBufferSize];
+            buffer = new byte[maxPacketSize];
+            receiveQueue = new OscPacket[messageBufferSize];
         }
 
         /// <summary>
@@ -179,14 +180,14 @@ namespace Rug.Osc
 
         protected override void OnConnect()
         {
-			Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, m_Bytes.Length * 4);
+			Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, buffer.Length * 4);
 
-            m_IsReceiving = false; 
+            isReceiving = false; 
         }
 
         protected override void OnClosing()
         {
-            m_MessageReceived.Set(); 
+            messageReceived.Set(); 
         }
 
         #endregion 
@@ -204,25 +205,25 @@ namespace Rug.Osc
 
             if (State == OscSocketState.Connected)
             {
-                if (m_Count > 0)
+                if (count > 0)
                 {
-                    lock (m_Lock)
+                    lock (syncLock)
                     {
-                        message = m_ReceiveQueue[m_ReadIndex];
+                        message = receiveQueue[readIndex];
 
-                        m_ReadIndex = NextReadIndex;
+                        readIndex = NextReadIndex;
 
-                        m_Count--;
+                        count--;
 
                         return true;
                     }
                 }
                 // if we are not receiving then start
-                else if (m_IsReceiving == false)
+                else if (isReceiving == false)
                 {
-                    lock (m_Lock)
+                    lock (syncLock)
                     {
-                        if (m_IsReceiving == false && State == OscSocketState.Connected)
+                        if (isReceiving == false && State == OscSocketState.Connected)
                         {
                             BeginReceiving();
                         }
@@ -244,31 +245,31 @@ namespace Rug.Osc
 				if (State == OscSocketState.Connected)
 				{
 					// if we are not receiving then start
-					if (m_IsReceiving == false)
+					if (isReceiving == false)
 					{
-						lock (m_Lock)
+						lock (syncLock)
 						{
-							if (m_IsReceiving == false && State == OscSocketState.Connected)
+							if (isReceiving == false && State == OscSocketState.Connected)
 							{
 								BeginReceiving();
 							}
 						}
 					}
 
-					if (m_Count > 0)
+					if (count > 0)
 					{
-						lock (m_Lock)
+						lock (syncLock)
 						{
-							OscPacket message = m_ReceiveQueue[m_ReadIndex];
+							OscPacket message = receiveQueue[readIndex];
 
-							m_ReadIndex = NextReadIndex;
+							readIndex = NextReadIndex;
 
-							m_Count--;
+							count--;
 
 							// if we have eaten all the messages then reset the signal
-							if (m_Count == 0)
+							if (count == 0)
 							{
-								m_MessageReceived.Reset();
+								messageReceived.Reset();
 							}
 
 							return message;
@@ -276,18 +277,18 @@ namespace Rug.Osc
 					}
 
 					// wait for a new message
-					m_MessageReceived.WaitOne();
-					m_MessageReceived.Reset();
+					messageReceived.WaitOne();
+					messageReceived.Reset();
 
-					if (m_Count > 0)
+					if (count > 0)
 					{
-						lock (m_Lock)
+						lock (syncLock)
 						{
-							OscPacket message = m_ReceiveQueue[m_ReadIndex];
+							OscPacket message = receiveQueue[readIndex];
 
-							m_ReadIndex = NextReadIndex;
+							readIndex = NextReadIndex;
 
-							m_Count--;
+							count--;
 
 							return message;
 						}
@@ -313,13 +314,13 @@ namespace Rug.Osc
 
         void BeginReceiving()
         {
-            m_IsReceiving = true;
-            m_MessageReceived.Reset();
+            isReceiving = true;
+            messageReceived.Reset();
 
 			// create an empty origin
 			EndPoint origin = UseIPv6 ? Helper.EmptyEndPointIPv6 : Helper.EmptyEndPoint;
 
-			Socket.BeginReceiveFrom(m_Bytes, 0, m_Bytes.Length, SocketFlags, ref origin, Receive_Callback, null);
+			Socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags, ref origin, Receive_Callback, null);
         }
 
         void Receive_Callback(IAsyncResult ar)
@@ -336,27 +337,27 @@ namespace Rug.Osc
 					Statistics.BytesReceived.Increment(count);
 				}
 
-				OscPacket message = OscPacket.Read(m_Bytes, count, (IPEndPoint)origin);
+				OscPacket message = OscPacket.Read(buffer, count, (IPEndPoint)origin);
 
 				if (Statistics != null && message.Error != OscPacketError.None)
 				{
 					Statistics.ReceiveErrors.Increment(1);
 				}
 
-                lock (m_Lock)
+                lock (syncLock)
                 {
-                    if (m_Count < m_ReceiveQueue.Length)
-                    {                        
-                        m_ReceiveQueue[m_WriteIndex] = message;
+                    if (this.count < receiveQueue.Length)
+                    {
+                        receiveQueue[writeIndex] = message;
 
-                        m_WriteIndex = NextWriteIndex;
+                        writeIndex = NextWriteIndex;
 
-                        m_Count++;
+                        this.count++;
 
 						// if this was the first message then signal
-						if (m_Count == 1)
+						if (this.count == 1)
 						{
-							m_MessageReceived.Set();
+                            messageReceived.Set();
 						}
                     }
                 }
@@ -371,7 +372,7 @@ namespace Rug.Osc
 				// create an empty origin
 				EndPoint origin = UseIPv6 ? Helper.EmptyEndPointIPv6 : Helper.EmptyEndPoint;
 
-				Socket.BeginReceiveFrom(m_Bytes, 0, m_Bytes.Length, SocketFlags, ref origin, Receive_Callback, null); 
+				Socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags, ref origin, Receive_Callback, null); 
             }
         }
 

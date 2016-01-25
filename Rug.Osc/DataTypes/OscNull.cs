@@ -16,15 +16,12 @@
  * 
  */
 
-using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 namespace Rug.Osc
 {
-	/// <summary>
-	/// Osc Null Singleton
-	/// </summary>
-	public sealed class OscNull
+    /// <summary>
+    /// Osc Null Singleton
+    /// </summary>
+    public sealed class OscNull
 	{
 		public static readonly OscNull Value = new OscNull();
 

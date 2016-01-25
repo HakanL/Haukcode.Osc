@@ -34,21 +34,21 @@ namespace Rug.Osc
 	/// </remarks>
 	public static class OscAddressRegexCache
 	{
-		private static readonly object m_Lock = new object();
+		static readonly object syncLock = new object();
 
-		private static readonly Dictionary<string, Regex> m_Lookup = new Dictionary<string, Regex>();
+		static readonly Dictionary<string, Regex> lookup = new Dictionary<string, Regex>();
 
-		private static bool m_Enabled;
+		static bool enabled;
 
 		/// <summary>
 		/// Enable regex caching for the entire program (Enabled by default)
 		/// </summary>
-		public static bool Enabled { get { return m_Enabled; } set { m_Enabled = value; } }
+		public static bool Enabled { get { return enabled; } set { enabled = value; } }
 
 		/// <summary>
 		/// The number of cached regex(s) 
 		/// </summary>
-		public static int Count { get { return m_Lookup.Count; } } 
+		public static int Count { get { return lookup.Count; } } 
 
 		static OscAddressRegexCache()
 		{
@@ -61,14 +61,14 @@ namespace Rug.Osc
 		/// </summary>
 		public static void Clear()
 		{
-			lock (m_Lock)
+			lock (syncLock)
 			{
-				m_Lookup.Clear(); 
+				lookup.Clear(); 
 			}
 		}
 
 		/// <summary>
-		/// Aquire a regex, either by creating it if no cached one can be found or retrieving a cached one  
+		/// Acquire a regex, either by creating it if no cached one can be found or retrieving the cached one. 
 		/// </summary>
 		/// <param name="regex">regex pattern</param>
 		/// <returns>a regex created from or retrieved for the pattern</returns>
@@ -81,12 +81,12 @@ namespace Rug.Osc
 				return new Regex(regex, RegexOptions.None); 
 			}
 
-			lock (m_Lock)
+			lock (syncLock)
 			{
 				Regex result;
 
 				// see if we have one cached
-				if (m_Lookup.TryGetValue(regex, out result) == true)
+				if (lookup.TryGetValue(regex, out result) == true)
 				{
 					return result;
 				}
@@ -95,7 +95,7 @@ namespace Rug.Osc
 				result = new Regex(regex, RegexOptions.Compiled);
 
 				// add it to the lookup 
-				m_Lookup.Add(regex, result);
+				lookup.Add(regex, result);
 
 				// return the new regex
 				return result; 

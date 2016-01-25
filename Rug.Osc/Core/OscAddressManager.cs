@@ -28,23 +28,23 @@ namespace Rug.Osc
 	/// </summary>
 	public sealed class OscAddressManager : IDisposable
 	{
-		private readonly object m_Lock = new object(); 
+		readonly object syncLock = new object(); 
 
 		#region Private Members
 
 		/// <summary>
 		/// Lookup of all literal addresses to listeners 
 		/// </summary>
-		private readonly Dictionary<string, OscLiteralEvent> m_LiteralAddresses = new Dictionary<string, OscLiteralEvent>();
+		readonly Dictionary<string, OscLiteralEvent> literalAddresses = new Dictionary<string, OscLiteralEvent>();
 
 		/// <summary>
 		/// Lookup of all pattern address to filters
 		/// </summary>
-		private readonly Dictionary<OscAddress, OscPatternEvent> m_PatternAddresses = new Dictionary<OscAddress, OscPatternEvent>();
+		readonly Dictionary<OscAddress, OscPatternEvent> patternAddresses = new Dictionary<OscAddress, OscPatternEvent>();
 
-		private IOscTimeProvider m_TimeProvider;
+		IOscTimeProvider timeProvider;
 		
-		private OscBundleInvokeMode m_BundleInvokeMode; 
+		OscBundleInvokeMode bundleInvokeMode; 
 
 		#endregion
 
@@ -53,12 +53,12 @@ namespace Rug.Osc
 		/// <summary>
 		/// Osc time provider, used for filtering bundles by time, if null then the DefaultTimeProvider is used 
 		/// </summary>
-		public IOscTimeProvider TimeProvider { get { return m_TimeProvider; } set { m_TimeProvider = value; } }
+		public IOscTimeProvider TimeProvider { get { return timeProvider; } set { timeProvider = value; } }
 
 		/// <summary>
 		/// Bundle invoke mode, the default is OscBundleInvokeMode.InvokeAllBundlesImmediately
 		/// </summary>
-		public OscBundleInvokeMode BundleInvokeMode { get { return m_BundleInvokeMode; } set { m_BundleInvokeMode = value; } }
+		public OscBundleInvokeMode BundleInvokeMode { get { return bundleInvokeMode; } set { bundleInvokeMode = value; } }
 
 		/// <summary>
 		/// This event will be raised whenever an unknown address is encountered
@@ -92,15 +92,15 @@ namespace Rug.Osc
 			{			
 				OscLiteralEvent container;
 
-				lock (m_Lock)
+				lock (syncLock)
 				{
-					if (m_LiteralAddresses.TryGetValue(address, out container) == false)
+					if (literalAddresses.TryGetValue(address, out container) == false)
 					{
 						// no container was found so create one 
 						container = new OscLiteralEvent(address);
 
 						// add it to the lookup 
-						m_LiteralAddresses.Add(address, container);
+						literalAddresses.Add(address, container);
 					}
 				}
 
@@ -113,15 +113,15 @@ namespace Rug.Osc
 				OscPatternEvent container;
 				OscAddress oscAddress = new OscAddress(address);
 
-				lock (m_Lock)
+				lock (syncLock)
 				{
-					if (m_PatternAddresses.TryGetValue(oscAddress, out container) == false)
+					if (patternAddresses.TryGetValue(oscAddress, out container) == false)
 					{
 						// no container was found so create one 
 						container = new OscPatternEvent(oscAddress);
 
 						// add it to the lookup 
-						m_PatternAddresses.Add(oscAddress, container);
+						patternAddresses.Add(oscAddress, container);
 					}
 				}
 
@@ -154,9 +154,9 @@ namespace Rug.Osc
 			{
 				OscLiteralEvent container;
 
-				lock (m_Lock)
+				lock (syncLock)
 				{
-					if (m_LiteralAddresses.TryGetValue(address, out container) == false)
+					if (literalAddresses.TryGetValue(address, out container) == false)
 					{
 						// no container was found so abort
 						return;
@@ -168,7 +168,7 @@ namespace Rug.Osc
 				// if the container is now empty remove it from the lookup
 				if (container.IsNull == true)
 				{
-					m_LiteralAddresses.Remove(container.Address);
+					literalAddresses.Remove(container.Address);
 				}
 			}
 			else if (OscAddress.IsValidAddressPattern(address) == true)
@@ -176,9 +176,9 @@ namespace Rug.Osc
 				OscPatternEvent container;
 				OscAddress oscAddress = new OscAddress(address);
 
-				lock (m_Lock)
+				lock (syncLock)
 				{
-					if (m_PatternAddresses.TryGetValue(oscAddress, out container) == false)
+					if (patternAddresses.TryGetValue(oscAddress, out container) == false)
 					{
 						// no container was found so abort
 						return;
@@ -191,7 +191,7 @@ namespace Rug.Osc
 				// if the container is now empty remove it from the lookup
 				if (container.IsNull == true)
 				{
-					m_PatternAddresses.Remove(container.Address);
+					patternAddresses.Remove(container.Address);
 				}
 			}
 			else
@@ -374,14 +374,14 @@ namespace Rug.Osc
 
 			do
 			{
-				lock (m_Lock)
+				lock (syncLock)
 				{
 
 					if (OscAddress.IsValidAddressLiteral(message.Address) == true)
 					{
 						OscLiteralEvent container;
 
-						if (m_LiteralAddresses.TryGetValue(message.Address, out container) == true)
+						if (literalAddresses.TryGetValue(message.Address, out container) == true)
 						{
 							//container.Invoke(message);
 							shouldInvoke.Add(container);
@@ -392,7 +392,7 @@ namespace Rug.Osc
 					{
 						oscAddress = new OscAddress(message.Address);
 
-						foreach (KeyValuePair<string, OscLiteralEvent> value in m_LiteralAddresses)
+						foreach (KeyValuePair<string, OscLiteralEvent> value in literalAddresses)
 						{
 							if (oscAddress.Match(value.Key) == true)
 							{
@@ -403,14 +403,14 @@ namespace Rug.Osc
 						}
 					}
 
-					if (m_PatternAddresses.Count > 0)
+					if (patternAddresses.Count > 0)
 					{
 						if (oscAddress == null)
 						{
 							oscAddress = new OscAddress(message.Address);
 						}
 
-						foreach (KeyValuePair<OscAddress, OscPatternEvent> value in m_PatternAddresses)
+						foreach (KeyValuePair<OscAddress, OscPatternEvent> value in patternAddresses)
 						{
 							if (oscAddress.Match(value.Key) == true)
 							{
@@ -462,21 +462,21 @@ namespace Rug.Osc
 		/// </summary>
 		public void Dispose()
 		{
-			lock (m_Lock)
+			lock (syncLock)
 			{
-				foreach (KeyValuePair<string, OscLiteralEvent> value in m_LiteralAddresses)
+				foreach (KeyValuePair<string, OscLiteralEvent> value in literalAddresses)
 				{
 					value.Value.Clear();
 				}
 
-				m_LiteralAddresses.Clear();
+				literalAddresses.Clear();
 
-				foreach (KeyValuePair<OscAddress, OscPatternEvent> value in m_PatternAddresses)
+				foreach (KeyValuePair<OscAddress, OscPatternEvent> value in patternAddresses)
 				{
 					value.Value.Clear();
 				}
 
-				m_PatternAddresses.Clear();
+				patternAddresses.Clear();
 			}
 		}
 

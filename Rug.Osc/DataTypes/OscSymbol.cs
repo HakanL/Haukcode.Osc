@@ -16,16 +16,13 @@
  * 
  */
 
-using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace Rug.Osc
 {
-	/// <summary>
-	/// Osc symbol 
-	/// </summary>
-	public struct OscSymbol
+    /// <summary>
+    /// Osc symbol 
+    /// </summary>
+    public struct OscSymbol
 	{
 		/// <summary>
 		/// The string value of the symbol

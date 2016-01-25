@@ -21,24 +21,23 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Rug.Osc
 {
-	internal static class Helper
+    internal static class Helper
 	{		
 		#region Private Static Members
 
-		private static bool m_IsRunningOnMono;
-		private static readonly byte[] m_Padding = new byte[] { 0, 0, 0, 0 };
+		private static bool isRunningOnMono;
+		private static readonly byte[] padding = new byte[] { 0, 0, 0, 0 };
 
 		#endregion
 		
-		public static bool IsRunningOnMono { get { return m_IsRunningOnMono; } }
+		public static bool IsRunningOnMono { get { return isRunningOnMono; } }
 
 		static Helper()
 		{
-			m_IsRunningOnMono = Type.GetType("Mono.Runtime") != null;
+			isRunningOnMono = Type.GetType("Mono.Runtime") != null;
 		}
 
 		#region Empty End Point
@@ -294,23 +293,6 @@ namespace Rug.Osc
 			}
 		}
 
-		public static string ToStringBlob(byte[] bytes)
-		{
-			// if the deafult is to be Base64 encoded
-			//return "64x" + System.Convert.ToBase64String(bytes); 
-
-			StringBuilder sb = new StringBuilder((bytes.Length * 2) + 2);
-
-			sb.Append("0x");
-
-			foreach (byte b in bytes)
-			{
-				sb.Append(b.ToString("X2"));
-			}				
-
-			return sb.ToString();
-		}
-
 		#endregion
 
 		#region Color
@@ -412,7 +394,7 @@ namespace Rug.Osc
 
 			if (nullCount < 4)
 			{
-				writer.Write(m_Padding, 0, nullCount); 
+				writer.Write(padding, 0, nullCount); 
 			}
 		}
 

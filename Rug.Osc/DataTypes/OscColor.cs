@@ -17,31 +17,29 @@
  */
 
 using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace Rug.Osc
 {
-	/// <summary>
-	/// Represents a 32bit ARGB color 
-	/// </summary>
-	/// <remarks>
-	/// This is a poor replacement for System.Drawing.Color but unfortunatly many platforms do not support 
-	/// the System.Drawing namespace. 
-	/// </remarks>
-	public struct OscColor
+    /// <summary>
+    /// Represents a 32bit ARGB color 
+    /// </summary>
+    /// <remarks>
+    /// This is a poor replacement for System.Drawing.Color but unfortunatly many platforms do not support 
+    /// the System.Drawing namespace. 
+    /// </remarks>
+    public struct OscColor
 	{
 		private const int AlphaMask = 0x18; 
 		private const int RedMask = 0x10;
 		private const int GreenMask = 0x08; 
 		private const int BlueMask = 0; 
 
-		private int m_Value;
+		private int value;
 
 		/// <summary>
 		/// Alpha, red, green and blue components packed into a single 32bit int
 		/// </summary>
-		public int ARGB { get { return m_Value; } } 
+		public int ARGB { get { return value; } } 
 
 		/// <summary>
 		/// Red component
@@ -50,7 +48,7 @@ namespace Rug.Osc
 		{
 			get
 			{
-				return (byte)((this.m_Value >> RedMask) & 0xff);
+				return (byte)((this.value >> RedMask) & 0xff);
 			}
 		}
 
@@ -61,7 +59,7 @@ namespace Rug.Osc
 		{
 			get
 			{
-				return (byte)((this.m_Value >> GreenMask) & 0xff);
+				return (byte)((this.value >> GreenMask) & 0xff);
 			}
 		}
 
@@ -72,7 +70,7 @@ namespace Rug.Osc
 		{
 			get
 			{
-				return (byte)(this.m_Value & 0xff);
+				return (byte)(this.value & 0xff);
 			}
 		}
 
@@ -83,7 +81,7 @@ namespace Rug.Osc
 		{
 			get
 			{
-				return (byte)((this.m_Value >> AlphaMask) & 0xff);
+				return (byte)((this.value >> AlphaMask) & 0xff);
 			}
 		}
 
@@ -93,7 +91,7 @@ namespace Rug.Osc
 		/// <param name="value">An 32bit ARGB integer</param>
 		public OscColor(int value) 
 		{
-			m_Value = value; 
+			this.value = value; 
 		}
 
 		public override bool Equals(object obj)

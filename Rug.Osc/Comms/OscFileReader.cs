@@ -1,30 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
-using System.Threading;
 
 namespace Rug.Osc
 {
-	public class OscFileReader : IDisposable, IOscPacketReceiver
+    public class OscFileReader : IDisposable, IOscPacketReceiver
 	{
-		private FileStream m_File;
-		private OscReader m_Reader;
+		FileStream file;
+		OscReader reader;
 
 		public event OscPacketEvent PacketRecived;
 
 		public OscCommunicationStatistics Statistics { get; set; } 
 
-		public bool EndOfStream { get { return m_Reader.EndOfStream; } }
+		public bool EndOfStream { get { return reader.EndOfStream; } }
 
-		public long Position { get { return m_Reader.BaseStream.Position; } }
+		public long Position { get { return reader.BaseStream.Position; } }
 
-		public long Length { get { return m_Reader.BaseStream.Length; } }
+		public long Length { get { return reader.BaseStream.Length; } }
 
 		public OscFileReader(string filePath, OscPacketFormat format)
 		{
-			m_File = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-			m_Reader = new OscReader(m_File, format);
+			file = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+			reader = new OscReader(file, format);
 		}
 
 		public void ReadToEnd()
@@ -37,11 +34,11 @@ namespace Rug.Osc
 
 		public OscPacket Read()
 		{
-			long position = m_Reader.BaseStream.Position; 
+			long position = reader.BaseStream.Position; 
 			
-			OscPacket packet = m_Reader.Read();
+			OscPacket packet = reader.Read();
 
-			long newPosition = m_Reader.BaseStream.Position;
+			long newPosition = reader.BaseStream.Position;
             
 			if (Statistics != null)
 			{
@@ -63,9 +60,9 @@ namespace Rug.Osc
 
 		public void Dispose()
 		{
-			m_Reader.Dispose();
-			m_File.Close();
-			m_File.Dispose(); 
+			reader.Dispose();
+			file.Close();
+			file.Dispose(); 
 		}
 	}
 }

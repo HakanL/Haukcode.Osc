@@ -36,15 +36,16 @@ namespace Rug.Osc
 
 		#region Private Members
 
-		private readonly object m_Lock = new object();
-		private readonly AutoResetEvent m_QueueEmpty = new AutoResetEvent(true);
+		readonly object syncLock = new object();
+		readonly AutoResetEvent queueEmpty = new AutoResetEvent(true);
 
-		private readonly byte[] m_Bytes;
+		readonly byte[] buffer;
 
-		private readonly OscPacket[] m_SendQueue;
-		private int m_WriteIndex = 0;
-		private int m_ReadIndex = 0;
-		private int m_Count = 0;
+		readonly OscPacket[] sendQueue;
+
+		int writeIndex = 0;
+		int readIndex = 0;
+		int count = 0;
 
 		#endregion
 
@@ -67,11 +68,11 @@ namespace Rug.Osc
 		{
 			get
 			{
-				int index = m_WriteIndex + 1;
+				int index = writeIndex + 1;
 
-				if (index >= m_SendQueue.Length)
+				if (index >= sendQueue.Length)
 				{
-					index -= m_SendQueue.Length;
+					index -= sendQueue.Length;
 				}
 
 				return index;
@@ -85,11 +86,11 @@ namespace Rug.Osc
 		{
 			get
 			{
-				int index = m_ReadIndex + 1;
+				int index = readIndex + 1;
 
-				if (index >= m_SendQueue.Length)
+				if (index >= sendQueue.Length)
 				{
-					index -= m_SendQueue.Length;
+					index -= sendQueue.Length;
 				}
 
 				return index;
@@ -217,8 +218,8 @@ namespace Rug.Osc
 			// set the default time out
 			DisconnectTimeout = 1000; 
 
-			m_Bytes = new byte[maxPacketSize];
-			m_SendQueue = new OscPacket[messageBufferSize];
+			buffer = new byte[maxPacketSize];
+			sendQueue = new OscPacket[messageBufferSize];
 		}
 
 		#endregion
@@ -248,23 +249,23 @@ namespace Rug.Osc
 		{
 			if (State == OscSocketState.Connected)
 			{
-				lock (m_Lock)
+				lock (syncLock)
 				{
-					m_QueueEmpty.Reset();
+					queueEmpty.Reset();
 
-					if (m_Count >= m_SendQueue.Length)
+					if (count >= sendQueue.Length)
 					{
 						return;
 					}
 
-					m_SendQueue[m_WriteIndex] = message;
+					sendQueue[writeIndex] = message;
 
-					m_WriteIndex = NextWriteIndex;
-					m_Count++;
+					writeIndex = NextWriteIndex;
+					count++;
 
-					if (m_Count == 1)
+					if (count == 1)
 					{
-						int size = message.Write(m_Bytes);
+						int size = message.Write(buffer);
 
 						if (Statistics != null)
 						{
@@ -273,7 +274,7 @@ namespace Rug.Osc
 							Statistics.BytesSent.Increment(size);
 						}
 
-						Socket.BeginSend(m_Bytes, 0, size, SocketFlags, Send_Callback, message);
+						Socket.BeginSend(buffer, 0, size, SocketFlags, Send_Callback, message);
 					}
 				}
 			}
@@ -288,7 +289,7 @@ namespace Rug.Osc
 		/// </summary>
 		public void WaitForAllMessagesToComplete()
 		{
-			m_QueueEmpty.WaitOne(Math.Max(-1, DisconnectTimeout));
+			queueEmpty.WaitOne(Math.Max(-1, DisconnectTimeout));
 		}
 
 		#endregion
@@ -299,7 +300,7 @@ namespace Rug.Osc
 		{
 			bool shouldClose = false; 
 
-			lock (m_Lock)
+			lock (syncLock)
 			{
 				try
 				{
@@ -307,32 +308,32 @@ namespace Rug.Osc
 
 					Socket.EndSend(ar, out error);
 
-					if (m_SendQueue[m_ReadIndex].IsSameInstance(ar.AsyncState as OscPacket) == false)
+					if (sendQueue[readIndex].IsSameInstance(ar.AsyncState as OscPacket) == false)
 					{
-						Debug.WriteLine("Objects do not match at index " + m_ReadIndex);
+						Debug.WriteLine("Objects do not match at index " + readIndex);
 					}
 
 					shouldClose = Socket.Connected == false;
 
-					m_Count--;
-					m_ReadIndex = NextReadIndex;
+					count--;
+					readIndex = NextReadIndex;
 
-					if (m_Count > 0 && State == OscSocketState.Connected)
+					if (count > 0 && State == OscSocketState.Connected)
 					{
-						OscPacket packet = m_SendQueue[m_ReadIndex];
+						OscPacket packet = sendQueue[readIndex];
 
-						int size = packet.Write(m_Bytes);
+						int size = packet.Write(buffer);
 
-						Socket.BeginSend(m_Bytes, 0, size, SocketFlags, Send_Callback, packet);
+						Socket.BeginSend(buffer, 0, size, SocketFlags, Send_Callback, packet);
 					}
 					else
 					{
-						m_QueueEmpty.Set();
+						queueEmpty.Set();
 					}
 				}
 				catch
 				{
-					m_QueueEmpty.Set();
+					queueEmpty.Set();
 				}
 			}
 

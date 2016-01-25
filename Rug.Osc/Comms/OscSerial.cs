@@ -25,13 +25,13 @@ namespace Rug.Osc
 {
 	public class OscSerial : IDisposable, IOscPacketReceiver, IOscPacketSender
 	{
-		private bool m_ShouldExit = false;
-		private Thread m_Thread;
-		private SerialPort m_SerialPort;
-		private SlipPacketReader m_Reader;
+		bool shouldExit = false;
+		Thread thread;
+		SerialPort serialPort;
+		SlipPacketReader reader;
 
-		private byte[] m_PacketBytes;
-		private byte[] m_ReadBuffer;
+		byte[] packetBytes;
+		byte[] readBuffer;
 
 		public string PortName { get; private set; }
 		public int BaudRate { get; private set; }
@@ -61,53 +61,52 @@ namespace Rug.Osc
 			StopBits = stopBits;
             WriteTimeout = writeTimeout; 
 
-			m_Reader = new SlipPacketReader(slipBufferSize);
-			//m_Writer = new SlipPacketWriter();
+			reader = new SlipPacketReader(slipBufferSize);
 
-			m_PacketBytes = new byte[m_Reader.BufferSize];
-			m_ReadBuffer = new byte[m_Reader.BufferSize];
+			packetBytes = new byte[reader.BufferSize];
+			readBuffer = new byte[reader.BufferSize];
 		}
 
 		public void Connect()
 		{
 			Close();
 
-			m_ShouldExit = false;
+			shouldExit = false;
 
 			// Open serial port
-			m_SerialPort = new SerialPort(PortName, BaudRate, Parity, DataBits, StopBits);
+			serialPort = new SerialPort(PortName, BaudRate, Parity, DataBits, StopBits);
 
 			if (RtsCtsEnabled == true)
 			{
 				// Only set these if hardware flow control is enabled 
-				m_SerialPort.Handshake = Handshake.RequestToSend;								
+				serialPort.Handshake = Handshake.RequestToSend;								
 			}
 
             // Set timeout to avoid infinite wait if RTS input is never un-asserted
-            m_SerialPort.WriteTimeout = WriteTimeout;
+            serialPort.WriteTimeout = WriteTimeout;
 
             // Always un-assert CTS output regardless of hardware flow control mode 
-			m_SerialPort.DtrEnable = true;
+			serialPort.DtrEnable = true;
 
-			m_SerialPort.Open();
+			serialPort.Open();
 
-			m_Reader.Clear();
+			reader.Clear();
 
 			if (Helper.IsRunningOnMono == false)
 			{
-				m_SerialPort.DataReceived += m_SerialPort_DataReceived;
+				serialPort.DataReceived += SerialPort_DataReceived;
 			}
 			else
 			{
-				m_Thread = new Thread(ListenLoop);
+				thread = new Thread(ListenLoop);
 
-				m_Thread.Start();
+				thread.Start();
 			}
 		}
 
 		public void Send(OscPacket packet)
 		{
-			if (m_SerialPort == null)
+			if (serialPort == null)
 			{
 				throw new Exception("Serial port is not connected");
 			}
@@ -122,16 +121,16 @@ namespace Rug.Osc
 				Statistics.BytesSent.Increment(packetBytes.Length);
 			}
 
-			m_SerialPort.Write(slippedBytes, 0, slippedBytes.Length);
+			serialPort.Write(slippedBytes, 0, slippedBytes.Length);
 		}
 
-		void m_SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+		void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
 		{
 			if (e.EventType == SerialData.Chars)
 			{
 				try
 				{
-					ReceivedBytes(ref m_PacketBytes, ref m_ReadBuffer);
+					ReceivedBytes(ref packetBytes, ref readBuffer);
 				}
 				catch { }
 			}
@@ -139,24 +138,24 @@ namespace Rug.Osc
 
 		void ListenLoop()
 		{
-			while (m_ShouldExit == false)
+			while (shouldExit == false)
 			{
-				if (m_SerialPort.BytesToRead == 0)
+				if (serialPort.BytesToRead == 0)
 				{
 					Thread.CurrentThread.Join(1);
 					continue;
 				}
 
-				ReceivedBytes(ref m_PacketBytes, ref m_ReadBuffer);
+				ReceivedBytes(ref packetBytes, ref readBuffer);
 			}
 		}
 
 		private void ReceivedBytes(ref byte[] packetBytes, ref byte[] readBuffer)
 		{
 			// Fetch bytes from serial port
-			int bytesToRead = Math.Min(m_SerialPort.BytesToRead, readBuffer.Length);
+			int bytesToRead = Math.Min(serialPort.BytesToRead, readBuffer.Length);
 
-			m_SerialPort.Read(readBuffer, 0, bytesToRead);
+			serialPort.Read(readBuffer, 0, bytesToRead);
 
 			if (Statistics != null)
 			{
@@ -169,7 +168,7 @@ namespace Rug.Osc
 			{
 				int packetLength;
 
-				processed += m_Reader.ProcessBytes(readBuffer, processed, bytesToRead - processed, ref packetBytes, out packetLength);
+				processed += reader.ProcessBytes(readBuffer, processed, bytesToRead - processed, ref packetBytes, out packetLength);
 
 				if (packetLength > 0)
 				{
@@ -191,26 +190,26 @@ namespace Rug.Osc
 
 		public void Close()
 		{
-			m_ShouldExit = true;
+			shouldExit = true;
 
-			if (m_Thread != null)
+			if (thread != null)
 			{
-				m_Thread.Join(1000);
+				thread.Join(1000);
 
 				throw new Exception("THIS IS A NON-ERRROR, SHOULD NOT HAPPEN IN WINDOWS!!!");
 			}
 
-            if (m_SerialPort != null &&
-                m_SerialPort.IsOpen == true)
+            if (serialPort != null &&
+                serialPort.IsOpen == true)
 			{
                 if (Helper.IsRunningOnMono == false)
                 {
-                    m_SerialPort.DataReceived -= m_SerialPort_DataReceived;
+                    serialPort.DataReceived -= SerialPort_DataReceived;
                 }
 
-                SerialPort port = m_SerialPort;
+                SerialPort port = serialPort;
 
-                m_SerialPort = null;
+                serialPort = null;
 
                 // we need to discard the contents of the in and out buffer, 
                 // otherwise this thread will hang indefinitely when hardware flow 
@@ -222,7 +221,7 @@ namespace Rug.Osc
                 port.Close();
 			}
 
-            m_SerialPort = null;
+            serialPort = null;
         }
 
 		public void Dispose()

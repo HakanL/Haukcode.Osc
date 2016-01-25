@@ -24,7 +24,7 @@ namespace Rug.Osc
 {
 	public class SingleStatistic
 	{
-		private long m_TotalAtPeriodStart = 0;
+		long totalAtPeriodStart = 0;
 
 		public long Total { get; private set; }
 
@@ -37,26 +37,26 @@ namespace Rug.Osc
 
 		internal void Update(double ticks)
 		{
-			double countInPeriod = (double)(Total - m_TotalAtPeriodStart);
+			double countInPeriod = (double)(Total - totalAtPeriodStart);
 
 			Rate = (float)(countInPeriod / ticks);
 
-			m_TotalAtPeriodStart = Total;
+			totalAtPeriodStart = Total;
 		}
 
 		public void Reset()
 		{
 			Total = 0;
 			Rate = 0;
-			m_TotalAtPeriodStart = 0;
+			totalAtPeriodStart = 0;
 		}
 	}
 
 	public class OscCommunicationStatistics : IDisposable
 	{
-		private List<SingleStatistic> m_Statistics = new List<SingleStatistic>();
-		private bool m_ShouldStop = false; 
-		private Thread m_Thread; 
+		List<SingleStatistic> statistics = new List<SingleStatistic>();
+		bool shouldStop = false; 
+		Thread thread; 
 
 		public DateTime PeriodStart { get; private set; }
 
@@ -78,19 +78,19 @@ namespace Rug.Osc
 		{
 			PeriodStart = DateTime.Now; 
 
-			m_Statistics.Add(BytesReceived);
-			m_Statistics.Add(BytesSent);
+			statistics.Add(BytesReceived);
+			statistics.Add(BytesSent);
 
-			m_Statistics.Add(PacketsReceived);
-			m_Statistics.Add(PacketsSent);
+			statistics.Add(PacketsReceived);
+			statistics.Add(PacketsSent);
 
-			m_Statistics.Add(MessagesReceived);
-			m_Statistics.Add(MessagesSent);
+			statistics.Add(MessagesReceived);
+			statistics.Add(MessagesSent);
 
-			m_Statistics.Add(BundlesReceived);
-			m_Statistics.Add(BundlesSent);
+			statistics.Add(BundlesReceived);
+			statistics.Add(BundlesSent);
 
-			m_Statistics.Add(ReceiveErrors); 
+			statistics.Add(ReceiveErrors); 
 		}
 
 		public void Start()
@@ -99,30 +99,30 @@ namespace Rug.Osc
 
 			PeriodStart = DateTime.Now;
 
-			m_ShouldStop = false; 
+			shouldStop = false; 
 
-			m_Thread = new Thread(UpdateLoop);
+			thread = new Thread(UpdateLoop);
 
-			m_Thread.Start(); 
+			thread.Start(); 
 		}
 
 		public void Stop()
 		{
-			m_ShouldStop = true; 
+			shouldStop = true; 
 
-			if (m_Thread != null)
+			if (thread != null)
 			{
-				m_Thread.Join(); 
+				thread.Join(); 
 			}
 
-			m_Thread = null;
+			thread = null;
 		}
 
 		public void Reset()
 		{
 			PeriodStart = DateTime.Now;
 
-			foreach (SingleStatistic stat in m_Statistics)
+			foreach (SingleStatistic stat in statistics)
 			{
 				stat.Reset(); 
 			}
@@ -130,9 +130,9 @@ namespace Rug.Osc
 
 		private void UpdateLoop()
 		{
-			while (m_ShouldStop == false)
+			while (shouldStop == false)
 			{
-				m_Thread.Join(1000);
+				thread.Join(1000);
 
 				Update(); 
 			}
@@ -145,7 +145,7 @@ namespace Rug.Osc
 
 			ticks /= (double)TimeSpan.TicksPerSecond;
 
-			foreach (SingleStatistic stat in m_Statistics)
+			foreach (SingleStatistic stat in statistics)
 			{
 				stat.Update(ticks);
 			}

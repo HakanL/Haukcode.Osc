@@ -16,29 +16,24 @@
  * 
  */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Diagnostics;
 
 namespace Rug.Osc.Slip
 {
-	public class SlipPacketReader
+    public class SlipPacketReader
 	{
-		private byte[] m_Buffer;
-		private int m_Index;
+		private byte[] buffer;
+		private int index;
 
-		public int BufferSize { get { return m_Buffer.Length; } }
+		public int BufferSize { get { return buffer.Length; } }
 
 		public SlipPacketReader(int bufferSize)
 		{
-			m_Buffer = new byte[bufferSize]; 
+			buffer = new byte[bufferSize]; 
 		}
 
 		public void Clear()
 		{
-			m_Index = 0; 
+			index = 0; 
 		}
 
 		public int ProcessBytes(byte[] bytes, int index, int count, ref byte[] packetBytes, out int packetLength)
@@ -48,20 +43,20 @@ namespace Rug.Osc.Slip
 			for (int i = 0; i < count; i++)
 			{
 				byte @byte = bytes[index + i];
-				
-				// Add byte to buffer
-				m_Buffer[m_Index] = @byte;
+
+                // Add byte to buffer
+                buffer[this.index] = @byte;
 
 				// Increment index with overflow
-				if (++m_Index >= m_Buffer.Length)
+				if (++this.index >= buffer.Length)
 				{
-					m_Index = 0;
+					this.index = 0;
 				}
 
 				// Decode packet if END byte
 				if (@byte == (byte)SlipBytes.End) 
 				{
-					m_Index = 0;
+					this.index = 0;
 
 					packetLength = ProcessPacket(ref packetBytes);
 					
@@ -77,13 +72,13 @@ namespace Rug.Osc.Slip
 			int i = 0;
 
 			int packetLength = 0;
-			packet = new byte[m_Buffer.Length];
+			packet = new byte[buffer.Length];
 
-			while (m_Buffer[i] != (byte)SlipBytes.End)
+			while (buffer[i] != (byte)SlipBytes.End)
 			{
-				if (m_Buffer[i] == (byte)SlipBytes.Escape)
+				if (buffer[i] == (byte)SlipBytes.Escape)
 				{
-					switch (m_Buffer[++i])
+					switch (buffer[++i])
 					{
 						case (byte)SlipBytes.EscapeEnd:
 							packet[packetLength++] = (byte)SlipBytes.End;
@@ -97,7 +92,7 @@ namespace Rug.Osc.Slip
 				}
 				else
 				{
-					packet[packetLength++] = m_Buffer[i];
+					packet[packetLength++] = buffer[i];
 				}
 
 				if (packetLength > packet.Length)

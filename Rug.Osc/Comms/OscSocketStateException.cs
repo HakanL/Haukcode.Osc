@@ -25,12 +25,12 @@ namespace Rug.Osc
 	/// </summary>
 	public class OscSocketStateException : OscSocketException
 	{
-		private OscSocketState m_State; 
+		private OscSocketState state; 
 
 		/// <summary>
 		/// The state the socket was in when the exception was thrown
 		/// </summary>
-		public OscSocketState State { get { return m_State; } } 
+		public OscSocketState State { get { return state; } } 
 
 		/// <summary>
 		/// Creates a new osc socket state exception
@@ -41,7 +41,7 @@ namespace Rug.Osc
 		public OscSocketStateException(OscSocket socket, OscSocketState state, string message)
 			: base(socket, message)
 		{
-			m_State = state;
+			this.state = state;
 		}
 
 		/// <summary>
@@ -54,7 +54,7 @@ namespace Rug.Osc
 		public OscSocketStateException(OscSocket socket, OscSocketState state, string message, Exception innerException)
 			: base(socket, message, innerException)
 		{
-			m_State = state;
+			this.state = state;
 		}
 	}
 }

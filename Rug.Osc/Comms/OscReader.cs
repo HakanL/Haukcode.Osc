@@ -29,15 +29,15 @@ namespace Rug.Osc
 	{
 		#region Private Members
 
-		private readonly Stream m_Stream;
-		private readonly OscPacketFormat m_Format;
-		private readonly BinaryReader m_BinaryReader;
-		private readonly StreamReader m_StringReader;
-		private readonly Slip.SlipPacketReader m_SlipReader;
+		readonly Stream stream;
+		readonly OscPacketFormat format;
+		readonly BinaryReader binaryReader;
+		readonly StreamReader stringReader;
+		readonly Slip.SlipPacketReader slipReader;
 		
-		private readonly byte[] m_SlipByteCache;
-		private int m_SlipByteIndex; 
-		private int m_SlipByteCount;
+		readonly byte[] slipByteCache;
+		int slipByteIndex; 
+		int slipByteCount;
 		
 		#endregion 
 
@@ -46,12 +46,12 @@ namespace Rug.Osc
 		/// <summary>
 		/// Exposes access to the underlying stream of the OscReader.
 		/// </summary>
-		public Stream BaseStream { get { return m_Stream; } }
+		public Stream BaseStream { get { return stream; } }
 
 		/// <summary>
 		/// Packet format 
 		/// </summary>
-		public OscPacketFormat Format { get { return m_Format; } }
+		public OscPacketFormat Format { get { return format; } }
 
 		/// <summary>
 		/// Gets a value that indicates whether the current stream position is at the end of the stream.
@@ -65,17 +65,17 @@ namespace Rug.Osc
 					return true;
 				}
 
-				if (m_Format == OscPacketFormat.Binary)
+				if (format == OscPacketFormat.Binary)
 				{
 					return BaseStream.Position >= BaseStream.Length; 
 				}
-				else if (m_Format == OscPacketFormat.Slip)
+				else if (format == OscPacketFormat.Slip)
 				{
-					return BaseStream.Position >= BaseStream.Length && m_SlipByteIndex >= m_SlipByteCount;
+					return BaseStream.Position >= BaseStream.Length && slipByteIndex >= slipByteCount;
 				}
 				else
 				{
-					return m_StringReader.EndOfStream;
+					return stringReader.EndOfStream;
 				}				
 			} 
 		}
@@ -91,25 +91,25 @@ namespace Rug.Osc
 		/// <param name="mode">the format of the packets in the stream</param>
 		public OscReader(Stream stream, OscPacketFormat mode)
 		{
-			m_Stream = stream;
-			m_Format = mode;
+			this.stream = stream;
+			format = mode;
 		
-			if (m_Format == OscPacketFormat.Binary)
+			if (format == OscPacketFormat.Binary)
 			{
-				m_BinaryReader = new BinaryReader(m_Stream);
+                binaryReader = new BinaryReader(this.stream);
 			}
-			else if (m_Format == OscPacketFormat.Slip) 
+			else if (format == OscPacketFormat.Slip) 
 			{
-				m_BinaryReader = new BinaryReader(m_Stream);
-				m_SlipReader = new Slip.SlipPacketReader(1024);
+                binaryReader = new BinaryReader(this.stream);
+				slipReader = new Slip.SlipPacketReader(1024);
 
-				m_SlipByteCache = new byte[1024];    
-				m_SlipByteIndex = 0;
-				m_SlipByteCount = 0; 
+				slipByteCache = new byte[1024];    
+				slipByteIndex = 0;
+				slipByteCount = 0; 
 			}
 			else
 			{
-				m_StringReader = new StreamReader(m_Stream);
+                stringReader = new StreamReader(this.stream);
 			}
 		}
 
@@ -125,29 +125,29 @@ namespace Rug.Osc
 		{
 			if (Format == OscPacketFormat.Binary)
 			{				
-				int length = Helper.ReadInt32(m_BinaryReader);
+				int length = Helper.ReadInt32(binaryReader);
 
 				byte[] bytes = new byte[length]; 
 
-				m_BinaryReader.Read(bytes, 0, length);
+				binaryReader.Read(bytes, 0, length);
 
 				return OscPacket.Read(bytes, length); 
 			}
 			else if (Format == OscPacketFormat.Slip)
 			{
-				byte[] packetBytes = new byte[m_SlipReader.BufferSize]; 
+				byte[] packetBytes = new byte[slipReader.BufferSize]; 
 				int packetLength = 0;
 
 				do
 				{
-					if (m_SlipByteCount - m_SlipByteIndex == 0)
+					if (slipByteCount - slipByteIndex == 0)
 					{
-						m_SlipByteIndex = 0;
+						slipByteIndex = 0;
 
-						m_SlipByteCount = m_BinaryReader.Read(m_SlipByteCache, 0, m_SlipByteCache.Length);
+						slipByteCount = binaryReader.Read(slipByteCache, 0, slipByteCache.Length);
 					}
 
-					m_SlipByteIndex += m_SlipReader.ProcessBytes(m_SlipByteCache, m_SlipByteIndex, m_SlipByteCount - m_SlipByteIndex, ref packetBytes, out packetLength);
+					slipByteIndex += slipReader.ProcessBytes(slipByteCache, slipByteIndex, slipByteCount - slipByteIndex, ref packetBytes, out packetLength);
 				}
 				while (packetLength <= 0 && EndOfStream == false);
 
@@ -162,7 +162,7 @@ namespace Rug.Osc
 			}
 			else
 			{
-				string line = m_StringReader.ReadLine();
+				string line = stringReader.ReadLine();
 				OscPacket packet;
 
 				if (OscPacket.TryParse(line, out packet) == false)
@@ -173,7 +173,7 @@ namespace Rug.Osc
 
 					while (EndOfStream == false)
 					{
-						sb.Append(m_StringReader.ReadLine());
+						sb.Append(stringReader.ReadLine());
 
 						if (OscPacket.TryParse(sb.ToString(), out packet) == true)
 						{
@@ -207,13 +207,13 @@ namespace Rug.Osc
 		/// </summary>
 		public void Dispose()
 		{
-			if (m_Format != OscPacketFormat.String)
+			if (format != OscPacketFormat.String)
 			{
-				m_BinaryReader.Close();
+				binaryReader.Close();
 			}
 			else
 			{
-				m_StringReader.Close();
+				stringReader.Close();
 			}
 		}
 	

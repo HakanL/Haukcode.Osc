@@ -16,14 +16,11 @@
  * 
  */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 
 namespace Rug.Osc.Slip
 {
-	public static class SlipPacketWriter
+    public static class SlipPacketWriter
 	{
 		//public SlipPacketWriter() { }
 
