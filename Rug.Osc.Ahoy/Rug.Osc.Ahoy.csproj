@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{EDA89973-CFB3-4609-8841-10DDB419780E}</ProjectGuid>
+    <ProjectGuid>{FB36D6BF-22FC-412F-9B5D-0EF8B4825913}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rug.Osc.Hola</RootNamespace>
-    <AssemblyName>Rug.Osc.Hola</AssemblyName>
+    <RootNamespace>Rug.Osc.Ahoy</RootNamespace>
+    <AssemblyName>Rug.Osc.Ahoy</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -29,10 +29,22 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Rug.Osc.Ahoy.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="HolaClient.cs" />
-    <Compile Include="HolaService.cs" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AhoyConstants.cs" />
+    <Compile Include="AhoyMessage.cs" />
+    <Compile Include="AhoyQuery.cs" />
+    <Compile Include="AhoyQueryMultipleAdapters.cs" />
+    <Compile Include="AhoyQuerySingleAdapter.cs" />
+    <Compile Include="AhoyServiceInfo.cs" />
+    <Compile Include="AhoyServiceProvider.cs" />
+    <Compile Include="IAhoyQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -40,9 +52,6 @@
       <Project>{190500D7-9779-466D-A73F-BCE13606B3EF}</Project>
       <Name>Rug.Osc</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

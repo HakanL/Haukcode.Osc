@@ -34,19 +34,22 @@ namespace Rug.Osc
 		/// <summary>
 		/// This event will be raised whenever an unknown address is encountered
 		/// </summary>
-		public event EventHandler<UnknownAddressEventArgs> UnknownAddress; 
+		public event EventHandler<UnknownAddressEventArgs> UnknownAddress;
+
+        public event OscPacketEvent PacketReceived;
+        public event OscPacketEvent PacketProcessed;
 
         #region Constructors
 
-		/// <summary>
-		/// Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
-		/// </summary>
-		/// <param name="address">the local ip address to listen to</param>
-		/// <param name="multicast">a multicast address to join</param>
-		/// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
-		/// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
-		/// <param name="maxPacketSize">the maximum packet size of any message</param>
-		public OscListener(IPAddress address, IPAddress multicast, int port, int messageBufferSize, int maxPacketSize)		
+        /// <summary>
+        /// Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+        /// </summary>
+        /// <param name="address">the local ip address to listen to</param>
+        /// <param name="multicast">a multicast address to join</param>
+        /// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
+        /// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+        /// <param name="maxPacketSize">the maximum packet size of any message</param>
+        public OscListener(IPAddress address, IPAddress multicast, int port, int messageBufferSize, int maxPacketSize)		
 		{
 			receiver = new OscReceiver(address, multicast, port, messageBufferSize, maxPacketSize);
 
@@ -188,7 +191,9 @@ namespace Rug.Osc
 						// this will block until one arrives or the socket is closed
 						OscPacket packet = receiver.Receive();
 
-						switch (addressManager.ShouldInvoke(packet))
+                        PacketReceived?.Invoke(packet); 
+
+                        switch (addressManager.ShouldInvoke(packet))
 						{
 							case OscPacketInvokeAction.Invoke:
 								addressManager.Invoke(packet);
@@ -202,7 +207,9 @@ namespace Rug.Osc
 							default:
 								break;
 						}
-					}
+
+                        PacketProcessed?.Invoke(packet); 
+                    }
 				}
 			}
 			catch (Exception ex)

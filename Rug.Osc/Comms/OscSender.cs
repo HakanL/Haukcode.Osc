@@ -56,10 +56,12 @@ namespace Rug.Osc
 			get { return Osc.OscSocketType.Send; }
 		}
 
-		/// <summary>
-		/// Use a value greater than 0 to set the disconnect time out in milliseconds use a value less than or equal to 0 for an infinite timeout
-		/// </summary>
-		public int DisconnectTimeout { get; set; } 
+        public event OscPacketEvent PacketSent;
+
+        /// <summary>
+        /// Use a value greater than 0 to set the disconnect time out in milliseconds use a value less than or equal to 0 for an infinite timeout
+        /// </summary>
+        public int DisconnectTimeout { get; set; } 
 
 		/// <summary>
 		/// The next queue index to write messages to 
@@ -274,7 +276,9 @@ namespace Rug.Osc
 							Statistics.BytesSent.Increment(size);
 						}
 
-						Socket.BeginSend(buffer, 0, size, SocketFlags, Send_Callback, message);
+                        PacketSent?.Invoke(message); 
+
+                        Socket.BeginSend(buffer, 0, size, SocketFlags, Send_Callback, message);
 					}
 				}
 			}
@@ -324,7 +328,9 @@ namespace Rug.Osc
 
 						int size = packet.Write(buffer);
 
-						Socket.BeginSend(buffer, 0, size, SocketFlags, Send_Callback, packet);
+                        PacketSent?.Invoke(packet);
+
+                        Socket.BeginSend(buffer, 0, size, SocketFlags, Send_Callback, packet);
 					}
 					else
 					{
