@@ -20,6 +20,12 @@ namespace Rug.Osc.Ahoy
         AhoyServiceInfo this[int index] { get; }
 
         /// <summary>
+        /// Gets the namespace.
+        /// </summary>
+        /// <value>The namespace.</value>
+        string Namespace { get; } 
+
+        /// <summary>
         /// Gets the count.
         /// </summary>
         /// <value>The count.</value>

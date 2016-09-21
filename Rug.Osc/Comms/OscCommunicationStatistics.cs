@@ -102,8 +102,9 @@ namespace Rug.Osc
 			shouldStop = false; 
 
 			thread = new Thread(UpdateLoop);
+            thread.Name = "Osc Communication Statistics";
 
-			thread.Start(); 
+            thread.Start(); 
 		}
 
 		public void Stop()

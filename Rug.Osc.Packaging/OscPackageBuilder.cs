@@ -3,9 +3,12 @@ using System.Collections.Generic;
 
 namespace Rug.Osc.Packaging
 {
+    public delegate void OscPackegeEvent(ulong packageID, OscBundle bundle); 
+
     public sealed class OscPackageBuilder : IOscPackageBuilder
     {
         public readonly uint QueueIdentifier;
+
         private const int headerSize = 0x12;
         private const int maxPackageSize = 1472;
 
@@ -33,7 +36,7 @@ namespace Rug.Osc.Packaging
             }
         }
 
-        public event Action<ulong, OscBundle> BundleComplete;
+        public event OscPackegeEvent BundleComplete;
 
         public OscPackageBuilder(uint identifier, bool addPackageMessage)
         {

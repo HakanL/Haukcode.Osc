@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -16,7 +17,10 @@ namespace Rug.Osc.Ahoy
         private readonly List<IPAddress> potentialAdapters = new List<IPAddress>();
         private readonly List<IAhoyQuery> queriesList = new List<IAhoyQuery>();
         private readonly object queriesListSyncLock = new object();
+
         public int Count { get { return ahoyServiceInfoList.Count; } }
+
+        public string Namespace { get; private set; } 
 
         public AhoyServiceInfo this[int index] { get { return ahoyServiceInfoList[index]; } }
 
@@ -30,8 +34,10 @@ namespace Rug.Osc.Ahoy
 
         public event AhoyServiceEvent ServiceExpired;
 
-        public AhoyQueryMultipleAdapters(params IPAddress[] adapterAddress)
+        public AhoyQueryMultipleAdapters(string @namespace, params IPAddress[] adapterAddress)
         {
+            Namespace = @namespace; 
+
             potentialAdapters.AddRange(adapterAddress);
         }
 
@@ -56,25 +62,53 @@ namespace Rug.Osc.Ahoy
                         queriesList.Add(query);
                     }
                 }
-                
-                foreach (NetworkInterface @interface in NetworkInterface.GetAllNetworkInterfaces())
+
+                try
                 {
-                    var ipProps = @interface.GetIPProperties();
-
-                    foreach (var ip in ipProps.UnicastAddresses)
+                    foreach (NetworkInterface @interface in NetworkInterface.GetAllNetworkInterfaces())
                     {
-                        if (potentialAdapters.Count > 0 && potentialAdapters.Contains(ip.Address) == false)
+                        var ipProps = @interface.GetIPProperties();
+
+                        foreach (var ip in ipProps.UnicastAddresses)
+                        {
+                            if (potentialAdapters.Count > 0 && potentialAdapters.Contains(ip.Address) == false)
+                            {
+                                continue;
+                            }
+
+                            if (((ip.Address.AddressFamily != AddressFamily.InterNetwork) &&
+                                (OnlyIpV4 == false && ip.Address.AddressFamily == AddressFamily.InterNetworkV6)))
+                            {
+                                continue;
+                            }
+
+                            IAhoyQuery query = CreateQuery(@interface, ip.Address);
+
+                            if (query == null)
+                            {
+                                continue;
+                            }
+
+                            queriesList.Add(query);
+                        }
+                    }
+                }
+                catch (EntryPointNotFoundException ex)
+                {
+                    foreach (IPAddress ipAddress in LocalIPAddresses())
+                    {
+                        if (potentialAdapters.Count > 0 && potentialAdapters.Contains(ipAddress) == false)
                         {
                             continue;
                         }
 
-                        if (((ip.Address.AddressFamily != AddressFamily.InterNetwork) &&
-                            (OnlyIpV4 == false && ip.Address.AddressFamily == AddressFamily.InterNetworkV6)))
+                        if (((ipAddress.AddressFamily != AddressFamily.InterNetwork) &&
+                            (OnlyIpV4 == false && ipAddress.AddressFamily == AddressFamily.InterNetworkV6)))
                         {
                             continue;
                         }
 
-                        IAhoyQuery query = CreateQuery(@interface, ip.Address);
+                        IAhoyQuery query = CreateQuery(null, ipAddress);
 
                         if (query == null)
                         {
@@ -90,6 +124,13 @@ namespace Rug.Osc.Ahoy
                     query.BeginSearch(sendInterval);
                 }
             }
+        }
+
+        private IPAddress[] LocalIPAddresses()
+        {
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+
+            return host.AddressList;
         }
 
         public void Dispose()
@@ -138,7 +179,7 @@ namespace Rug.Osc.Ahoy
         {
             try
             {
-                IAhoyQuery query = AhoyQuery.CreateQuery(adapterAddress);
+                IAhoyQuery query = AhoyQuery.CreateQuery(Namespace, adapterAddress);
 
                 query.AnyReceived += OnAnyReceived;
 

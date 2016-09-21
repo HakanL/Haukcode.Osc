@@ -196,7 +196,7 @@ namespace Rug.Osc
 			{
 				thread.Join(1000);
 
-				throw new Exception("THIS IS A NON-ERRROR, SHOULD NOT HAPPEN IN WINDOWS!!!");
+				//throw new Exception("THIS IS A NON-ERRROR, SHOULD NOT HAPPEN IN WINDOWS!!!");
 			}
 
             if (serialPort != null &&
