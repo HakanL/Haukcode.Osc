@@ -176,6 +176,11 @@ namespace Rug.Osc
 
         #endregion
 
+        public override string ToString()
+        {
+            return "RX " + LocalAddress + ":" + LocalPort + " <- " + RemoteEndPoint.Port;
+        }
+
         #region Protected Overrides
 
         protected override void OnConnect()

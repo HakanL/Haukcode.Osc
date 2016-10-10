@@ -204,17 +204,30 @@ namespace Rug.Osc
 
 		}
 
-		/// <summary>
-		/// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
-		/// </summary>
-		/// <param name="local">the ip address to send from</param>
-		/// <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>
-		/// <param name="remote">the ip address to send to</param>
-		/// <param name="remotePort">the port to send to</param>
-		/// <param name="timeToLive">TTL value to apply to packets</param>
-		/// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
-		/// <param name="maxPacketSize">the maximum packet size of any message</param>
-		public OscSender(IPAddress local, int localPort, IPAddress remote, int remotePort, int timeToLive, int messageBufferSize, int maxPacketSize)
+        /// <summary>
+        /// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
+        /// </summary>
+        /// <param name="local">the ip address to send from</param>
+        /// <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>
+        /// <param name="remote">the ip address to send to</param>
+        /// <param name="remotePort">the port to send to</param>
+        public OscSender(IPAddress local, int localPort, IPAddress remote, int remotePort)
+            : this(local, localPort, remote, remotePort, DefaultMulticastTimeToLive, DefaultMessageBufferSize, DefaultPacketSize)
+        {
+
+        }
+
+        /// <summary>
+        /// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
+        /// </summary>
+        /// <param name="local">the ip address to send from</param>
+        /// <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>
+        /// <param name="remote">the ip address to send to</param>
+        /// <param name="remotePort">the port to send to</param>
+        /// <param name="timeToLive">TTL value to apply to packets</param>
+        /// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+        /// <param name="maxPacketSize">the maximum packet size of any message</param>
+        public OscSender(IPAddress local, int localPort, IPAddress remote, int remotePort, int timeToLive, int messageBufferSize, int maxPacketSize)
 			: base(local, localPort, remote, remotePort, timeToLive)
 		{
 			// set the default time out

@@ -41,6 +41,7 @@ namespace Rug.Osc.Packaging
         public OscPackageBuilder(uint identifier, bool addPackageMessage)
         {
             QueueIdentifier = identifier;
+
             this.addPackageMessage = addPackageMessage;
 
             Flush();
@@ -67,7 +68,7 @@ namespace Rug.Osc.Packaging
 
         public void AddPacketIDMessage(ulong id, bool @return)
         {
-            this.packets.Add(new OscMessage(@return == false ? OscPackage.PackageAddress : OscPackage.ReturnAddress, unchecked((long)id)));
+            this.packets.Add(CreatePacketIDMessage(id, @return));
 
             packageSize += packageIdentifierSize + 4;
         }
@@ -107,6 +108,11 @@ namespace Rug.Osc.Packaging
                     AddPacketIDMessage(this.longPackageID, false);
                 }
             }
+        }
+
+        public static OscMessage CreatePacketIDMessage(ulong id, bool @return)
+        {
+            return new OscMessage(@return == false ? OscPackage.PackageAddress : OscPackage.ReturnAddress, unchecked((long)id));
         }
     }
 }

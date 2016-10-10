@@ -10,12 +10,14 @@ namespace Rug.Osc.Packaging
     public sealed class OscPackageListener : IDisposable
     {
         private readonly Dictionary<ulong, DateTime> activePackages = new Dictionary<ulong, DateTime>();
-        private readonly OscAddressManager addressManager;
         private readonly ManualResetEvent expungeComplete = new ManualResetEvent(true);
-        private readonly OscReceiver receiver;
         private readonly object syncLock = new object();
         private readonly List<ulong> toRemove = new List<ulong>();
         private Thread thread;
+
+        public readonly OscAddressManager OscAddressManager;
+
+        public readonly OscReceiver OscReceiver;
 
         public event Action<IPEndPoint> BeginSessionContext;
 
@@ -34,43 +36,43 @@ namespace Rug.Osc.Packaging
 
         public OscPackageListener(int port) : this()
         {
-            receiver = new OscReceiver(port);
+            OscReceiver = new OscReceiver(port);
         }
 
         public OscPackageListener(IPAddress address, int port) : this()
         {
-            receiver = new OscReceiver(address, port);
+            OscReceiver = new OscReceiver(address, port);
         }
 
         public OscPackageListener(int port, int messageBufferSize, int maxPacketSize) : this()
         {
-            receiver = new OscReceiver(port, messageBufferSize, maxPacketSize);
+            OscReceiver = new OscReceiver(port, messageBufferSize, maxPacketSize);
         }
 
         public OscPackageListener(IPAddress address, IPAddress multicast, int port) : this()
         {
-            receiver = new OscReceiver(address, multicast, port);
+            OscReceiver = new OscReceiver(address, multicast, port);
         }
 
         public OscPackageListener(IPAddress address, int port, int messageBufferSize, int maxPacketSize) : this()
         {
-            receiver = new OscReceiver(address, port, messageBufferSize, maxPacketSize);
+            OscReceiver = new OscReceiver(address, port, messageBufferSize, maxPacketSize);
         }
 
         public OscPackageListener(IPAddress address, IPAddress multicast, int port, int messageBufferSize, int maxPacketSize) : this()
         {
-            receiver = new OscReceiver(address, multicast, port, messageBufferSize, maxPacketSize);
+            OscReceiver = new OscReceiver(address, multicast, port, messageBufferSize, maxPacketSize);
         }
 
         private OscPackageListener()
         {
-            addressManager = new OscAddressManager();
-            addressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(this.OnUnknownAddress);
+            OscAddressManager = new OscAddressManager();
+            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(this.OnUnknownAddress);
         }
 
         public void Attach(string address, OscMessageEvent @event)
         {
-            addressManager.Attach(address, @event);
+            OscAddressManager.Attach(address, @event);
         }
 
         public void Cancel(ulong id)
@@ -91,25 +93,26 @@ namespace Rug.Osc.Packaging
 
         public void Close()
         {
-            receiver.Close();
+            OscReceiver.Close();
         }
 
         public void Connect()
         {
-            receiver.Connect();
+            OscReceiver.Connect();
             thread = new Thread(new ThreadStart(this.ListenLoop));
+            thread.Name = "Osc Package Listener " + OscReceiver.ToString();
             thread.Start();
         }
 
         public void Detach(string address, OscMessageEvent @event)
         {
-            addressManager.Detach(address, @event);
+            OscAddressManager.Detach(address, @event);
         }
 
         public void Dispose()
         {
-            receiver.Dispose();
-            addressManager.Dispose();
+            OscReceiver.Dispose();
+            OscAddressManager.Dispose();
         }
 
         public void Expunge()
@@ -179,11 +182,11 @@ namespace Rug.Osc.Packaging
         {
             try
             {
-                while (receiver.State != OscSocketState.Closed)
+                while (OscReceiver.State != OscSocketState.Closed)
                 {
-                    if (receiver.State == OscSocketState.Connected)
+                    if (OscReceiver.State == OscSocketState.Connected)
                     {
-                        OscPacket packet = this.receiver.Receive();
+                        OscPacket packet = this.OscReceiver.Receive();
 
                         BeginSessionContext?.Invoke(packet.Origin);
 
@@ -192,11 +195,11 @@ namespace Rug.Osc.Packaging
                             continue;
                         }
 
-                        switch (addressManager.ShouldInvoke(packet))
+                        switch (OscAddressManager.ShouldInvoke(packet))
                         {
                             case OscPacketInvokeAction.Invoke:
                                 PacketReceived?.Invoke(packet);
-                                addressManager.Invoke(packet);
+                                OscAddressManager.Invoke(packet);
                                 break;
                         }
 
@@ -206,7 +209,7 @@ namespace Rug.Osc.Packaging
             }
             catch (Exception ex)
             {
-                if (ex is OscSocketStateException && receiver.State != OscSocketState.Connected)
+                if (ex is OscSocketStateException && OscReceiver.State != OscSocketState.Connected)
                 {
                     return;
                 }

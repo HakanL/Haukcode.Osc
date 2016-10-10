@@ -27,8 +27,9 @@ namespace Rug.Osc
 	/// </summary>
 	public class OscListener : IDisposable
 	{
-		readonly OscAddressManager addressManager = new OscAddressManager();
-		readonly OscReceiver receiver;
+		public readonly OscAddressManager OscAddressManager = new OscAddressManager();
+        public readonly OscReceiver OscReceiver;
+
 		Thread thread;
 
 		/// <summary>
@@ -51,9 +52,9 @@ namespace Rug.Osc
         /// <param name="maxPacketSize">the maximum packet size of any message</param>
         public OscListener(IPAddress address, IPAddress multicast, int port, int messageBufferSize, int maxPacketSize)		
 		{
-			receiver = new OscReceiver(address, multicast, port, messageBufferSize, maxPacketSize);
+			OscReceiver = new OscReceiver(address, multicast, port, messageBufferSize, maxPacketSize);
 
-			addressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+			OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
 		}
 
         /// <summary>
@@ -65,9 +66,9 @@ namespace Rug.Osc
         /// <param name="maxPacketSize">the maximum packet size of any message</param>
         public OscListener(IPAddress address, int port, int messageBufferSize, int maxPacketSize)
         {
-			receiver = new OscReceiver(address, port, messageBufferSize, maxPacketSize);
+			OscReceiver = new OscReceiver(address, port, messageBufferSize, maxPacketSize);
 
-			addressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+			OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
 		}
 
         /// <summary>
@@ -77,9 +78,9 @@ namespace Rug.Osc
         /// <param name="port">the port to listen on</param>
 		public OscListener(IPAddress address, int port)
         {
-			receiver = new OscReceiver(address, port);
+			OscReceiver = new OscReceiver(address, port);
 
-			addressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+			OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
         }
 
 		/// <summary>
@@ -90,9 +91,9 @@ namespace Rug.Osc
 		/// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
 		public OscListener(IPAddress address, IPAddress multicast, int port)
 		{
-			receiver = new OscReceiver(address, multicast, port);
+			OscReceiver = new OscReceiver(address, multicast, port);
 
-			addressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+			OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
 		}
 
         /// <summary>
@@ -103,9 +104,9 @@ namespace Rug.Osc
         /// <param name="maxPacketSize">the maximum packet size of any message</param>
 		public OscListener(int port, int messageBufferSize, int maxPacketSize)            
         {
-			receiver = new OscReceiver(port, messageBufferSize, maxPacketSize);
+			OscReceiver = new OscReceiver(port, messageBufferSize, maxPacketSize);
 
-			addressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+			OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
 		}
 
         /// <summary>
@@ -114,9 +115,9 @@ namespace Rug.Osc
         /// <param name="port">the port to listen on</param>
 		public OscListener(int port)
         {
-			receiver = new OscReceiver(port);
+			OscReceiver = new OscReceiver(port);
 
-			addressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+			OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
 		}
 
         #endregion
@@ -126,11 +127,12 @@ namespace Rug.Osc
 		/// </summary>
 		public void Connect()
 		{
-			receiver.Connect();
+			OscReceiver.Connect();
 			
 			thread = new Thread(new ThreadStart(ListenLoop));
+            thread.Name = "Osc Listener " + OscReceiver.ToString();
 
-			thread.Start();
+            thread.Start();
 		}
 
 		/// <summary>
@@ -138,7 +140,7 @@ namespace Rug.Osc
 		/// </summary>
 		public void Close()
 		{
-			receiver.Close(); 			
+			OscReceiver.Close(); 			
 		}
 
 		/// <summary>
@@ -146,8 +148,8 @@ namespace Rug.Osc
 		/// </summary>
 		public void Dispose()
 		{
-			receiver.Dispose();
-			addressManager.Dispose(); 
+			OscReceiver.Dispose();
+			OscAddressManager.Dispose(); 
 		}
 
 		/// <summary>
@@ -157,7 +159,7 @@ namespace Rug.Osc
 		/// <param name="event">the event to attach</param>
 		public void Attach(string address, OscMessageEvent @event)
 		{
-			addressManager.Attach(address, @event); 
+			OscAddressManager.Attach(address, @event); 
 		}
 
 		/// <summary>
@@ -167,36 +169,33 @@ namespace Rug.Osc
 		/// <param name="event">the event to remove</param>
 		public void Detach(string address, OscMessageEvent @event)
 		{
-			addressManager.Detach(address, @event); 
+			OscAddressManager.Detach(address, @event); 
 		}
 
 		void OnUnknownAddress(object sender, UnknownAddressEventArgs e)
 		{
-			if (UnknownAddress != null)
-			{
-				UnknownAddress(this, e); 
-			}
-		}
+            UnknownAddress?.Invoke(this, e);
+        }
 
 		private void ListenLoop()
 		{
 			try
 			{
-				while (receiver.State != OscSocketState.Closed)
+				while (OscReceiver.State != OscSocketState.Closed)
 				{
 					// if we are in a state to receive
-					if (receiver.State == OscSocketState.Connected)
+					if (OscReceiver.State == OscSocketState.Connected)
 					{
 						// get the next message 
 						// this will block until one arrives or the socket is closed
-						OscPacket packet = receiver.Receive();
+						OscPacket packet = OscReceiver.Receive();
 
                         PacketReceived?.Invoke(packet); 
 
-                        switch (addressManager.ShouldInvoke(packet))
+                        switch (OscAddressManager.ShouldInvoke(packet))
 						{
 							case OscPacketInvokeAction.Invoke:
-								addressManager.Invoke(packet);
+								OscAddressManager.Invoke(packet);
 								break;
 							case OscPacketInvokeAction.DontInvoke:
 								break;

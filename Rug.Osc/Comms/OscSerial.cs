@@ -140,22 +140,27 @@ namespace Rug.Osc
 		{
 			while (shouldExit == false)
 			{
-				if (serialPort.BytesToRead == 0)
-				{
-					Thread.CurrentThread.Join(1);
-					continue;
-				}
+                try
+                {
+                    //if (serialPort.BytesToRead == 0)
+                    //{
+                    //    Thread.CurrentThread.Join(1);
+                    //    continue;
+                    //}
 
-				ReceivedBytes(ref packetBytes, ref readBuffer);
+                    ReceivedBytes(ref packetBytes, ref readBuffer);
+                }
+                catch { } 
 			}
 		}
 
 		private void ReceivedBytes(ref byte[] packetBytes, ref byte[] readBuffer)
 		{
-			// Fetch bytes from serial port
-			int bytesToRead = Math.Min(serialPort.BytesToRead, readBuffer.Length);
+            // Fetch bytes from serial port
+            //int bytesToRead = Math.Min(serialPort.BytesToRead, readBuffer.Length); // Don't use BytesToRead as it is not mono compatible
+            int bytesToRead = readBuffer.Length;
 
-			serialPort.Read(readBuffer, 0, bytesToRead);
+            bytesToRead = serialPort.Read(readBuffer, 0, bytesToRead);
 
 			if (Statistics != null)
 			{
@@ -179,11 +184,8 @@ namespace Rug.Osc
 						Statistics.ReceiveErrors.Increment(1);
 					}
 
-					if (PacketRecived != null)
-					{
-						PacketRecived(oscPacket);
-					}
-				}
+                    PacketRecived?.Invoke(oscPacket);
+                }
 			}
 			while (processed < bytesToRead);
 		}
@@ -191,13 +193,6 @@ namespace Rug.Osc
 		public void Close()
 		{
 			shouldExit = true;
-
-			if (thread != null)
-			{
-				thread.Join(1000);
-
-				//throw new Exception("THIS IS A NON-ERRROR, SHOULD NOT HAPPEN IN WINDOWS!!!");
-			}
 
             if (serialPort != null &&
                 serialPort.IsOpen == true)
@@ -220,6 +215,13 @@ namespace Rug.Osc
                 // should be safe to close now 
                 port.Close();
 			}
+
+            if (thread != null)
+            {
+                thread.Join(1000);
+
+                //throw new Exception("THIS IS A NON-ERRROR, SHOULD NOT HAPPEN IN WINDOWS!!!");
+            }
 
             serialPort = null;
         }
