@@ -33,10 +33,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Rug.Osc.Version.cs">
+      <Link>Properties\Rug.Osc.Version.cs</Link>
+    </Compile>
     <Compile Include="AhoyConstants.cs" />
     <Compile Include="AhoyMessage.cs" />
     <Compile Include="AhoyQuery.cs" />

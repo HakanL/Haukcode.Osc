@@ -26,8 +26,8 @@ namespace Rug.Osc
 	/// <summary>
 	/// Manages osc address event listening
 	/// </summary>
-	public sealed class OscAddressManager : IDisposable
-	{
+	public sealed class OscAddressManager : IOscAddressManager
+    {
 		readonly object syncLock = new object(); 
 
 		#region Private Members
@@ -78,7 +78,7 @@ namespace Rug.Osc
 		/// <summary>
 		/// Attach an event listener on to the given address
 		/// </summary>
-		/// <param name="address">the address of the contianer</param>
+		/// <param name="address">the address of the container</param>
 		/// <param name="event">the event to attach</param>
 		public void Attach(string address, OscMessageEvent @event)
 		{
@@ -205,7 +205,7 @@ namespace Rug.Osc
 		#region Should Invoke
 
 		/// <summary>
-		/// Determin if the packet should be invoked
+		/// Determine if the packet should be invoked
 		/// </summary>
 		/// <param name="packet">A packet</param>
 		/// <returns>The appropriate action that should be taken with the packet</returns>

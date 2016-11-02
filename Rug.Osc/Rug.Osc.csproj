@@ -41,6 +41,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Rug.Osc.Version.cs">
+      <Link>Properties\Rug.Osc.Version.cs</Link>
+    </Compile>
     <Compile Include="Comms\OscFileReader.cs" />
     <Compile Include="Comms\IOscPacketReceiver.cs" />
     <Compile Include="Comms\IOscPacketSender.cs" />
@@ -52,6 +55,7 @@
     <Compile Include="Comms\OscSocketException.cs" />
     <Compile Include="Comms\OscListener.cs" />
     <Compile Include="Comms\OscUdp.cs" />
+    <Compile Include="Core\IOscAddressManager.cs" />
     <Compile Include="OscHelper.cs" />
     <Compile Include="Slip\SlipBytes.cs" />
     <Compile Include="Slip\SlipPacketReader.cs" />

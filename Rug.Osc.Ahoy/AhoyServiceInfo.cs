@@ -4,9 +4,8 @@ using System.Net;
 namespace Rug.Osc.Ahoy
 {
     /// <summary>
-    /// Struct AhoyServiceInfo
+    /// Ahoy Service Information
     /// </summary>
-    /// <seealso cref="System.IEquatable{Rug.Osc.Ahoy.AhoyServiceInfo}" />
     public class AhoyServiceInfo : IEquatable<AhoyServiceInfo>
     {
         private readonly int expiryPeriod;

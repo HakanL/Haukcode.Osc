@@ -235,6 +235,14 @@ namespace Rug.Osc.Ahoy
             }
         }
 
+        public void BeginEndSearch()
+        {
+            lock (syncLock)
+            {
+                isSearching = false;
+            }
+        }
+
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>

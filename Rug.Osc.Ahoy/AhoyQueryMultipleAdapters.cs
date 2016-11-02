@@ -151,6 +151,19 @@ namespace Rug.Osc.Ahoy
             }
         }
 
+        public void BeginEndSearch()
+        {
+            lock (queriesListSyncLock)
+            {
+                foreach (AhoyQuerySingleAdapter query in queriesList)
+                {
+                    query.BeginEndSearch();
+                }
+
+                queriesList.Clear();
+            }
+        }
+
         public IEnumerator<AhoyServiceInfo> GetEnumerator()
         {
             return ahoyServiceInfoList.GetEnumerator();
