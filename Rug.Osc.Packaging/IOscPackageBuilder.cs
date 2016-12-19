@@ -1,8 +1,16 @@
 ﻿namespace Rug.Osc.Packaging
 {
+    public enum OscPackageBuilderMode
+    {
+        Immediate,
+        Bundled,
+        Packaged,
+        PackagedAndQueued, 
+    }
+
     public interface IOscPackageBuilder
     {
-        bool ImmediateMode { get; set; }
+        OscPackageBuilderMode Mode { get; set; }
 
         void Add(params OscPacket[] packets);
 

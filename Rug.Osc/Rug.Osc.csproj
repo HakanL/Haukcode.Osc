@@ -54,6 +54,7 @@
     <Compile Include="Comms\OscSocketStateException.cs" />
     <Compile Include="Comms\OscSocketException.cs" />
     <Compile Include="Comms\OscListener.cs" />
+    <Compile Include="Comms\OscSyncListener.cs" />
     <Compile Include="Comms\OscUdp.cs" />
     <Compile Include="Core\IOscAddressManager.cs" />
     <Compile Include="OscHelper.cs" />

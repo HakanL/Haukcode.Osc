@@ -237,7 +237,7 @@ namespace Rug.Osc.Tests
 
 				bool result = OscAddress.IsValidAddressPattern(address);
 
-				Assert.IsTrue(result, String.Format("Failed to validate address pattern {0} '{1}'", i, address));
+				Assert.IsTrue(result, $"Failed to validate address pattern {i} '{address}'");
 			}
 		}
 
@@ -253,7 +253,7 @@ namespace Rug.Osc.Tests
 
 				bool result = OscAddress.IsValidAddressPattern(address);
 
-				Assert.IsFalse(result, String.Format("Incorrectly validated address pattern {0} '{1}'", i, address));
+				Assert.IsFalse(result, $"Incorrectly validated address pattern {i} '{address}'");
 			}
 		}
 
@@ -273,7 +273,7 @@ namespace Rug.Osc.Tests
 
 				OscAddress result = new OscAddress(address);
 
-				Assert.AreEqual(address, result.ToString_Rebuild(), String.Format("Failed to parse address pattern {0} '{1}'", i, address));
+				Assert.AreEqual(address, result.ToString_Rebuild(), $"Failed to parse address pattern {i} '{address}'");
 			}
 		}
 

@@ -1078,7 +1078,7 @@ namespace Rug.Osc
 					default:
 						// Unknown argument type
 						msg.error = OscPacketError.UnknownArguemntType;
-						msg.errorMessage = String.Format(Strings.Parser_UnknownArgumentType, type, i);
+						msg.errorMessage = string.Format(Strings.Parser_UnknownArgumentType, type, i);
 
 						return false;
 				}

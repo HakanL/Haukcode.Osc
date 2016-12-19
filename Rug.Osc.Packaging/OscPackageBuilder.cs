@@ -12,39 +12,52 @@ namespace Rug.Osc.Packaging
         private const int headerSize = 0x12;
         private const int maxPackageSize = 1472;
 
-        private readonly bool addPackageMessage;
         private readonly List<OscPacket> packets = new List<OscPacket>();
 
-        private bool immediateMode = false;
+        private OscPackageBuilderMode oscPackageBuilderMode = OscPackageBuilderMode.Bundled;
+
         private ulong longPackageID;
         private int packageID = 0;
         private int packageIdentifierSize = new OscMessage(OscPackage.PackageAddress, (long)0).SizeInBytes;
         private int packageSize = 0;
 
-        public bool ImmediateMode
+        public OscPackageBuilderMode Mode
         {
             get
             {
-                return immediateMode;
+                return oscPackageBuilderMode;
             }
 
             set
             {
-                Flush();
+                if (value == oscPackageBuilderMode)
+                {
+                    return;
+                }
 
-                immediateMode = value;
+                if (oscPackageBuilderMode == OscPackageBuilderMode.PackagedAndQueued)
+                {
+                    Flush();
+                }
+
+                OscPackageBuilderMode oldMode = oscPackageBuilderMode; 
+
+                oscPackageBuilderMode = value;
+
+                if ((oldMode != OscPackageBuilderMode.Packaged && oldMode != OscPackageBuilderMode.PackagedAndQueued) &&
+                    (value == OscPackageBuilderMode.Packaged || value == OscPackageBuilderMode.PackagedAndQueued))
+                {
+                    AddPacketHeader();
+                }
+
             }
         }
 
         public event OscPackegeEvent BundleComplete;
 
-        public OscPackageBuilder(uint identifier, bool addPackageMessage)
+        public OscPackageBuilder(uint identifier)
         {
             QueueIdentifier = identifier;
-
-            this.addPackageMessage = addPackageMessage;
-
-            Flush();
         }
 
         public void Add(params OscPacket[] packets)
@@ -53,6 +66,13 @@ namespace Rug.Osc.Packaging
 
             foreach (OscPacket packet in packets)
             {
+                if (oscPackageBuilderMode == OscPackageBuilderMode.Immediate)
+                {
+                    BundleComplete?.Invoke(longPackageID, packet is OscBundle ? packet as OscBundle : new OscBundle(DateTime.Now, packet));
+
+                    continue; 
+                }
+
                 size = packet.SizeInBytes + 4;
 
                 if (packageSize + size >= maxPackageSize)
@@ -68,6 +88,12 @@ namespace Rug.Osc.Packaging
 
         public void AddPacketIDMessage(ulong id, bool @return)
         {
+            if (oscPackageBuilderMode == OscPackageBuilderMode.Immediate ||
+                oscPackageBuilderMode == OscPackageBuilderMode.Bundled)
+            {
+                return; 
+            }
+
             this.packets.Add(CreatePacketIDMessage(id, @return));
 
             packageSize += packageIdentifierSize + 4;
@@ -75,14 +101,26 @@ namespace Rug.Osc.Packaging
 
         public void Flush()
         {
-            if (addPackageMessage == true)
+            if (oscPackageBuilderMode == OscPackageBuilderMode.Immediate)
+            {
+                return; 
+            }
+
+            if (oscPackageBuilderMode != OscPackageBuilderMode.Bundled)
             {
                 if (packets.Count == 1)
                 {
                     return;
                 }
+
+                if (packets.Count == 0)
+                {
+                    AddPacketHeader();
+                    return; 
+                }
             }
-            else if (packets.Count == 0)
+
+            if (packets.Count == 0)
             {
                 return;
             }
@@ -95,19 +133,21 @@ namespace Rug.Osc.Packaging
             }
             finally
             {
-                packets.Clear();
-
-                packageSize = headerSize;
-
-                longPackageID = unchecked((((ulong)QueueIdentifier << 32) & 0xFFFFFFFF00000000) | ((ulong)packageID & 0x00000000FFFFFFFF));
-
-                packageID++;
-
-                if (addPackageMessage == true)
-                {
-                    AddPacketIDMessage(this.longPackageID, false);
-                }
+                AddPacketHeader();
             }
+        }
+
+        private void AddPacketHeader()
+        {
+            packets.Clear();
+
+            packageSize = headerSize;
+
+            longPackageID = unchecked((((ulong)QueueIdentifier << 32) & 0xFFFFFFFF00000000) | ((ulong)packageID & 0x00000000FFFFFFFF));
+
+            packageID++;
+
+            AddPacketIDMessage(this.longPackageID, false);
         }
 
         public static OscMessage CreatePacketIDMessage(ulong id, bool @return)

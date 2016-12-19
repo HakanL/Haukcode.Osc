@@ -269,8 +269,8 @@ namespace Rug.Osc
 
 			string list = value.Substring(index, (value.Length - 1) - index);
 
-			string regex = String.Format("[{0}{1}]+", isNot ? "^" : String.Empty, EscapeString(list));
-			string rebuild = String.Format("[{0}{1}]", isNot ? "!" : String.Empty, list);
+			string regex = $"[{(isNot ? "^" : String.Empty)}{EscapeString(list)}]+";
+			string rebuild = $"[{(isNot ? "!" : String.Empty)}{list}]";
 
 			return new OscAddressPart(OscAddressPartType.CharList, value, rebuild, regex);
 		}

@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Rug.Osc
 {
     /// <summary>
     /// Manages osc address event listening
     /// </summary>
-    public interface IOscAddressManager : IDisposable
+    public interface IOscAddressManager : IEnumerable<OscAddress>, IDisposable
     {
         /// <summary>
         /// Bundle invoke mode, the default is OscBundleInvokeMode.InvokeAllBundlesImmediately
@@ -70,5 +71,13 @@ namespace Rug.Osc
         /// <param name="packet">A packet</param>
         /// <returns>The appropriate action that should be taken with the packet</returns>
         OscPacketInvokeAction ShouldInvoke(OscPacket packet);
+
+        bool Contains(OscAddress oscAddress);
+
+        bool Contains(string oscAddress);
+
+        bool ContainsLiteral(string oscAddress);
+
+        bool ContainsPattern(OscAddress oscAddress);
     }
 }

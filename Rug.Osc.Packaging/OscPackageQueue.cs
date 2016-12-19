@@ -30,18 +30,16 @@ namespace Rug.Osc.Packaging
 
         public int Count { get { return queue.Count; } }
 
-        public bool ImmediateMode
+        public OscPackageBuilderMode Mode
         {
             get
             {
-                return builder.ImmediateMode;
+                return builder.Mode;
             }
 
             set
             {
-                Flush();
-
-                builder.ImmediateMode = value;
+                builder.Mode = value;
             }
         }
 
@@ -61,14 +59,14 @@ namespace Rug.Osc.Packaging
 
             retryFrequency = (long)(frequency / 10);
 
-            builder = new OscPackageBuilder(identifier, true);
+            builder = new OscPackageBuilder(identifier);
             builder.BundleComplete += Builder_BundleComplete;
 
             QueueIdentifier = identifier;
 
             this.sender = new OscSender(adapterAddress, localPort, address, port);
 
-            this.bundleListener = bundleListener;
+            this.bundleListener = bundleListener; 
 
             bundleListener.Attach(OscPackage.ReturnAddress, OnReturnMessage);
         }
@@ -95,7 +93,7 @@ namespace Rug.Osc.Packaging
 
         public void SendPacketReturnMessage(ulong id)
         {
-            OscMessage message = OscPackageBuilder.CreatePacketIDMessage(id, true); 
+            OscMessage message = OscPackageBuilder.CreatePacketIDMessage(id, true);
 
             sender.Send(message);
 
@@ -129,7 +127,7 @@ namespace Rug.Osc.Packaging
         {
             BundleComplete?.Invoke(packetID, bundle); 
 
-            if (builder.ImmediateMode == true)
+            if (builder.Mode != OscPackageBuilderMode.PackagedAndQueued)
             {
                 sender.Send(bundle);
                 return;
@@ -170,6 +168,7 @@ namespace Rug.Osc.Packaging
 
         public void Dispose()
         {
+            bundleListener.Detach(OscPackage.ReturnAddress, OnReturnMessage);
             sender.Dispose();
             queue.Clear(); 
         }

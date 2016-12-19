@@ -43,7 +43,7 @@ namespace Rug.Osc
         #region Constructors
 
         /// <summary>
-        /// Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+        /// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
         /// </summary>
         /// <param name="address">the local ip address to listen to</param>
         /// <param name="multicast">a multicast address to join</param>
@@ -58,7 +58,7 @@ namespace Rug.Osc
 		}
 
         /// <summary>
-		/// Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
         /// </summary>
         /// <param name="address">the local ip address to listen to</param>
 		/// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
@@ -72,7 +72,7 @@ namespace Rug.Osc
 		}
 
         /// <summary>
-		/// Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
         /// </summary>
         /// <param name="address">the local ip address to listen to</param>
         /// <param name="port">the port to listen on</param>
@@ -84,7 +84,7 @@ namespace Rug.Osc
         }
 
 		/// <summary>
-		/// Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
 		/// </summary>
 		/// <param name="address">the local ip address to listen to</param>
 		/// <param name="multicast">a multicast address to join</param>
@@ -97,7 +97,7 @@ namespace Rug.Osc
 		}
 
         /// <summary>
-		/// Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
         /// </summary>
         /// <param name="port">the port to listen on</param>
         /// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
@@ -110,7 +110,7 @@ namespace Rug.Osc
 		}
 
         /// <summary>
-		/// Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+		/// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
         /// </summary>
         /// <param name="port">the port to listen on</param>
 		public OscListener(int port)
