@@ -32,7 +32,7 @@ namespace Rug.Osc.Ahoy
         /// TODO Edit XML Comment Template for SendPort
         public readonly int SendPort;
 
-        public readonly string Namespace; 
+        public readonly string Namespace;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AhoyService"/> class.
@@ -54,15 +54,15 @@ namespace Rug.Osc.Ahoy
         {
             if (address.Equals(AhoyConstants.Address) == true)
             {
-                return true; 
+                return true;
             }
 
             if (address.Equals(AhoyMessage.GetAhoyAddress(Namespace)) == true)
             {
-                return true; 
+                return true;
             }
 
-            return false; 
+            return false;
         }
     }
 
@@ -145,7 +145,7 @@ namespace Rug.Osc.Ahoy
             {
                 // we can only use the any (0.0.0.0) address to listen when in mono
                 listener = new OscListener(AhoyConstants.AhoyBroadcastPort);
-            }            
+            }
 
             listener.Attach(AhoyConstants.Address, OnAhoy);
 
@@ -159,7 +159,7 @@ namespace Rug.Osc.Ahoy
                 return;
             }
 
-            OnAhoy(e.Packet as OscMessage); 
+            OnAhoy(e.Packet as OscMessage);
         }
 
         /// <summary>
@@ -254,13 +254,13 @@ namespace Rug.Osc.Ahoy
                         const int headerSize = 0x12;
                         const int maxPackageSize = 1472;
 
-                        int byteCount = headerSize; 
+                        int byteCount = headerSize;
 
                         foreach (AhoyService service in services.Values)
                         {
                             if (service.IsValidForNamespace(message.Address) == false)
                             {
-                                continue; 
+                                continue;
                             }
 
                             OscMessage serviceResponse = AhoyMessage.CreateAhoyResponse(serviceIP, service.SendPort, service.ListenPort, service.Descriptor);
@@ -274,11 +274,11 @@ namespace Rug.Osc.Ahoy
                                 sender.Send(new OscBundle(DateTime.Now, response.ToArray()));
 
                                 response.Clear();
-                                byteCount = headerSize; 
+                                byteCount = headerSize;
                             }
 
                             response.Add(serviceResponse);
-                            byteCount += size; 
+                            byteCount += size;
                         }
 
                         if (response.Count > 1)

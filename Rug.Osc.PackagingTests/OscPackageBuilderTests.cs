@@ -1,11 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rug.Osc.Packaging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rug.Osc;
 
 namespace Rug.Osc.Packaging.Tests
 {
@@ -27,7 +20,7 @@ namespace Rug.Osc.Packaging.Tests
 
             OscPackageBuilder builder = new OscPackageBuilder(123) { Mode = OscPackageBuilderMode.PackagedAndQueued };
 
-            builder.Add(message); 
+            builder.Add(message);
 
             Assert.IsTrue(true);
         }

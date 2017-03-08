@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 
 namespace Rug.Osc
 {
@@ -12,12 +10,14 @@ namespace Rug.Osc
     {
         public readonly OscAddressManager OscAddressManager = new OscAddressManager();
         public readonly OscReceiver OscReceiver;
+
         /// <summary>
         /// This event will be raised whenever an unknown address is encountered
         /// </summary>
         public event EventHandler<UnknownAddressEventArgs> UnknownAddress;
 
         public event OscPacketEvent PacketReceived;
+
         public event OscPacketEvent PacketProcessed;
 
         #region Constructors
@@ -100,7 +100,7 @@ namespace Rug.Osc
             OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
         }
 
-        #endregion
+        #endregion Constructors
 
         /// <summary>
         /// Connect the receiver and start listening
@@ -138,7 +138,7 @@ namespace Rug.Osc
         }
 
         /// <summary>
-        /// Detach an event listener 
+        /// Detach an event listener
         /// </summary>
         /// <param name="address">the address of the container</param>
         /// <param name="event">the event to remove</param>
@@ -147,8 +147,8 @@ namespace Rug.Osc
             OscAddressManager.Detach(address, @event);
         }
 
-        void OnUnknownAddress(object sender, UnknownAddressEventArgs e)
-        {            
+        private void OnUnknownAddress(object sender, UnknownAddressEventArgs e)
+        {
             UnknownAddress?.Invoke(this, e);
         }
 
@@ -159,7 +159,7 @@ namespace Rug.Osc
             {
                 OscPacket packet;
 
-                // try and get the next message 
+                // try and get the next message
                 bool packetReceived = OscReceiver.TryReceive(out packet);
 
                 if (packetReceived == false)
@@ -174,12 +174,16 @@ namespace Rug.Osc
                     case OscPacketInvokeAction.Invoke:
                         OscAddressManager.Invoke(packet);
                         break;
+
                     case OscPacketInvokeAction.DontInvoke:
                         break;
+
                     case OscPacketInvokeAction.HasError:
                         break;
+
                     case OscPacketInvokeAction.Pospone:
                         break;
+
                     default:
                         break;
                 }

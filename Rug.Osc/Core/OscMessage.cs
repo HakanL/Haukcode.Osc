@@ -190,17 +190,17 @@ namespace Rug.Osc
 
 			if (Helper.IsNullOrWhiteSpace(this.address) == true)
 			{
-				throw new ArgumentNullException("address");
+				throw new ArgumentNullException(nameof(address));
 			}
 
 			if (OscAddress.IsValidAddressPattern(address) == false)
 			{
-				throw new ArgumentException(string.Format(Strings.OscAddress_NotAValidOscAddress, address), "address");
+				throw new ArgumentException(string.Format(Strings.OscAddress_NotAValidOscAddress, address), nameof(address));
 			}
 
 			if (args == null)
 			{
-				throw new ArgumentNullException("args");
+				throw new ArgumentNullException(nameof(args));
 			}
 
 			CheckArguments(arguments);
@@ -221,17 +221,17 @@ namespace Rug.Osc
 
 			if (Helper.IsNullOrWhiteSpace(this.address) == true)
 			{
-				throw new ArgumentNullException("address");
+				throw new ArgumentNullException(nameof(address));
 			}
 
 			if (OscAddress.IsValidAddressPattern(address) == false)
 			{
-				throw new ArgumentException(string.Format(Strings.OscAddress_NotAValidOscAddress, address), "address");
+				throw new ArgumentException(string.Format(Strings.OscAddress_NotAValidOscAddress, address), nameof(address));
 			}
 
 			if (args == null)
 			{
-				throw new ArgumentNullException("args");
+				throw new ArgumentNullException(nameof(args));
 			}
 
 			CheckArguments(arguments);
@@ -250,7 +250,7 @@ namespace Rug.Osc
 			{
 				if (obj == null)
 				{
-					throw new ArgumentNullException("args");
+					throw new ArgumentNullException(nameof(args));
 				}
 
 				if (obj is object[])
@@ -273,7 +273,7 @@ namespace Rug.Osc
 					!(obj is byte) &&
 					!(obj is byte[]))
 				{
-					throw new ArgumentException("Argument is of an invalid type.", "args");
+					throw new ArgumentException("Argument is of an invalid type.", nameof(args));
 				}
 			}
 		}
@@ -1451,7 +1451,16 @@ namespace Rug.Osc
 				}
 				else if (obj is float)
 				{
-					sb.Append(((float)obj).ToString(provider) + "f");
+				    float value = (float)obj;
+
+				    if (float.IsInfinity(value) == true || float.IsNaN(value) == true)
+				    {
+                        sb.Append(((float)obj).ToString(provider));
+                    }
+                    else
+				    {
+				        sb.Append(((float) obj).ToString(provider) + "f");
+				    }
 				}
 				else if (obj is double)
 				{
@@ -1736,7 +1745,7 @@ namespace Rug.Osc
 		/// </summary>
 		/// <param name="str">a string containing a message</param>
 		/// <returns>the parsed message</returns>
-		public static new OscMessage Parse(string str)
+		public new static OscMessage Parse(string str)
 		{
 			return Parse(str, CultureInfo.InvariantCulture);
 		}
@@ -1747,7 +1756,7 @@ namespace Rug.Osc
 		/// <param name="str">a string containing a message</param>
 		/// <param name="provider">the format provider to use</param>
 		/// <returns>the parsed message</returns>
-		public static new OscMessage Parse(string str, IFormatProvider provider)
+		public new static OscMessage Parse(string str, IFormatProvider provider)
 		{
 			if (Helper.IsNullOrWhiteSpace(str) == true)
 			{
@@ -1985,8 +1994,23 @@ namespace Rug.Osc
 				}
 			}
 
-			// parse float 
-			if (float.TryParse(argString, NumberStyles.Float, provider, out value_Float) == true)
+		    if (argString.Equals(float.PositiveInfinity.ToString(provider)) == true)
+		    {
+		        return float.PositiveInfinity; 
+		    }
+
+            if (argString.Equals(float.NegativeInfinity.ToString(provider)) == true)
+            {
+                return float.NegativeInfinity;
+            }
+
+            if (argString.Equals(float.NaN.ToString(provider)) == true)
+            {
+                return float.NaN;
+            }
+
+            // parse float 
+            if (float.TryParse(argString, NumberStyles.Float, provider, out value_Float) == true)
 			{
 				return value_Float;
 			}
@@ -2131,14 +2155,15 @@ namespace Rug.Osc
 		public OscMessage Clone()
 		{
 			string address = this.address; 
-			object[] args = arguments.Clone() as object[]; 
+			object[] args = arguments.Clone() as object[];
 
-			OscMessage message = new OscMessage(address, args);
-	
-			message.Origin = Origin;
-			message.TimeTag = TimeTag; 
-			
-			return message;
+		    OscMessage message = new OscMessage(address, args)
+		    {
+		        Origin = Origin,
+		        TimeTag = TimeTag
+		    };
+            
+		    return message;
 		}
 
 		object ICloneable.Clone()

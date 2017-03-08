@@ -10,7 +10,7 @@ namespace Rug.Osc.Ahoy
     {
         private readonly int expiryPeriod;
 
-        public readonly IPAddress NetworkAdapterIPAddress; 
+        public readonly IPAddress NetworkAdapterIPAddress;
 
         /// <summary>
         /// The address
@@ -57,8 +57,8 @@ namespace Rug.Osc.Ahoy
         /// <summary>
         /// The time stamp of most recent message.
         /// </summary>
-        public DateTime ExpiryDateTime { get; private set; } 
-        
+        public DateTime ExpiryDateTime { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AhoyServiceInfo"/> struct.
         /// </summary>
@@ -72,7 +72,7 @@ namespace Rug.Osc.Ahoy
         /// TODO Edit XML Comment Template for #ctor
         public AhoyServiceInfo(IPAddress networkAdapterIPAddress, IPAddress address, int listenPort, int sendPort, string descriptor, string @namespace, object[] properties, int expiryPeriod)
         {
-            NetworkAdapterIPAddress = networkAdapterIPAddress; 
+            NetworkAdapterIPAddress = networkAdapterIPAddress;
 
             Address = address;
             ListenPort = listenPort;
@@ -83,7 +83,7 @@ namespace Rug.Osc.Ahoy
             Properties = properties;
             this.expiryPeriod = expiryPeriod;
 
-            ExpiryDateTime = DateTime.Now.AddMilliseconds(expiryPeriod); 
+            ExpiryDateTime = DateTime.Now.AddMilliseconds(expiryPeriod);
         }
 
         public void Refresh()

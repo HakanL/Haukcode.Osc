@@ -5,8 +5,8 @@ namespace Rug.Osc
 {
     public class OscFileWriter : IDisposable, IOscPacketSender
 	{
-		private FileStream file;
-		private OscWriter writer;
+		private readonly FileStream file;
+		private readonly OscWriter writer;
 
 		public OscCommunicationStatistics Statistics { get; set; }
 

@@ -19,23 +19,23 @@
 using System;
 using System.Net;
 using System.Threading;
- 
+
 namespace Rug.Osc
 {
-	/// <summary>
-	/// Preforms common functions needed when listening for osc messages
-	/// </summary>
-	public class OscListener : IDisposable
-	{
-		public readonly OscAddressManager OscAddressManager = new OscAddressManager();
+    /// <summary>
+    /// Preforms common functions needed when listening for osc messages
+    /// </summary>
+    public class OscListener : IDisposable
+    {
+        public readonly OscAddressManager OscAddressManager = new OscAddressManager();
         public readonly OscReceiver OscReceiver;
 
-		Thread thread;
+        private Thread thread;
 
-		/// <summary>
-		/// This event will be raised whenever an unknown address is encountered
-		/// </summary>
-		public event EventHandler<UnknownAddressEventArgs> UnknownAddress;
+        /// <summary>
+        /// This event will be raised whenever an unknown address is encountered
+        /// </summary>
+        public event EventHandler<UnknownAddressEventArgs> UnknownAddress;
 
         public event OscPacketEvent PacketReceived;
         public event OscPacketEvent PacketProcessed;
@@ -50,12 +50,12 @@ namespace Rug.Osc
         /// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
         /// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
         /// <param name="maxPacketSize">the maximum packet size of any message</param>
-        public OscListener(IPAddress address, IPAddress multicast, int port, int messageBufferSize, int maxPacketSize)		
-		{
-			OscReceiver = new OscReceiver(address, multicast, port, messageBufferSize, maxPacketSize);
+        public OscListener(IPAddress address, IPAddress multicast, int port, int messageBufferSize, int maxPacketSize)
+        {
+            OscReceiver = new OscReceiver(address, multicast, port, messageBufferSize, maxPacketSize);
 
-			OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
-		}
+            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+        }
 
         /// <summary>
 		/// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
@@ -66,10 +66,10 @@ namespace Rug.Osc
         /// <param name="maxPacketSize">the maximum packet size of any message</param>
         public OscListener(IPAddress address, int port, int messageBufferSize, int maxPacketSize)
         {
-			OscReceiver = new OscReceiver(address, port, messageBufferSize, maxPacketSize);
+            OscReceiver = new OscReceiver(address, port, messageBufferSize, maxPacketSize);
 
-			OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
-		}
+            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+        }
 
         /// <summary>
 		/// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
@@ -78,23 +78,23 @@ namespace Rug.Osc
         /// <param name="port">the port to listen on</param>
 		public OscListener(IPAddress address, int port)
         {
-			OscReceiver = new OscReceiver(address, port);
+            OscReceiver = new OscReceiver(address, port);
 
-			OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
         }
 
-		/// <summary>
-		/// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
-		/// </summary>
-		/// <param name="address">the local ip address to listen to</param>
-		/// <param name="multicast">a multicast address to join</param>
-		/// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
-		public OscListener(IPAddress address, IPAddress multicast, int port)
-		{
-			OscReceiver = new OscReceiver(address, multicast, port);
+        /// <summary>
+        /// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
+        /// </summary>
+        /// <param name="address">the local ip address to listen to</param>
+        /// <param name="multicast">a multicast address to join</param>
+        /// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
+        public OscListener(IPAddress address, IPAddress multicast, int port)
+        {
+            OscReceiver = new OscReceiver(address, multicast, port);
 
-			OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
-		}
+            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+        }
 
         /// <summary>
 		/// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
@@ -102,12 +102,12 @@ namespace Rug.Osc
         /// <param name="port">the port to listen on</param>
         /// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
         /// <param name="maxPacketSize">the maximum packet size of any message</param>
-		public OscListener(int port, int messageBufferSize, int maxPacketSize)            
+		public OscListener(int port, int messageBufferSize, int maxPacketSize)
         {
-			OscReceiver = new OscReceiver(port, messageBufferSize, maxPacketSize);
+            OscReceiver = new OscReceiver(port, messageBufferSize, maxPacketSize);
 
-			OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
-		}
+            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+        }
 
         /// <summary>
 		/// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
@@ -115,106 +115,108 @@ namespace Rug.Osc
         /// <param name="port">the port to listen on</param>
 		public OscListener(int port)
         {
-			OscReceiver = new OscReceiver(port);
+            OscReceiver = new OscReceiver(port);
 
-			OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
-		}
+            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+        }
 
         #endregion
 
-		/// <summary>
-		/// Connect the receiver and start listening
-		/// </summary>
-		public void Connect()
-		{
-			OscReceiver.Connect();
-			
-			thread = new Thread(new ThreadStart(ListenLoop));
-            thread.Name = "Osc Listener " + OscReceiver.ToString();
+        /// <summary>
+        /// Connect the receiver and start listening
+        /// </summary>
+        public void Connect()
+        {
+            OscReceiver.Connect();
+
+            thread = new Thread(ListenLoop)
+            {
+                Name = "Osc Listener " + OscReceiver.ToString()
+            };
 
             thread.Start();
-		}
+        }
 
-		/// <summary>
-		/// Close the receiver
-		/// </summary>
-		public void Close()
-		{
-			OscReceiver.Close(); 			
-		}
+        /// <summary>
+        /// Close the receiver
+        /// </summary>
+        public void Close()
+        {
+            OscReceiver.Close();
+        }
 
-		/// <summary>
-		/// Dispose of all resources
-		/// </summary>
-		public void Dispose()
-		{
-			OscReceiver.Dispose();
-			OscAddressManager.Dispose(); 
-		}
+        /// <summary>
+        /// Dispose of all resources
+        /// </summary>
+        public void Dispose()
+        {
+            OscReceiver.Dispose();
+            OscAddressManager.Dispose();
+        }
 
-		/// <summary>
-		/// Attach an event listener on to the given address
-		/// </summary>
-		/// <param name="address">the address of the contianer</param>
-		/// <param name="event">the event to attach</param>
-		public void Attach(string address, OscMessageEvent @event)
-		{
-			OscAddressManager.Attach(address, @event); 
-		}
+        /// <summary>
+        /// Attach an event listener on to the given address
+        /// </summary>
+        /// <param name="address">the address of the contianer</param>
+        /// <param name="event">the event to attach</param>
+        public void Attach(string address, OscMessageEvent @event)
+        {
+            OscAddressManager.Attach(address, @event);
+        }
 
-		/// <summary>
-		/// Detach an event listener 
-		/// </summary>
-		/// <param name="address">the address of the container</param>
-		/// <param name="event">the event to remove</param>
-		public void Detach(string address, OscMessageEvent @event)
-		{
-			OscAddressManager.Detach(address, @event); 
-		}
+        /// <summary>
+        /// Detach an event listener 
+        /// </summary>
+        /// <param name="address">the address of the container</param>
+        /// <param name="event">the event to remove</param>
+        public void Detach(string address, OscMessageEvent @event)
+        {
+            OscAddressManager.Detach(address, @event);
+        }
 
-		void OnUnknownAddress(object sender, UnknownAddressEventArgs e)
-		{
+        private void OnUnknownAddress(object sender, UnknownAddressEventArgs e)
+        {
             UnknownAddress?.Invoke(this, e);
         }
 
-		private void ListenLoop()
-		{
-			try
-			{
-				while (OscReceiver.State != OscSocketState.Closed)
-				{
-					// if we are in a state to receive
-					if (OscReceiver.State == OscSocketState.Connected)
-					{
-						// get the next message 
-						// this will block until one arrives or the socket is closed
-						OscPacket packet = OscReceiver.Receive();
+        private void ListenLoop()
+        {
+            try
+            {
+                while (OscReceiver.State != OscSocketState.Closed)
+                {
+                    // if we are in a state to receive
+                    if (OscReceiver.State == OscSocketState.Connected)
+                    {
+                        // get the next message 
+                        // this will block until one arrives or the socket is closed
+                        OscPacket packet = OscReceiver.Receive();
 
-                        PacketReceived?.Invoke(packet); 
+                        PacketReceived?.Invoke(packet);
 
                         switch (OscAddressManager.ShouldInvoke(packet))
-						{
-							case OscPacketInvokeAction.Invoke:
-								OscAddressManager.Invoke(packet);
-								break;
-							case OscPacketInvokeAction.DontInvoke:
-								break;
-							case OscPacketInvokeAction.HasError:
-								break;
-							case OscPacketInvokeAction.Pospone:
-								break;
-							default:
-								break;
-						}
+                        {
+                            case OscPacketInvokeAction.Invoke:
+                                OscAddressManager.Invoke(packet);
+                                break;
+                            case OscPacketInvokeAction.DontInvoke:
+                                break;
+                            case OscPacketInvokeAction.HasError:
+                                break;
+                            case OscPacketInvokeAction.Pospone:
+                                break;
+                            default:
+                                break;
+                        }
 
-                        PacketProcessed?.Invoke(packet); 
+                        PacketProcessed?.Invoke(packet);
                     }
-				}
-			}
-			catch (Exception ex)
-			{
+                }
+            }
+            catch (Exception ex)
+            {
 
-			}
-		}
-	}
+            }
+        }
+    }
 }

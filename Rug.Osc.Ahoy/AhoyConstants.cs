@@ -1,7 +1,7 @@
 ﻿namespace Rug.Osc.Ahoy
 {
     public static class AhoyConstants
-	{
+    {
         /// <summary>
         /// Ahoy broadcast port as defined in protocol. The ASCII value of the MSB and LSB are 'a' and 'h' respectively.
         /// </summary>

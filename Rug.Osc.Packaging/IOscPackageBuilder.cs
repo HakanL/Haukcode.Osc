@@ -5,7 +5,7 @@
         Immediate,
         Bundled,
         Packaged,
-        PackagedAndQueued, 
+        PackagedAndQueued,
     }
 
     public interface IOscPackageBuilder

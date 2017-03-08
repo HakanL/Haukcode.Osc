@@ -69,11 +69,34 @@ namespace Rug.Osc.Tests
 
 		internal static string MessageString_Float = "/test, 25.25";
 
-		#endregion
+        internal static OscMessage Message_Float_PositiveInfinity()
+        {
+            return new OscMessage("/test", float.PositiveInfinity);
+        }
 
-		#region Message Single Arg (Double)
+        internal static string MessageString_Float_PositiveInfinity = "/test, Infinity";
 
-		internal static byte[] MessageBody_Double = new byte[] 
+
+        internal static OscMessage Message_Float_NegativeInfinity()
+        {
+            return new OscMessage("/test", float.NegativeInfinity);
+        }
+
+        internal static string MessageString_Float_NegativeInfinity = "/test, -Infinity";
+
+
+        internal static OscMessage Message_Float_NaN()
+        {
+            return new OscMessage("/test", float.NaN);
+        }
+
+        internal static string MessageString_Float_NaN = "/test, NaN";
+
+        #endregion
+
+        #region Message Single Arg (Double)
+
+        internal static byte[] MessageBody_Double = new byte[] 
 			{ 
 				// Address 
 				(byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0, 0, 0, 

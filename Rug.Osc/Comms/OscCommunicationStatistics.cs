@@ -22,141 +22,143 @@ using System.Threading;
 
 namespace Rug.Osc
 {
-	public class SingleStatistic
-	{
-		long totalAtPeriodStart = 0;
+    public class SingleStatistic
+    {
+        long totalAtPeriodStart = 0;
 
-		public long Total { get; private set; }
+        public long Total { get; private set; }
 
-		public float Rate { get; private set; }
+        public float Rate { get; private set; }
 
-		public void Increment(int amount)
-		{
-			Total += amount;
-		}
+        public void Increment(int amount)
+        {
+            Total += amount;
+        }
 
-		internal void Update(double ticks)
-		{
-			double countInPeriod = (double)(Total - totalAtPeriodStart);
+        internal void Update(double ticks)
+        {
+            double countInPeriod = (double)(Total - totalAtPeriodStart);
 
-			Rate = (float)(countInPeriod / ticks);
+            Rate = (float)(countInPeriod / ticks);
 
-			totalAtPeriodStart = Total;
-		}
+            totalAtPeriodStart = Total;
+        }
 
-		public void Reset()
-		{
-			Total = 0;
-			Rate = 0;
-			totalAtPeriodStart = 0;
-		}
-	}
+        public void Reset()
+        {
+            Total = 0;
+            Rate = 0;
+            totalAtPeriodStart = 0;
+        }
+    }
 
-	public class OscCommunicationStatistics : IDisposable
-	{
-		List<SingleStatistic> statistics = new List<SingleStatistic>();
-		bool shouldStop = false; 
-		Thread thread; 
+    public class OscCommunicationStatistics : IDisposable
+    {
+        List<SingleStatistic> statistics = new List<SingleStatistic>();
+        bool shouldStop = false;
+        Thread thread;
 
-		public DateTime PeriodStart { get; private set; }
+        public DateTime PeriodStart { get; private set; }
 
-		public readonly SingleStatistic BytesReceived = new SingleStatistic();
-		public readonly SingleStatistic BytesSent = new SingleStatistic();
+        public readonly SingleStatistic BytesReceived = new SingleStatistic();
+        public readonly SingleStatistic BytesSent = new SingleStatistic();
 
-		public readonly SingleStatistic PacketsReceived = new SingleStatistic();
-		public readonly SingleStatistic PacketsSent = new SingleStatistic();
+        public readonly SingleStatistic PacketsReceived = new SingleStatistic();
+        public readonly SingleStatistic PacketsSent = new SingleStatistic();
 
-		public readonly SingleStatistic MessagesReceived = new SingleStatistic();
-		public readonly SingleStatistic MessagesSent = new SingleStatistic();
-		
-		public readonly SingleStatistic BundlesReceived = new SingleStatistic();
-		public readonly SingleStatistic BundlesSent = new SingleStatistic();
+        public readonly SingleStatistic MessagesReceived = new SingleStatistic();
+        public readonly SingleStatistic MessagesSent = new SingleStatistic();
 
-		public readonly SingleStatistic ReceiveErrors = new SingleStatistic();
+        public readonly SingleStatistic BundlesReceived = new SingleStatistic();
+        public readonly SingleStatistic BundlesSent = new SingleStatistic();
 
-		public OscCommunicationStatistics()
-		{
-			PeriodStart = DateTime.Now; 
+        public readonly SingleStatistic ReceiveErrors = new SingleStatistic();
 
-			statistics.Add(BytesReceived);
-			statistics.Add(BytesSent);
+        public OscCommunicationStatistics()
+        {
+            PeriodStart = DateTime.Now;
 
-			statistics.Add(PacketsReceived);
-			statistics.Add(PacketsSent);
+            statistics.Add(BytesReceived);
+            statistics.Add(BytesSent);
 
-			statistics.Add(MessagesReceived);
-			statistics.Add(MessagesSent);
+            statistics.Add(PacketsReceived);
+            statistics.Add(PacketsSent);
 
-			statistics.Add(BundlesReceived);
-			statistics.Add(BundlesSent);
+            statistics.Add(MessagesReceived);
+            statistics.Add(MessagesSent);
 
-			statistics.Add(ReceiveErrors); 
-		}
+            statistics.Add(BundlesReceived);
+            statistics.Add(BundlesSent);
 
-		public void Start()
-		{
-			Stop();
+            statistics.Add(ReceiveErrors);
+        }
 
-			PeriodStart = DateTime.Now;
+        public void Start()
+        {
+            Stop();
 
-			shouldStop = false; 
+            PeriodStart = DateTime.Now;
 
-			thread = new Thread(UpdateLoop);
-            thread.Name = "Osc Communication Statistics";
+            shouldStop = false;
 
-            thread.Start(); 
-		}
+            thread = new Thread(UpdateLoop)
+            {
+                Name = "Osc Communication Statistics"
+            };
 
-		public void Stop()
-		{
-			shouldStop = true; 
+            thread.Start();
+        }
 
-			if (thread != null)
-			{
-				thread.Join(); 
-			}
+        public void Stop()
+        {
+            shouldStop = true;
 
-			thread = null;
-		}
+            if (thread != null)
+            {
+                thread.Join();
+            }
 
-		public void Reset()
-		{
-			PeriodStart = DateTime.Now;
+            thread = null;
+        }
 
-			foreach (SingleStatistic stat in statistics)
-			{
-				stat.Reset(); 
-			}
-		}
+        public void Reset()
+        {
+            PeriodStart = DateTime.Now;
 
-		private void UpdateLoop()
-		{
-			while (shouldStop == false)
-			{
-				thread.Join(1000);
+            foreach (SingleStatistic stat in statistics)
+            {
+                stat.Reset();
+            }
+        }
 
-				Update(); 
-			}
-		}
+        private void UpdateLoop()
+        {
+            while (shouldStop == false)
+            {
+                thread.Join(1000);
 
-		private void Update()
-		{
-			DateTime now = DateTime.Now;
-			double ticks = (double)(now.Ticks - PeriodStart.Ticks);
+                Update();
+            }
+        }
 
-			ticks /= (double)TimeSpan.TicksPerSecond;
+        private void Update()
+        {
+            DateTime now = DateTime.Now;
+            double ticks = (double)(now.Ticks - PeriodStart.Ticks);
 
-			foreach (SingleStatistic stat in statistics)
-			{
-				stat.Update(ticks);
-			}
+            ticks /= (double)TimeSpan.TicksPerSecond;
 
-			PeriodStart = now;			
-		}
+            foreach (SingleStatistic stat in statistics)
+            {
+                stat.Update(ticks);
+            }
 
-		public void Dispose()
-		{
-			Stop();
-		}
-	}
+            PeriodStart = now;
+        }
+
+        public void Dispose()
+        {
+            Stop();
+        }
+    }
 }

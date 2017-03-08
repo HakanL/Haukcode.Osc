@@ -6,7 +6,7 @@ namespace Rug.Osc.Ahoy
     {
         public static IAhoyQuery CreateQuery(params IPAddress[] adapterAddress)
         {
-            return CreateQuery(null, adapterAddress); 
+            return CreateQuery(null, adapterAddress);
         }
 
         public static IAhoyQuery CreateQuery(string @namespace, params IPAddress[] adapterAddress)
@@ -23,7 +23,7 @@ namespace Rug.Osc.Ahoy
                 return new AhoyQueryMultipleAdapters(@namespace, adapterAddress);
             }
 
-            // only search the adapter specified 
+            // only search the adapter specified
             return new AhoyQuerySingleAdapter(@namespace, adapterAddress[0]);
         }
     }

@@ -1,19 +1,19 @@
-﻿/* 
- * Rug.Osc 
- * 
+﻿/*
+ * Rug.Osc
+ *
  * Copyright (C) 2013 Phill Tew (peatew@gmail.com)
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
- * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
- * 
+ *
  */
 
 using System;
@@ -64,7 +64,7 @@ namespace Rug.Osc
             return OscMessage.ParseArgument(str, provider);
         }
 
-        static byte[] GetBytes(string str)
+        private static byte[] GetBytes(string str)
         {
             return System.Text.Encoding.UTF8.GetBytes(str);
 
@@ -73,11 +73,11 @@ namespace Rug.Osc
             //return bytes;
         }
 
-        static string GetString(byte[] bytes)
+        private static string GetString(byte[] bytes)
         {
             return System.Text.Encoding.UTF8.GetString(bytes);
 
-            /* 
+            /*
 			char[] chars = new char[bytes.Length / sizeof(char)];
 			System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
 			return new string(chars);
@@ -101,7 +101,7 @@ namespace Rug.Osc
         /// <returns>a string</returns>
         public static string Escape(byte[] bytes)
         {
-            // the result is maximum of bytes length * 4 
+            // the result is maximum of bytes length * 4
             char[] chars = new char[bytes.Length * 4];
 
             int j = 0;
@@ -188,7 +188,7 @@ namespace Rug.Osc
         public static string ToStringBlob(byte[] bytes)
         {
             // if the default is to be Base64 encoded
-            // return "64x" + System.Convert.ToBase64String(bytes); 
+            // return "64x" + System.Convert.ToBase64String(bytes);
 
             StringBuilder sb = new StringBuilder((bytes.Length * 2) + 2);
 
@@ -228,19 +228,19 @@ namespace Rug.Osc
                         parseHexCount = 0;
                     }
                 }
-                // if we are not in  an escape sequence and the char is a escape char 
+                // if we are not in  an escape sequence and the char is a escape char
                 else if (isEscaped == false && c == '\\')
                 {
-                    // escape 
+                    // escape
                     isEscaped = true;
                 }
-                // else if we are escaped 
+                // else if we are escaped
                 else if (isEscaped == true)
                 {
-                    // reset escape state 
+                    // reset escape state
                     isEscaped = false;
 
-                    // check the char against the set of known escape chars 
+                    // check the char against the set of known escape chars
                     switch (char.ToLower(c))
                     {
                         case '0':
@@ -254,14 +254,16 @@ namespace Rug.Osc
                         case '\\':
                             // do not increment count
                             break;
+
                         case 'x':
                             // do not increment count
                             parseHexNext = true;
                             parseHexCount = 0;
                             break;
+
                         default:
-                            // this is not a valid escape sequence 
-                            // return false 
+                            // this is not a valid escape sequence
+                            // return false
                             return false;
                     }
                 }
@@ -280,7 +282,7 @@ namespace Rug.Osc
         }
 
         /// <summary>
-        /// Turn a readable string into a byte array 
+        /// Turn a readable string into a byte array
         /// </summary>
         /// <param name="str">a string, optionally with escape sequences in it</param>
         /// <returns>a byte array</returns>
@@ -312,22 +314,22 @@ namespace Rug.Osc
                         parseHexCount = 0;
                     }
                 }
-                // if we are not in  an escape sequence and the char is a escape char 
+                // if we are not in  an escape sequence and the char is a escape char
                 else if (isEscaped == false && c == '\\')
                 {
-                    // escape 
+                    // escape
                     isEscaped = true;
 
-                    // increment count 
+                    // increment count
                     count++;
                 }
-                // else if we are escaped 
+                // else if we are escaped
                 else if (isEscaped == true)
                 {
-                    // reset escape state 
+                    // reset escape state
                     isEscaped = false;
 
-                    // check the char against the set of known escape chars 
+                    // check the char against the set of known escape chars
                     switch (char.ToLower(c))
                     {
                         case '0':
@@ -341,13 +343,15 @@ namespace Rug.Osc
                         case '\\':
                             // do not increment count
                             break;
+
                         case 'x':
                             // do not increment count
                             parseHexNext = true;
                             parseHexCount = 0;
                             break;
+
                         default:
-                            // this is not a valid escape sequence 
+                            // this is not a valid escape sequence
                             throw new Exception(string.Format(Strings.Escape_InvalidEscapeSequence, i - 1));
                     }
                 }
@@ -378,24 +382,24 @@ namespace Rug.Osc
 
             int j = 0;
 
-            // actually populate the array 
+            // actually populate the array
             for (int i = 0; i < str.Length; i++)
             {
                 char c = (char)str[i];
 
-                // if we are not in  an escape sequence and the char is a escape char 
+                // if we are not in  an escape sequence and the char is a escape char
                 if (isEscaped == false && c == '\\')
                 {
-                    // escape 
+                    // escape
                     isEscaped = true;
                 }
-                // else if we are escaped 
+                // else if we are escaped
                 else if (isEscaped == true)
                 {
                     // reset escape state
                     isEscaped = false;
 
-                    // check the char against the set of known escape chars 
+                    // check the char against the set of known escape chars
                     switch (char.ToLower(str[i]))
                     {
                         case '0':
@@ -435,13 +439,13 @@ namespace Rug.Osc
                             break;
 
                         case 'x':
-                            //string temp = "" + str[++i] + str[++i]; 
+                            //string temp = "" + str[++i] + str[++i];
                             //chars[j++] = byte.Parse(temp, NumberStyles.HexNumber); //;
                             chars[j++] = (byte)((Uri.FromHex(str[++i]) << 4) | Uri.FromHex(str[++i]));
                             break;
 
                         default:
-                            // this is not a valid escape sequence 
+                            // this is not a valid escape sequence
                             break;
                     }
                 }

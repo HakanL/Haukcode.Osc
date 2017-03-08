@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Rug.Osc.Packaging
 {
-    public delegate void OscPackegeEvent(ulong packageID, OscBundle bundle); 
+    public delegate void OscPackegeEvent(ulong packageID, OscBundle bundle);
 
     public sealed class OscPackageBuilder : IOscPackageBuilder
     {
@@ -40,7 +40,7 @@ namespace Rug.Osc.Packaging
                     Flush();
                 }
 
-                OscPackageBuilderMode oldMode = oscPackageBuilderMode; 
+                OscPackageBuilderMode oldMode = oscPackageBuilderMode;
 
                 oscPackageBuilderMode = value;
 
@@ -49,7 +49,6 @@ namespace Rug.Osc.Packaging
                 {
                     AddPacketHeader();
                 }
-
             }
         }
 
@@ -70,7 +69,7 @@ namespace Rug.Osc.Packaging
                 {
                     BundleComplete?.Invoke(longPackageID, packet is OscBundle ? packet as OscBundle : new OscBundle(DateTime.Now, packet));
 
-                    continue; 
+                    continue;
                 }
 
                 size = packet.SizeInBytes + 4;
@@ -91,7 +90,7 @@ namespace Rug.Osc.Packaging
             if (oscPackageBuilderMode == OscPackageBuilderMode.Immediate ||
                 oscPackageBuilderMode == OscPackageBuilderMode.Bundled)
             {
-                return; 
+                return;
             }
 
             this.packets.Add(CreatePacketIDMessage(id, @return));
@@ -103,7 +102,7 @@ namespace Rug.Osc.Packaging
         {
             if (oscPackageBuilderMode == OscPackageBuilderMode.Immediate)
             {
-                return; 
+                return;
             }
 
             if (oscPackageBuilderMode != OscPackageBuilderMode.Bundled)
@@ -116,7 +115,7 @@ namespace Rug.Osc.Packaging
                 if (packets.Count == 0)
                 {
                     AddPacketHeader();
-                    return; 
+                    return;
                 }
             }
 

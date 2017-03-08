@@ -527,6 +527,90 @@ namespace Rug.Osc.Tests
             Assert.IsTrue(actual.Equals(expected));
         }
 
+
+
+        /// <summary>
+        ///A test for Parse
+        ///</summary>
+        [TestMethod()]
+        public void ParseTest_Float_NaN()
+        {
+            string str = UnitTestHelper.MessageString_Float_NaN;
+            OscMessage expected = UnitTestHelper.Message_Float_NaN();
+            OscMessage actual;
+            actual = OscMessage.Parse(str);
+            UnitTestHelper.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for Equals
+        ///</summary>
+        [TestMethod()]
+        public void ToStringTest_Float_NaN()
+        {
+            OscMessage message = UnitTestHelper.Message_Float_NaN();
+            string expected = UnitTestHelper.MessageString_Float_NaN;
+            string actual;
+            actual = message.ToString();
+            Assert.AreEqual(expected, actual);
+        }
+
+
+
+        /// <summary>
+        ///A test for Parse
+        ///</summary>
+        [TestMethod()]
+        public void ParseTest_Float_PositiveInfinity()
+        {
+            string str = UnitTestHelper.MessageString_Float_PositiveInfinity;
+            OscMessage expected = UnitTestHelper.Message_Float_PositiveInfinity();
+            OscMessage actual;
+            actual = OscMessage.Parse(str);
+            UnitTestHelper.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for Equals
+        ///</summary>
+        [TestMethod()]
+        public void ToStringTest_Float_PositiveInfinity()
+        {
+            OscMessage message = UnitTestHelper.Message_Float_PositiveInfinity();
+            string expected = UnitTestHelper.MessageString_Float_PositiveInfinity;
+            string actual;
+            actual = message.ToString();
+            Assert.AreEqual(expected, actual);
+        }
+
+
+
+        /// <summary>
+        ///A test for Parse
+        ///</summary>
+        [TestMethod()]
+        public void ParseTest_Float_NegativeInfinity()
+        {
+            string str = UnitTestHelper.MessageString_Float_NegativeInfinity;
+            OscMessage expected = UnitTestHelper.Message_Float_NegativeInfinity();
+            OscMessage actual;
+            actual = OscMessage.Parse(str);
+            UnitTestHelper.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for Equals
+        ///</summary>
+        [TestMethod()]
+        public void ToStringTest_Float_NegativeInfinity()
+        {
+            OscMessage message = UnitTestHelper.Message_Float_NegativeInfinity();
+            string expected = UnitTestHelper.MessageString_Float_NegativeInfinity;
+            string actual;
+            actual = message.ToString();
+            Assert.AreEqual(expected, actual);
+        }
+
         #endregion
 
         #region Double

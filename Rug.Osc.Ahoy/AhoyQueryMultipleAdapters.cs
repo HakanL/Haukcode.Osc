@@ -20,7 +20,7 @@ namespace Rug.Osc.Ahoy
 
         public int Count { get { return ahoyServiceInfoList.Count; } }
 
-        public string Namespace { get; private set; } 
+        public string Namespace { get; private set; }
 
         public AhoyServiceInfo this[int index] { get { return ahoyServiceInfoList[index]; } }
 
@@ -36,7 +36,7 @@ namespace Rug.Osc.Ahoy
 
         public AhoyQueryMultipleAdapters(string @namespace, params IPAddress[] adapterAddress)
         {
-            Namespace = @namespace; 
+            Namespace = @namespace;
 
             potentialAdapters.AddRange(adapterAddress);
         }

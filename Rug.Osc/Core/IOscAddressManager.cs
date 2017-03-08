@@ -16,7 +16,7 @@ namespace Rug.Osc
         OscCommunicationStatistics Statistics { get; set; }
 
         /// <summary>
-        /// Osc time provider, used for filtering bundles by time, if null then the DefaultTimeProvider is used 
+        /// Osc time provider, used for filtering bundles by time, if null then the DefaultTimeProvider is used
         /// </summary>
         IOscTimeProvider TimeProvider { get; set; }
 
@@ -33,19 +33,19 @@ namespace Rug.Osc
         void Attach(string address, OscMessageEvent @event);
 
         /// <summary>
-        /// Detach an event listener 
+        /// Detach an event listener
         /// </summary>
         /// <param name="address">the address of the container</param>
         /// <param name="event">the event to remove</param>
         void Detach(string address, OscMessageEvent @event);
 
         /// <summary>
-        /// Disposes of any resources and releases all events 
+        /// Disposes of any resources and releases all events
         /// </summary>
         void Dispose();
 
         /// <summary>
-        /// Invoke a osc packet 
+        /// Invoke a osc packet
         /// </summary>
         /// <param name="packet">the packet</param>
         /// <returns>true if any thing was invoked</returns>

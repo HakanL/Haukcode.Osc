@@ -1,19 +1,19 @@
-﻿/* 
- * Rug.Osc 
- * 
+﻿/*
+ * Rug.Osc
+ *
  * Copyright (C) 2013 Phill Tew (peatew@gmail.com)
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
- * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
- * 
+ *
  */
 
 using System;
@@ -23,42 +23,42 @@ using System.Threading;
 
 namespace Rug.Osc
 {
-	/// <summary>
-	/// Osc UDP receiver
-	/// </summary>
+    /// <summary>
+    /// Osc UDP receiver
+    /// </summary>
     public sealed class OscReceiver : OscSocket
     {
-		/// <summary>
-		/// The default number of messages that can be queued for processing after being received before messages start to get dropped
-		/// </summary>
+        /// <summary>
+        /// The default number of messages that can be queued for processing after being received before messages start to get dropped
+        /// </summary>
         public const int DefaultMessageBufferSize = 600;
 
         #region Private Members
 
-		readonly object syncLock = new object();
-		readonly AutoResetEvent messageReceived = new AutoResetEvent(false);
+        private readonly object syncLock = new object();
+        private readonly AutoResetEvent messageReceived = new AutoResetEvent(false);
 
-		readonly byte[] buffer;
+        private readonly byte[] buffer;
 
-		readonly OscPacket[] receiveQueue;
+        private readonly OscPacket[] receiveQueue;
 
-        int writeIndex = 0;
-        int readIndex = 0;
-        int count = 0;
-        
-        bool isReceiving = false;
+        private int writeIndex = 0;
+        private int readIndex = 0;
+        private int count = 0;
 
-        #endregion 
+        private bool isReceiving = false;
+
+        #endregion Private Members
 
         #region Properties
 
-		public override OscSocketType OscSocketType
-		{
-			get { return Osc.OscSocketType.Receive; }
-		}
+        public override OscSocketType OscSocketType
+        {
+            get { return Osc.OscSocketType.Receive; }
+        }
 
         /// <summary>
-        /// The next queue index to write messages to 
+        /// The next queue index to write messages to
         /// </summary>
         private int NextWriteIndex
         {
@@ -76,7 +76,7 @@ namespace Rug.Osc
         }
 
         /// <summary>
-        /// The next queue index to read messages from 
+        /// The next queue index to read messages from
         /// </summary>
         private int NextReadIndex
         {
@@ -93,29 +93,29 @@ namespace Rug.Osc
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Constructors
 
-		/// <summary>
-		/// Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
-		/// </summary>
-		/// <param name="address">the local ip address to listen to</param>
-		/// <param name="multicast">a multicast address to join</param>
-		/// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
-		/// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
-		/// <param name="maxPacketSize">the maximum packet size of any message</param>
-		public OscReceiver(IPAddress address, IPAddress multicast, int port, int messageBufferSize, int maxPacketSize)
-			: base(address, multicast, port)
-		{
-			buffer = new byte[maxPacketSize];
-			receiveQueue = new OscPacket[messageBufferSize];
+        /// <summary>
+        /// Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
+        /// </summary>
+        /// <param name="address">the local ip address to listen to</param>
+        /// <param name="multicast">a multicast address to join</param>
+        /// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
+        /// <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+        /// <param name="maxPacketSize">the maximum packet size of any message</param>
+        public OscReceiver(IPAddress address, IPAddress multicast, int port, int messageBufferSize, int maxPacketSize)
+            : base(address, multicast, port)
+        {
+            buffer = new byte[maxPacketSize];
+            receiveQueue = new OscPacket[messageBufferSize];
 
-			if (IsMulticastEndPoint == false)
-			{
-				throw new ArgumentException(Strings.Receiver_NotMulticastAddress, "multicast"); 
-			}
-		}
+            if (IsMulticastEndPoint == false)
+            {
+                throw new ArgumentException(Strings.Receiver_NotMulticastAddress, "multicast");
+            }
+        }
 
         /// <summary>
 		/// Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
@@ -137,20 +137,20 @@ namespace Rug.Osc
         /// <param name="address">the local ip address to listen to</param>
         /// <param name="port">the port to listen on</param>
         public OscReceiver(IPAddress address, int port)
-            : this(address, port, DefaultMessageBufferSize, DefaultPacketSize) 
+            : this(address, port, DefaultMessageBufferSize, DefaultPacketSize)
         {
         }
 
-		/// <summary>
-		/// Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
-		/// </summary>
-		/// <param name="address">the local ip address to listen to</param>
-		/// <param name="multicast">a multicast address to join</param>
-		/// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
-		public OscReceiver(IPAddress address, IPAddress multicast, int port)
-			: this(address, multicast, port, DefaultMessageBufferSize, DefaultPacketSize)
-		{
-		}
+        /// <summary>
+        /// Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
+        /// </summary>
+        /// <param name="address">the local ip address to listen to</param>
+        /// <param name="multicast">a multicast address to join</param>
+        /// <param name="port">the port to listen on, use 0 for dynamically assigned</param>
+        public OscReceiver(IPAddress address, IPAddress multicast, int port)
+            : this(address, multicast, port, DefaultMessageBufferSize, DefaultPacketSize)
+        {
+        }
 
         /// <summary>
 		/// Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
@@ -174,7 +174,7 @@ namespace Rug.Osc
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         public override string ToString()
         {
@@ -185,28 +185,28 @@ namespace Rug.Osc
 
         protected override void OnConnect()
         {
-			Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, buffer.Length * 4);
+            Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, buffer.Length * 4);
 
-            isReceiving = false; 
+            isReceiving = false;
         }
 
         protected override void OnClosing()
         {
-            messageReceived.Set(); 
+            messageReceived.Set();
         }
 
-        #endregion 
+        #endregion Protected Overrides
 
         #region Receive
 
-		/// <summary>
-		/// Try to receive a osc message, this method is non-blocking and will return imediatly with a message or null
-		/// </summary>
-		/// <param name="message">an osc message if one is ready else null if there are none</param>
-		/// <returns>true if a message was ready</returns>
+        /// <summary>
+        /// Try to receive a osc message, this method is non-blocking and will return imediatly with a message or null
+        /// </summary>
+        /// <param name="message">an osc message if one is ready else null if there are none</param>
+        /// <returns>true if a message was ready</returns>
         public bool TryReceive(out OscPacket message)
         {
-			message = null; 
+            message = null;
 
             if (State == OscSocketState.Connected)
             {
@@ -242,112 +242,112 @@ namespace Rug.Osc
         /// <summary>
         /// Receive a osc message, this method is blocking and will only return once a message is recived
         /// </summary>
-        /// <returns>an osc message</returns>		
+        /// <returns>an osc message</returns>
         public OscPacket Receive()
         {
-			try
-			{
-				if (State == OscSocketState.Connected)
-				{
-					// if we are not receiving then start
-					if (isReceiving == false)
-					{
-						lock (syncLock)
-						{
-							if (isReceiving == false && State == OscSocketState.Connected)
-							{
-								BeginReceiving();
-							}
-						}
-					}
+            try
+            {
+                if (State == OscSocketState.Connected)
+                {
+                    // if we are not receiving then start
+                    if (isReceiving == false)
+                    {
+                        lock (syncLock)
+                        {
+                            if (isReceiving == false && State == OscSocketState.Connected)
+                            {
+                                BeginReceiving();
+                            }
+                        }
+                    }
 
-					if (count > 0)
-					{
-						lock (syncLock)
-						{
-							OscPacket message = receiveQueue[readIndex];
+                    if (count > 0)
+                    {
+                        lock (syncLock)
+                        {
+                            OscPacket message = receiveQueue[readIndex];
 
-							readIndex = NextReadIndex;
+                            readIndex = NextReadIndex;
 
-							count--;
+                            count--;
 
-							// if we have eaten all the messages then reset the signal
-							if (count == 0)
-							{
-								messageReceived.Reset();
-							}
+                            // if we have eaten all the messages then reset the signal
+                            if (count == 0)
+                            {
+                                messageReceived.Reset();
+                            }
 
-							return message;
-						}
-					}
+                            return message;
+                        }
+                    }
 
-					// wait for a new message
-					messageReceived.WaitOne();
-					messageReceived.Reset();
+                    // wait for a new message
+                    messageReceived.WaitOne();
+                    messageReceived.Reset();
 
-					if (count > 0)
-					{
-						lock (syncLock)
-						{
-							OscPacket message = receiveQueue[readIndex];
+                    if (count > 0)
+                    {
+                        lock (syncLock)
+                        {
+                            OscPacket message = receiveQueue[readIndex];
 
-							readIndex = NextReadIndex;
+                            readIndex = NextReadIndex;
 
-							count--;
+                            count--;
 
-							return message;
-						}
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				throw new OscSocketException(this, Strings.Receiver_ErrorWhileWaitingForMessage, ex);
-			}
+                            return message;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new OscSocketException(this, Strings.Receiver_ErrorWhileWaitingForMessage, ex);
+            }
 
-			if (State == OscSocketState.Connected)
-			{
-				throw new OscSocketException(this, Strings.Receiver_ErrorWhileWaitingForMessage);
-			}
+            if (State == OscSocketState.Connected)
+            {
+                throw new OscSocketException(this, Strings.Receiver_ErrorWhileWaitingForMessage);
+            }
 
-			throw new OscSocketStateException(this, OscSocketState.Closed, Strings.Receiver_SocketIsClosed);
+            throw new OscSocketStateException(this, OscSocketState.Closed, Strings.Receiver_SocketIsClosed);
         }
 
-        #endregion
+        #endregion Receive
 
         #region Private Methods
 
-        void BeginReceiving()
+        private void BeginReceiving()
         {
             isReceiving = true;
             messageReceived.Reset();
 
-			// create an empty origin
-			EndPoint origin = UseIPv6 ? Helper.EmptyEndPointIPv6 : Helper.EmptyEndPoint;
+            // create an empty origin
+            EndPoint origin = UseIPv6 ? Helper.EmptyEndPointIPv6 : Helper.EmptyEndPoint;
 
-			Socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags, ref origin, Receive_Callback, null);
+            Socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags, ref origin, Receive_Callback, null);
         }
 
-        void Receive_Callback(IAsyncResult ar)
+        private void Receive_Callback(IAsyncResult ar)
         {
             try
             {
-				// create an empty origin
-				EndPoint origin = UseIPv6 ? Helper.EmptyEndPointIPv6 : Helper.EmptyEndPoint;
+                // create an empty origin
+                EndPoint origin = UseIPv6 ? Helper.EmptyEndPointIPv6 : Helper.EmptyEndPoint;
 
-				int count = Socket.EndReceiveFrom(ar, ref origin);
+                int count = Socket.EndReceiveFrom(ar, ref origin);
 
-				if (Statistics != null)
-				{
-					Statistics.BytesReceived.Increment(count);
-				}
+                if (Statistics != null)
+                {
+                    Statistics.BytesReceived.Increment(count);
+                }
 
-				OscPacket message = OscPacket.Read(buffer, count, (IPEndPoint)origin);
+                OscPacket message = OscPacket.Read(buffer, count, (IPEndPoint)origin);
 
-				if (Statistics != null && message.Error != OscPacketError.None)
-				{
-					Statistics.ReceiveErrors.Increment(1);
-				}
+                if (Statistics != null && message.Error != OscPacketError.None)
+                {
+                    Statistics.ReceiveErrors.Increment(1);
+                }
 
                 lock (syncLock)
                 {
@@ -359,28 +359,27 @@ namespace Rug.Osc
 
                         this.count++;
 
-						// if this was the first message then signal
-						if (this.count == 1)
-						{
+                        // if this was the first message then signal
+                        if (this.count == 1)
+                        {
                             messageReceived.Set();
-						}
+                        }
                     }
                 }
             }
             catch
             {
-
-            }            
+            }
 
             if (State == OscSocketState.Connected)
             {
-				// create an empty origin
-				EndPoint origin = UseIPv6 ? Helper.EmptyEndPointIPv6 : Helper.EmptyEndPoint;
+                // create an empty origin
+                EndPoint origin = UseIPv6 ? Helper.EmptyEndPointIPv6 : Helper.EmptyEndPoint;
 
-				Socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags, ref origin, Receive_Callback, null); 
+                Socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags, ref origin, Receive_Callback, null);
             }
         }
 
-        #endregion
-	}
+        #endregion Private Methods
+    }
 }

@@ -23,7 +23,7 @@ namespace Rug.Osc.Ahoy
         /// Gets the namespace.
         /// </summary>
         /// <value>The namespace.</value>
-        string Namespace { get; } 
+        string Namespace { get; }
 
         /// <summary>
         /// Gets the count.
@@ -86,7 +86,7 @@ namespace Rug.Osc.Ahoy
         /// <summary>
         /// Begin the end of the search but do not wait for all threads to complete.
         /// </summary>
-        void BeginEndSearch(); 
+        void BeginEndSearch();
 
         ///// <summary>
         ///// Gets the enumerator.
