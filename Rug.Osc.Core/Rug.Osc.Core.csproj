@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B72CDF70-5102-405F-89F7-86BAE6C91418}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rug.Osc.Core</RootNamespace>
+    <AssemblyName>Rug.Osc.Core</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Rug.Osc.Core.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Rug.Osc.Core.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Rug.Osc.Version.cs">
+      <Link>Properties\Rug.Osc.Version.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rug.Loading\Rug.Loading.csproj">
+      <Project>{ac89b119-4bf1-49f6-b930-9433ffde129e}</Project>
+      <Name>Rug.Loading</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rug.Osc.Ahoy\Rug.Osc.Ahoy.csproj">
+      <Project>{fb36d6bf-22fc-412f-9b5d-0ef8b4825913}</Project>
+      <Name>Rug.Osc.Ahoy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rug.Osc.Packaging\Rug.Osc.Packaging.csproj">
+      <Project>{f7150cd9-8e5c-4c67-a48f-efeb1e7cdc6e}</Project>
+      <Name>Rug.Osc.Packaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rug.Osc\Rug.Osc.csproj">
+      <Project>{190500d7-9779-466d-a73f-bce13606b3ef}</Project>
+      <Name>Rug.Osc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rug.Osc.Connection\Rug.Osc.Connection.csproj">
+      <Project>{7537eb4c-5933-4877-b25d-8315296c1d4c}</Project>
+      <Name>Rug.Osc.Connection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rug.Osc.Reflection\Rug.Osc.ObjectModel.csproj">
+      <Project>{77446d15-ee4c-4b53-beb2-ad25960fa706}</Project>
+      <Name>Rug.Osc.ObjectModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ILMerge.props" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets" Condition="Exists('..\packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets'))" />
+  </Target>
+  
+  <!-- ILRepack -->
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <InputAssemblies Include="$(OutputPath)\Rug.Loading.dll" />
+      <InputAssemblies Include="$(OutputPath)\Rug.Osc.dll" />
+      <InputAssemblies Include="$(OutputPath)\Rug.Osc.Ahoy.dll" />
+      <InputAssemblies Include="$(OutputPath)\Rug.Osc.Connection.dll" />
+      <InputAssemblies Include="$(OutputPath)\Rug.Osc.Packaging.dll" />
+      <InputAssemblies Include="$(OutputPath)\Rug.Osc.ObjectModel.dll" />
+    </ItemGroup>
+    <ILRepack Parallel="false" Internalize="false" InputAssemblies="@(InputAssemblies)" TargetKind="Dll" OutputFile="$(OutputPath)\$(AssemblyName).dll" XmlDocumentation="True" TargetPlatformVersion="v2" DebugInfo="True" Verbose="True" />
+  </Target>
+  <Import Project="..\packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets" Condition="Exists('..\packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets')" />
+  <!-- /ILRepack -->
+</Project>

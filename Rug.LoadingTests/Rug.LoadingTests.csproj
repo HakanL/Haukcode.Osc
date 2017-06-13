@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B88F3C17-BE0C-40C7-B54A-6193CC8F7546}</ProjectGuid>
+    <ProjectGuid>{A4281EDA-E2B9-4D46-AD90-EBDA7DEC36BE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rug.Osc.AhoyTests</RootNamespace>
-    <AssemblyName>Rug.Osc.AhoyTests</AssemblyName>
+    <RootNamespace>Rug.LoadingTests</RootNamespace>
+    <AssemblyName>Rug.LoadingTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -50,12 +51,30 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AhoyMessageTests.cs" />
-    <Compile Include="AhoyQueryTests.cs" />
-    <Compile Include="AhoyServiceInfoTests.cs" />
-    <Compile Include="AhoyServiceProviderTests.cs" />
-    <Compile Include="AhoyServiceTests.cs" />
+    <Compile Include="..\..\rug.helper\Helper.Reflection.cs">
+      <Link>Helper\Helper.Reflection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\rug.helper\Helper.String.cs">
+      <Link>Helper\Helper.String.cs</Link>
+    </Compile>
+    <Compile Include="..\..\rug.helper\Helper.Xml.cs">
+      <Link>Helper\Helper.Xml.cs</Link>
+    </Compile>
+    <Compile Include="AliasAttributeTests.cs" />
+    <Compile Include="DebugReporter.cs" />
+    <Compile Include="LoadContextTests.cs" />
+    <Compile Include="LoaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rug.Osc\Rug.Osc.csproj">
+      <Project>{190500d7-9779-466d-a73f-bce13606b3ef}</Project>
+      <Name>Rug.Osc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rug.Loading\Rug.Loading.csproj">
+      <Project>{AC89B119-4BF1-49F6-B930-9433FFDE129E}</Project>
+      <Name>Rug.Loading</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

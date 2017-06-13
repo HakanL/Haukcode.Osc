@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{77446D15-EE4C-4B53-BEB2-AD25960FA706}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rug.Osc</RootNamespace>
+    <AssemblyName>Rug.Osc.ObjectModel</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Rug.Osc.ObjectModel.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Rug.Osc.ObjectModel.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\rug.helper\Helper.Csv.cs">
+      <Link>Helper\Helper.Csv.cs</Link>
+    </Compile>
+    <Compile Include="..\..\rug.helper\Helper.Reflection.cs">
+      <Link>Helper\Helper.Reflection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\rug.helper\Helper.String.cs">
+      <Link>Helper\Helper.String.cs</Link>
+    </Compile>
+    <Compile Include="..\..\rug.helper\Helper.Xml.cs">
+      <Link>Helper\Helper.Xml.cs</Link>
+    </Compile>
+    <Compile Include="..\Rug.Osc.Version.cs">
+      <Link>Properties\Rug.Osc.Version.cs</Link>
+    </Compile>
+    <Compile Include="Namespaces\Collections\Dictionary.cs" />
+    <Compile Include="Namespaces\Collections\List.cs" />
+    <Compile Include="Namespaces\NameChangedEventArgs.cs" />
+    <Compile Include="Namespaces\TestTypes\ListContainerTest.cs" />
+    <Compile Include="Namespaces\TestTypes\NamespaceTestHelper.cs" />
+    <Compile Include="Namespaces\TestTypes\NamespaceTestNamespace.cs" />
+    <Compile Include="Namespaces\TestTypes\NamespaceTestObject.cs" />
+    <Compile Include="Namespaces\TestTypes\NamespaceTestObject2.cs" />
+    <Compile Include="Namespaces\TestTypes\NamespaceTestObjectGeneric.cs" />
+    <Compile Include="Reflection\Invoke\IOscGetSetAdapter.cs" />
+    <Compile Include="Reflection\Invoke\OscInvoker.cs" />
+    <Compile Include="Reflection\Invoke\OscGetSetReferenceAdapter.cs" />
+    <Compile Include="Reflection\Invoke\OscGetSetAdapter.cs" />
+    <Compile Include="Reflection\Invoke\OscOutputAdapter.cs" />
+    <Compile Include="Reflection\IOscGetSet.cs" />
+    <Compile Include="Reflection\IOscGetSetReference.cs" />
+    <Compile Include="Reflection\IOscMember.cs" />
+    <Compile Include="Reflection\Invoke\IOscMemberAdapter.cs" />
+    <Compile Include="Reflection\IOscMethod.cs" />
+    <Compile Include="Reflection\Invoke\OscMethodAdapter.cs" />
+    <Compile Include="Reflection\Invoke\OscMemberAdapterFactory.cs" />
+    <Compile Include="Namespaces\INamespace.cs" />
+    <Compile Include="Namespaces\INamespaceObject.cs" />
+    <Compile Include="Namespaces\Name.cs" />
+    <Compile Include="Namespaces\Namespace.cs" />
+    <Compile Include="Namespaces\NamespaceRoot.cs" />
+    <Compile Include="Reflection\IOscOutput.cs" />
+    <Compile Include="Reflection\OscMethodAttribute.cs" />
+    <Compile Include="Reflection\OscMemberAttribute.cs" />
+    <Compile Include="Reflection\OscMemberCollection.cs" />
+    <Compile Include="Namespaces\OscNamespaceAttribute.cs" />
+    <Compile Include="Reflection\OscOutput.cs" />
+    <Compile Include="Reflection\OscOutputAttribute.cs" />
+    <Compile Include="Reflection\Return\OscMethodReturn.cs" />
+    <Compile Include="Reflection\Serialization\ArraySerializer.cs" />
+    <Compile Include="Reflection\Serialization\EnumSerializer.cs" />
+    <Compile Include="Reflection\Serialization\OscSerializableAttribute.cs" />
+    <Compile Include="Reflection\Serialization\IOscSerializer.cs" />
+    <Compile Include="Reflection\Serialization\OscSerializer.cs" />
+    <Compile Include="Reflection\Serialization\OscSerializerAttribute.cs" />
+    <Compile Include="Reflection\Serialization\System.Serializers.cs" />
+    <Compile Include="Reflection\OscGetSet.cs" />
+    <Compile Include="Reflection\OscGetSetReference.cs" />
+    <Compile Include="Reflection\OscMethod.cs" />
+    <Compile Include="Reflection\OscType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rug.Osc\Rug.Osc.csproj">
+      <Project>{190500d7-9779-466d-a73f-bce13606b3ef}</Project>
+      <Name>Rug.Osc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rug.Loading\Rug.Loading.csproj">
+      <Project>{ac89b119-4bf1-49f6-b930-9433ffde129e}</Project>
+      <Name>Rug.Loading</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rug.Osc.Connection\Rug.Osc.Connection.csproj">
+      <Project>{7537eb4c-5933-4877-b25d-8315296c1d4c}</Project>
+      <Name>Rug.Osc.Connection</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

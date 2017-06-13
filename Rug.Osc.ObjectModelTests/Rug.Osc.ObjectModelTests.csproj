@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B88F3C17-BE0C-40C7-B54A-6193CC8F7546}</ProjectGuid>
+    <ProjectGuid>{FA7D1BB9-FDC2-4BCF-B1DE-12C575360397}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rug.Osc.AhoyTests</RootNamespace>
-    <AssemblyName>Rug.Osc.AhoyTests</AssemblyName>
+    <RootNamespace>Rug.Osc.ObjectModelTests</RootNamespace>
+    <AssemblyName>Rug.Osc.ObjectModelTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,7 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="dotMemory.Unit, Version=103.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\JetBrains.dotMemoryUnit.2.3.20160517.113140\lib\dotMemory.Unit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -50,12 +55,36 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AhoyMessageTests.cs" />
-    <Compile Include="AhoyQueryTests.cs" />
-    <Compile Include="AhoyServiceInfoTests.cs" />
-    <Compile Include="AhoyServiceProviderTests.cs" />
-    <Compile Include="AhoyServiceTests.cs" />
+    <Compile Include="Namespaces\DebugReporter.cs" />
+    <Compile Include="Namespaces\NamespaceRootTests.cs" />
+    <None Include="Namespaces\TestTypes\NamespaceTestObjectGeneric.cs" />
+    <None Include="Namespaces\TestTypes\NamespaceTestObject2.cs" />
+    <None Include="Namespaces\TestTypes\NamespaceTestObject.cs" />
+    <None Include="Namespaces\TestTypes\NamespaceTestNamespace.cs" />
+    <None Include="Namespaces\TestTypes\NamespaceTestHelper.cs" />
+    <Compile Include="Namespaces\NamespaceTests.cs" />
+    <Compile Include="Namespaces\NameTests.cs" />
+    <Compile Include="Namespaces\OscNamespaceAttributeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\OscTypeTests.cs" />
+    <Compile Include="Reflection\Serialization\OscSerializerTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rug.Osc\Rug.Osc.csproj">
+      <Project>{190500d7-9779-466d-a73f-bce13606b3ef}</Project>
+      <Name>Rug.Osc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rug.Loading\Rug.Loading.csproj">
+      <Project>{ac89b119-4bf1-49f6-b930-9433ffde129e}</Project>
+      <Name>Rug.Loading</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rug.Osc.Reflection\Rug.Osc.ObjectModel.csproj">
+      <Project>{77446D15-EE4C-4B53-BEB2-AD25960FA706}</Project>
+      <Name>Rug.Osc.ObjectModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

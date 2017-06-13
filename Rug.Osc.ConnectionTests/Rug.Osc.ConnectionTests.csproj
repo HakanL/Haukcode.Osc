@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B88F3C17-BE0C-40C7-B54A-6193CC8F7546}</ProjectGuid>
+    <ProjectGuid>{703AA9BB-83E8-4AFF-A94D-967E512F0A4A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rug.Osc.AhoyTests</RootNamespace>
-    <AssemblyName>Rug.Osc.AhoyTests</AssemblyName>
+    <RootNamespace>Rug.Osc.ConnectionTests</RootNamespace>
+    <AssemblyName>Rug.Osc.ConnectionTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -50,12 +50,23 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AhoyMessageTests.cs" />
-    <Compile Include="AhoyQueryTests.cs" />
-    <Compile Include="AhoyServiceInfoTests.cs" />
-    <Compile Include="AhoyServiceProviderTests.cs" />
-    <Compile Include="AhoyServiceTests.cs" />
+    <Compile Include="DebugReporter.cs" />
+    <Compile Include="OscMessagesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rug.Osc\Rug.Osc.csproj">
+      <Project>{190500d7-9779-466d-a73f-bce13606b3ef}</Project>
+      <Name>Rug.Osc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rug.Loading\Rug.Loading.csproj">
+      <Project>{AC89B119-4BF1-49F6-B930-9433FFDE129E}</Project>
+      <Name>Rug.Loading</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rug.Osc.Connection\Rug.Osc.Connection.csproj">
+      <Project>{7537EB4C-5933-4877-B25D-8315296C1D4C}</Project>
+      <Name>Rug.Osc.Connection</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

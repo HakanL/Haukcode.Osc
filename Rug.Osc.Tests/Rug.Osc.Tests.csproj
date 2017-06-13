@@ -70,13 +70,13 @@
     <Compile Include="UnitTestHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Rug.Osc.snk" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Rug.Osc\Rug.Osc.csproj">
       <Project>{190500D7-9779-466D-A73F-BCE13606B3EF}</Project>
       <Name>Rug.Osc</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Rug.Osc.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
