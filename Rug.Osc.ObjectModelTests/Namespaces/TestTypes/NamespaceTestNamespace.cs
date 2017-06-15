@@ -54,6 +54,7 @@ namespace Rug.Osc.Namespaces.Tests
 
         [OscMember]
         public string TestMember2 { get; private set; } = "THIS IS THE VALUE OF TestMember2";
+
         public NamespaceTestNamespace()
         {
             Namespace = new Namespace(Name);

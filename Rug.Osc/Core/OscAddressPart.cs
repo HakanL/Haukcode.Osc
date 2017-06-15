@@ -74,7 +74,7 @@ namespace Rug.Osc
                         return @"\\";
 
                     default:
-                        throw new Exception(Strings.OscAddress_UnexpectedMatch);
+                        throw new Exception("Unexpected match");
                 }
             });
 

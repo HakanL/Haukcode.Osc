@@ -265,7 +265,7 @@ namespace Rug.Osc
                 if (trimmed.Length % 2 != 0)
                 {
                     // this is an error
-                    throw new Exception(Strings.Parser_InvalidBlobStringLength);
+                    throw new Exception("Invalid blob string length");
                 }
 
                 int length = trimmed.Length / 2;
@@ -342,13 +342,13 @@ namespace Rug.Osc
             }
             else
             {
-                throw new Exception(String.Format(Strings.Parser_InvalidColor, str));
+                throw new Exception($"Invalid color \'{str}\'");
             }
         }
 
         public static string ToStringColor(OscColor color)
         {
-            return String.Format("{0}, {1}, {2}, {3}", color.R, color.G, color.B, color.A);
+            return $"{color.R}, {color.G}, {color.B}, {color.A}";
         }
 
         #endregion Color Helpers

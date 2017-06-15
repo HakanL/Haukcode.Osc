@@ -38,7 +38,7 @@ namespace Rug.Osc
 			ParseError = new OscMessage();
 
 			ParseError.error = OscPacketError.ErrorParsingPacket;
-			ParseError.errorMessage = Strings.Parser_InvalidPacket;
+			ParseError.errorMessage = "An error occured while parsing an osc packet";
 		}
 
 		#region Private Members
@@ -195,7 +195,7 @@ namespace Rug.Osc
 
 			if (OscAddress.IsValidAddressPattern(address) == false)
 			{
-				throw new ArgumentException(string.Format(Strings.OscAddress_NotAValidOscAddress, address), nameof(address));
+				throw new ArgumentException($"The address '{address}' is not a valid osc address", nameof(address));
 			}
 
 			if (args == null)
@@ -226,7 +226,7 @@ namespace Rug.Osc
 
 			if (OscAddress.IsValidAddressPattern(address) == false)
 			{
-				throw new ArgumentException(string.Format(Strings.OscAddress_NotAValidOscAddress, address), nameof(address));
+				throw new ArgumentException($"The address '{address}' is not a valid osc address", nameof(address));
 			}
 
 			if (args == null)
@@ -458,8 +458,8 @@ namespace Rug.Osc
 			// is the a address string empty? 
 			if (Helper.IsNullOrWhiteSpace(address) == true)
 			{
-				throw new Exception(Strings.Address_NullOrEmpty);
-			}
+				throw new Exception("Address string may not be null or empty");
+            }
 
 			using (MemoryStream stream = new MemoryStream(data))
 			using (BinaryWriter writer = new BinaryWriter(stream))
@@ -604,7 +604,7 @@ namespace Rug.Osc
 				}
 				else
 				{
-					throw new Exception(string.Format(Strings.Arguments_UnsupportedType, obj.GetType().ToString()));
+					throw new Exception($"Unsupported arguemnt type '{obj.GetType().ToString()}'");
 				}
 			}
 		}
@@ -777,7 +777,7 @@ namespace Rug.Osc
 					msg.arguments = new object[0];
 
 					msg.error = OscPacketError.InvalidSegmentLength;
-					msg.errorMessage = Strings.Parser_InvalidSegmentLength;
+					msg.errorMessage = "The packet length is not the correct size";
 
 					return msg;
 				}
@@ -806,7 +806,7 @@ namespace Rug.Osc
 					msg.arguments = new object[0];
 
 					msg.error = OscPacketError.MissingAddress;
-					msg.errorMessage = Strings.Parser_MissingAddressTerminator;
+					msg.errorMessage = "Address terminator could not be found";
 
 					return msg;
 				}
@@ -820,7 +820,7 @@ namespace Rug.Osc
 					msg.arguments = new object[0];
 
 					msg.error = OscPacketError.MissingAddress;
-					msg.errorMessage = Strings.Parser_MissingAddressEmpty;
+					msg.errorMessage = "Address was empty";
 
 					return msg;
 				}
@@ -838,7 +838,7 @@ namespace Rug.Osc
 					msg.arguments = new object[0];
 
 					msg.error = OscPacketError.InvalidSegmentLength;
-					msg.errorMessage = Strings.Parser_UnexpectedEndOfMessage;
+					msg.errorMessage = "Unexpected end of message";
 
 					return msg;
 				}
@@ -866,7 +866,7 @@ namespace Rug.Osc
 					msg.arguments = new object[0];
 
 					msg.error = OscPacketError.MissingComma;
-					msg.errorMessage = Strings.Parser_MissingComma;
+					msg.errorMessage = "No comma found";
 
 					return msg;
 				}
@@ -907,7 +907,7 @@ namespace Rug.Osc
 						msg.arguments = new object[0];
 
 						msg.error = OscPacketError.MalformedTypeTag;
-						msg.errorMessage = Strings.Parser_MalformedTypeTag;
+						msg.errorMessage = "Malformed type tag";
 
 						return msg;
 					}
@@ -919,7 +919,7 @@ namespace Rug.Osc
 					msg.arguments = new object[0];
 
 					msg.error = OscPacketError.MissingTypeTag;
-					msg.errorMessage = Strings.Parser_MissingTypeTag;
+					msg.errorMessage = "Type tag terminator could not be found";
 
 					return msg;
 				}
@@ -932,7 +932,7 @@ namespace Rug.Osc
 				{
 					msg.arguments = new object[0];
 					msg.error = OscPacketError.InvalidSegmentLength;
-					msg.errorMessage = Strings.Parser_UnexpectedEndOfMessage;
+					msg.errorMessage = "Unexpected end of message";
 
 					return msg;
 				}
@@ -1078,7 +1078,7 @@ namespace Rug.Osc
 					default:
 						// Unknown argument type
 						msg.error = OscPacketError.UnknownArguemntType;
-						msg.errorMessage = string.Format(Strings.Parser_UnknownArgumentType, type, i);
+						msg.errorMessage = $@"Unknown argument type '{type}' on argument '{i}'";
 
 						return false;
 				}
@@ -1092,7 +1092,7 @@ namespace Rug.Osc
 			if (stream.Position + 4 > stream.Length)
 			{
 				msg.error = OscPacketError.ErrorParsingBlob;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1103,7 +1103,7 @@ namespace Rug.Osc
 			if (length > 0 && stream.Position + length > stream.Length)
 			{
 				msg.error = OscPacketError.ErrorParsingBlob;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1114,7 +1114,7 @@ namespace Rug.Osc
 			if (Helper.SkipPadding(stream) == false)
 			{
 				msg.error = OscPacketError.ErrorParsingBlob;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1140,7 +1140,7 @@ namespace Rug.Osc
 			if (failed == true)
 			{
 				msg.error = OscPacketError.ErrorParsingString;
-				msg.errorMessage = String.Format(Strings.Parser_MissingArgumentTerminator, i);
+				msg.errorMessage = $@"Terminator could not be found while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1151,7 +1151,7 @@ namespace Rug.Osc
 			if (Helper.SkipPadding(stream) == false)
 			{
 				msg.error = OscPacketError.ErrorParsingString;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1177,7 +1177,7 @@ namespace Rug.Osc
 			if (failed == true)
 			{
 				msg.error = OscPacketError.ErrorParsingSymbol;
-				msg.errorMessage = String.Format(Strings.Parser_MissingArgumentTerminator, i);
+				msg.errorMessage = $@"Terminator could not be found while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1188,7 +1188,7 @@ namespace Rug.Osc
 			if (Helper.SkipPadding(stream) == false)
 			{
 				msg.error = OscPacketError.ErrorParsingSymbol;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1201,7 +1201,7 @@ namespace Rug.Osc
 			if (stream.Position + 4 > stream.Length)
 			{
 				msg.error = OscPacketError.ErrorParsingInt32;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1218,7 +1218,7 @@ namespace Rug.Osc
 			if (stream.Position + 8 > stream.Length)
 			{
 				msg.error = OscPacketError.ErrorParsingInt64;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1235,7 +1235,7 @@ namespace Rug.Osc
 			if (stream.Position + 4 > stream.Length)
 			{
 				msg.error = OscPacketError.ErrorParsingSingle;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1252,7 +1252,7 @@ namespace Rug.Osc
 			if (stream.Position + 8 > stream.Length)
 			{
 				msg.error = OscPacketError.ErrorParsingDouble;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1269,7 +1269,7 @@ namespace Rug.Osc
 			if (stream.Position + 8 > stream.Length)
 			{
 				msg.error = OscPacketError.ErrorParsingOscTimeTag;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1286,7 +1286,7 @@ namespace Rug.Osc
 			if (stream.Position + 4 > stream.Length)
 			{
 				msg.error = OscPacketError.ErrorParsingChar;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1303,7 +1303,7 @@ namespace Rug.Osc
 			if (stream.Position + 4 > stream.Length)
 			{
 				msg.error = OscPacketError.ErrorParsingColor;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1320,7 +1320,7 @@ namespace Rug.Osc
 			if (stream.Position + 4 > stream.Length)
 			{
 				msg.error = OscPacketError.ErrorParsingMidiMessage;
-				msg.errorMessage = String.Format(Strings.Parser_ArgumentUnexpectedEndOfMessage, i);
+				msg.errorMessage = $"Unexpected end of message while parsing argument '{i}'";
 
 				return false;
 			}
@@ -1367,7 +1367,7 @@ namespace Rug.Osc
 				if (typeTag_Inset < 0)
 				{
 					msg.error = OscPacketError.MalformedTypeTag;
-					msg.errorMessage = Strings.Parser_MalformedTypeTag;
+					msg.errorMessage = "Malformed type tag";
 
 					return false;
 				}
@@ -1468,19 +1468,19 @@ namespace Rug.Osc
 				}
 				else if (obj is byte)
 				{
-					sb.Append("'" + (char)(byte)obj + "'");
+					sb.Append($"'{(char)(byte)obj}'");
 				}
 				else if (obj is OscColor)
 				{
-					sb.Append("{ Color: " + Helper.ToStringColor((OscColor)obj) + " }");
+					sb.Append($"{{ Color: {Helper.ToStringColor((OscColor)obj)} }}");
 				}
 				else if (obj is OscTimeTag)
 				{
-					sb.Append("{ Time: " + ((OscTimeTag)obj).ToString() + " }");
+					sb.Append($"{{ Time: {(OscTimeTag)obj} }}");
 				}
 				else if (obj is OscMidiMessage)
 				{
-					sb.Append("{ Midi: " + ((OscMidiMessage)obj).ToString() + " }");
+					sb.Append($"{{ Midi: {(OscMidiMessage)obj} }}");
 				}
 				else if (obj is bool)
 				{
@@ -1488,15 +1488,15 @@ namespace Rug.Osc
 				}
 				else if (obj is OscNull)
 				{
-					sb.Append(((OscNull)obj).ToString());
+					sb.Append((OscNull)obj);
 				}
 				else if (obj is OscImpulse)
 				{
-					sb.Append(((OscImpulse)obj).ToString());
+					sb.Append((OscImpulse)obj);
 				}
 				else if (obj is string)
 				{
-					sb.Append("\"" + OscHelper.EscapeString(obj.ToString()) + "\"");
+					sb.Append($@"""{OscHelper.EscapeString(obj.ToString())}""");
 				}
 				else if (obj is OscSymbol)
 				{
@@ -1504,11 +1504,11 @@ namespace Rug.Osc
 				}
 				else if (obj is byte[])
 				{
-					sb.Append("{ Blob: " + OscHelper.ToStringBlob(obj as byte[]) + " }");
+					sb.Append($"{{ Blob: {OscHelper.ToStringBlob(obj as byte[])} }}");
 				}
 				else
 				{
-					throw new Exception(String.Format(Strings.Arguments_UnsupportedType, obj.GetType().ToString()));
+					throw new Exception($"Unsupported arguemnt type '{obj.GetType()}'");
 				}
 			}
 		}
@@ -1775,12 +1775,12 @@ namespace Rug.Osc
 
 			if (Helper.IsNullOrWhiteSpace(address) == true)
 			{
-				throw new Exception(Strings.Parser_MissingAddressEmpty);
+				throw new Exception("Address was empty");
 			}
 
 			if (OscAddress.IsValidAddressPattern(address) == false)
 			{
-				throw new Exception(Strings.Parser_InvalidAddress);
+				throw new Exception("Invalid address");
 			}
 
 			List<object> arguments = new List<object>();
@@ -1857,7 +1857,7 @@ namespace Rug.Osc
 
 							if (Helper.IsNullOrWhiteSpace(str.Substring(end, controlChar - end)) == false)
 							{
-								throw new Exception(String.Format(Strings.Parser_MalformedArrayArgument, str.Substring(index, controlChar - end)));
+								throw new Exception($@"Malformed array '{str.Substring(index, controlChar - end)}'");
 							}
 
 							index = controlChar;
@@ -1891,7 +1891,7 @@ namespace Rug.Osc
 
 							if (Helper.IsNullOrWhiteSpace(str.Substring(end, controlChar - end)) == false)
 							{
-								throw new Exception(String.Format(Strings.Parser_MalformedObjectArgument, str.Substring(index, controlChar - end)));
+								throw new Exception($@"Malformed object '{str.Substring(index, controlChar - end)}'");
 							}
 
 							index = controlChar;
@@ -1927,7 +1927,7 @@ namespace Rug.Osc
 
 			if (argString.Length == 0)
 			{
-				throw new Exception(Strings.Parser_ArgumentEmpty);
+				throw new Exception("Argument is empty");
 			}
 
 			// try to parse a hex value
@@ -2057,7 +2057,7 @@ namespace Rug.Osc
 				if (end < argString.Length - 1)
 				{
 					// some kind of other value tacked on the end of a string! 
-					throw new Exception(String.Format(Strings.Parser_MalformedStringArgument, argString));
+					throw new Exception($@"Malformed string argument '{argString}'");
 				}
 
 				return OscHelper.UnescapeString(argString.Substring(1, argString.Length - 2));
@@ -2085,7 +2085,7 @@ namespace Rug.Osc
 
 			if (colon <= 0)
 			{
-				throw new Exception(String.Format(Strings.Parser_MalformedObjectArgument_MissingType, strTrimmed));
+				throw new Exception($@"Malformed object '{strTrimmed}', missing type name");
 			}
 
 			string name = strTrimmed.Substring(0, colon).Trim();
@@ -2093,12 +2093,12 @@ namespace Rug.Osc
 
 			if (name.Length == 0)
 			{
-				throw new Exception(String.Format(Strings.Parser_MalformedObjectArgument_MissingType, strTrimmed));
+				throw new Exception($@"Malformed object '{strTrimmed}', missing type name");
 			}
 
 			if (colon + 1 >= strTrimmed.Length)
 			{
-				throw new Exception(String.Format(Strings.Parser_MalformedObjectArgument, strTrimmed));
+				throw new Exception($@"Malformed object '{strTrimmed}'");
 			}
 
 			switch (nameLower)
@@ -2118,7 +2118,7 @@ namespace Rug.Osc
 				case "d":
 					return Helper.ParseBlob(strTrimmed.Substring(colon + 1).Trim(), provider);
 				default:
-					throw new Exception(String.Format(Strings.Parser_UnknownObjectType, name));
+					throw new Exception($@"Unknown object type '{name}'");
 			}
 		}
 

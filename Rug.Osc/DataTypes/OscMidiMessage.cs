@@ -333,14 +333,14 @@ namespace Rug.Osc
         {
             if (Helper.IsNullOrWhiteSpace(str) == true)
             {
-                throw new Exception(String.Format(Strings.MidiMessage_NotAMidiMessage, str));
+                throw new Exception($"Not a midi message '{str}'");
             }
 
             string[] parts = str.Split(',');
 
             if (parts.Length < 4)
             {
-                throw new Exception(String.Format(Strings.MidiMessage_NotAMidiMessage, str));
+                throw new Exception($"Not a midi message '{str}'");
             }
 
             int index = 0;
@@ -366,19 +366,19 @@ namespace Rug.Osc
 
                     if (channel > 15)
                     {
-                        throw new ArgumentOutOfRangeException("channel");
+                        throw new ArgumentOutOfRangeException(nameof(channel));
                     }
 
                     statusByte = (byte)((int)messageType | (int)channel);
 
                     if (parts.Length < 5)
                     {
-                        throw new Exception(String.Format(Strings.MidiMessage_NotAMidiMessage, str));
+                        throw new Exception($"Not a midi message '{str}'");
                     }
                 }
                 else
                 {
-                    throw new Exception(String.Format(Strings.MidiMessage_NotAMidiMessage, str));
+                    throw new Exception($"Not a midi message '{str}'");
                 }
             }
 
@@ -386,19 +386,19 @@ namespace Rug.Osc
 
             if (data1 > 0x7F)
             {
-                throw new ArgumentOutOfRangeException("data1");
+                throw new ArgumentOutOfRangeException(nameof(data1));
             }
 
             byte data2 = byte.Parse(parts[index++].Trim(), NumberStyles.Integer, provider);
 
             if (data2 > 0x7F)
             {
-                throw new ArgumentOutOfRangeException("data2");
+                throw new ArgumentOutOfRangeException(nameof(data2));
             }
 
             if (index != parts.Length)
             {
-                throw new Exception(String.Format(Strings.MidiMessage_NotAMidiMessage, str));
+                throw new Exception($"Not a midi message '{str}'");
             }
 
             return new OscMidiMessage(portID, statusByte, data1, data2);

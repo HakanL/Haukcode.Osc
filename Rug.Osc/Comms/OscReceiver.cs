@@ -113,7 +113,7 @@ namespace Rug.Osc
 
             if (IsMulticastEndPoint == false)
             {
-                throw new ArgumentException(Strings.Receiver_NotMulticastAddress, "multicast");
+                throw new ArgumentException("The suppied address must be a multicast address", nameof(multicast));
             }
         }
 
@@ -302,15 +302,15 @@ namespace Rug.Osc
             }
             catch (Exception ex)
             {
-                throw new OscSocketException(this, Strings.Receiver_ErrorWhileWaitingForMessage, ex);
+                throw new OscSocketException(this, "An unexpected error occured while waiting for a message", ex);
             }
 
             if (State == OscSocketState.Connected)
             {
-                throw new OscSocketException(this, Strings.Receiver_ErrorWhileWaitingForMessage);
+                throw new OscSocketException(this, "An unexpected error occured while waiting for a message");
             }
 
-            throw new OscSocketStateException(this, OscSocketState.Closed, Strings.Receiver_SocketIsClosed);
+            throw new OscSocketStateException(this, OscSocketState.Closed, "The receiver socket has been disconnected");
         }
 
         #endregion Receive

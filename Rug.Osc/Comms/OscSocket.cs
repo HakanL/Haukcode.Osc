@@ -128,7 +128,7 @@ namespace Rug.Osc
         private readonly bool useIpV6;
 
         private OscSocketState state = OscSocketState.NotConnected;
-        private readonly System.Net.Sockets.SocketFlags socketFlags;
+        private readonly SocketFlags socketFlags;
 
         #endregion Private Members
 
@@ -223,23 +223,23 @@ namespace Rug.Osc
             if (local.AddressFamily != AddressFamily.InterNetwork &&
                 local.AddressFamily != AddressFamily.InterNetworkV6)
             {
-                throw new ArgumentException(String.Format(Strings.Socket_UnsupportedAddressFamily, local.AddressFamily), "local");
+                throw new ArgumentException($@"Unsupported address family '{local.AddressFamily}'", nameof(local));
             }
 
             if (remote.AddressFamily != AddressFamily.InterNetwork &&
                 remote.AddressFamily != AddressFamily.InterNetworkV6)
             {
-                throw new ArgumentException(String.Format(Strings.Socket_UnsupportedAddressFamily, local.AddressFamily), "remote");
+                throw new ArgumentException($@"Unsupported address family '{local.AddressFamily}'", nameof(remote));
             }
 
             if (local.AddressFamily != remote.AddressFamily)
             {
-                throw new ArgumentException(Strings.Socket_AddressFamilyIncompatible, "remote");
+                throw new ArgumentException("Both local and remote must belong to the same address family", nameof(remote));
             }
 
-            CheckPortRange(remotePort, "remotePort", Strings.Socket_RemotePortOutOfRange, false);
+            CheckPortRange(remotePort, nameof(remotePort), "The valid range for remote port numbers is 1 to 65535", false);
 
-            CheckPortRange(localPort, "localPort", Strings.Socket_LocalPortOutOfRange, true);
+            CheckPortRange(localPort, nameof(localPort), "The valid range for local port numbers is 1 to 65535 or 0 for a dynamically assigned port", true);
 
             // if the local port is 0 then we are to use dynamic port assignment
             useDynamicLocalPort = localPort == 0;
@@ -294,12 +294,12 @@ namespace Rug.Osc
             if (address.AddressFamily != AddressFamily.InterNetwork &&
                 address.AddressFamily != AddressFamily.InterNetworkV6)
             {
-                throw new ArgumentException(String.Format(Strings.Socket_UnsupportedAddressFamily, address.AddressFamily), "address");
+                throw new ArgumentException($@"Unsupported address family '{address.AddressFamily}'", nameof(address));
             }
 
             useIpV6 = address.AddressFamily == AddressFamily.InterNetworkV6;
 
-            CheckPortRange(port, "port", Strings.Socket_PortOutOfRange, this.OscSocketType == Osc.OscSocketType.Receive);
+            CheckPortRange(port, nameof(port), "The valid range for port numbers is 1 to 65535", this.OscSocketType == Osc.OscSocketType.Receive);
 
             this.port = port;
             localPort = port;
@@ -321,7 +321,7 @@ namespace Rug.Osc
 
             isMulticastEndPoint = IsMulticastAddress(remoteAddress);
 
-            socketFlags = System.Net.Sockets.SocketFlags.None;
+            socketFlags = SocketFlags.None;
         }
 
         /// <summary>
@@ -330,7 +330,7 @@ namespace Rug.Osc
         /// <param name="port">the port to bind to, use 0 for dynamically assigned (receiver only)</param>
         internal OscSocket(int port)
         {
-            CheckPortRange(port, "port", Strings.Socket_PortOutOfRange, this.OscSocketType == Osc.OscSocketType.Receive);
+            CheckPortRange(port, nameof(port), "The valid range for port numbers is 1 to 65535", this.OscSocketType == Osc.OscSocketType.Receive);
 
             this.port = port;
             localPort = port;
@@ -342,7 +342,7 @@ namespace Rug.Osc
             localEndPoint = new IPEndPoint(LocalAddress, Port);
             remoteEndPoint = new IPEndPoint(RemoteAddress, Port);
 
-            socketFlags = System.Net.Sockets.SocketFlags.None;
+            socketFlags = SocketFlags.None;
 
             useIpV6 = false;
 
@@ -378,13 +378,14 @@ namespace Rug.Osc
                 if (state != OscSocketState.NotConnected &&
                     state != OscSocketState.Closed)
                 {
-                    throw new OscSocketStateException(this, state, Strings.Socket_AlreadyOpenOrNotClosed);
+                    throw new OscSocketStateException(this, state, "The socket is already open or is not fully closed");
                 }
 
                 // create the instance of the socket
-                socket = new Socket(useIpV6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-                socket.Blocking = false;
+                socket = new Socket(useIpV6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp)
+                {
+                    Blocking = false
+                };
 
                 if (RemoteAddress == IPAddress.Broadcast)
                 {
@@ -413,7 +414,7 @@ namespace Rug.Osc
                             break;
 
                         default:
-                            throw new InvalidOperationException(String.Format(Strings.Socket_UnsupportedAddressFamily, socket.LocalEndPoint.AddressFamily));
+                            throw new InvalidOperationException($@"Unsupported address family '{socket.LocalEndPoint.AddressFamily}'");
                     }
                 }
                 else
@@ -497,18 +498,20 @@ namespace Rug.Osc
         {
             lock (syncLock)
             {
-                if (state == OscSocketState.Connected)
+                if (state != OscSocketState.Connected)
                 {
-                    state = OscSocketState.Closing;
-
-                    OnClosing();
-
-                    socket.Close();
-
-                    socket = null;
-
-                    state = OscSocketState.Closed;
+                    return;
                 }
+
+                state = OscSocketState.Closing;
+
+                OnClosing();
+
+                socket.Close();
+
+                socket = null;
+
+                state = OscSocketState.Closed;
             }
         }
 

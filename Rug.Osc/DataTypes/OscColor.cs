@@ -161,7 +161,7 @@ namespace Rug.Osc
         {
             if ((value < 0) || (value > 0xff))
             {
-                throw new ArgumentException(String.Format(Strings.OscColor_ChannelInvalidValue, new object[] { name, value, 0, 0xff }), name);
+                throw new ArgumentException(String.Format("The {0} channel has a value of {1}, color channel values must be in the range {2} to {3}", new object[] { name, value, 0, 0xff }), name);
             }
         }
     }

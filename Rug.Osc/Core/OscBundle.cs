@@ -528,7 +528,7 @@ namespace Rug.Osc
                 {
                     // this is an error
                     bundle.error = OscPacketError.MissingBundleIdent;
-                    bundle.errorMessage = Strings.Bundle_MissingIdent;
+                    bundle.errorMessage = "Missing bundle ident";
 
                     bundle.packets = new OscPacket[0];
 
@@ -541,7 +541,7 @@ namespace Rug.Osc
                 {
                     // this is an error
                     bundle.error = OscPacketError.InvalidBundleIdent;
-                    bundle.errorMessage = String.Format(Strings.Bundle_InvalidIdent, ident);
+                    bundle.errorMessage = $"Invalid bundle ident '{ident}'";
 
                     bundle.packets = new OscPacket[0];
 
@@ -558,7 +558,7 @@ namespace Rug.Osc
                     {
                         // this is an error
                         bundle.error = OscPacketError.InvalidBundleMessageHeader;
-                        bundle.errorMessage = Strings.Bundle_InvalidMessageHeader;
+                        bundle.errorMessage = "Invalid bundle message header";
 
                         bundle.packets = new OscPacket[0];
 
@@ -573,7 +573,7 @@ namespace Rug.Osc
                     {
                         // this is an error
                         bundle.error = OscPacketError.InvalidBundleMessageLength;
-                        bundle.errorMessage = string.Format(Strings.Bundle_InvalidBundleMessageLength);
+                        bundle.errorMessage = "Invalid bundle message length";
 
                         bundle.packets = new OscPacket[0];
 
@@ -660,7 +660,7 @@ namespace Rug.Osc
         {
             if (Helper.IsNullOrWhiteSpace(str) == true)
             {
-                throw new ArgumentNullException("str");
+                throw new ArgumentNullException(nameof(str));
             }
 
             int start = 0;
@@ -669,14 +669,14 @@ namespace Rug.Osc
 
             if (end <= start)
             {
-                throw new Exception(String.Format(Strings.Bundle_InvalidIdent, ""));
+                throw new Exception($"Invalid bundle ident '{""}'");
             }
 
             string ident = str.Substring(start, end - start).Trim();
 
             if (BundleIdent.Equals(ident, System.StringComparison.InvariantCulture) == false)
             {
-                throw new Exception(String.Format(Strings.Bundle_InvalidIdent, ident));
+                throw new Exception($"Invalid bundle ident '{ident}'");
             }
 
             start = end + 1;
@@ -688,12 +688,12 @@ namespace Rug.Osc
                 end = str.Length;
             }
 
-            /*
-			if (end <= start)
-			{
-				throw new Exception(String.Format(Strings.Bundle_InvalidTimestamp, ""));
-			}
-			*/
+
+            //if (end <= start)
+            //{
+            //    throw new Exception($"Invalid bundle timestamp '{""}'");
+            //}
+
 
             string timeStampStr = str.Substring(start, end - start);
 
@@ -717,7 +717,7 @@ namespace Rug.Osc
 
             if (Helper.IsNullOrWhiteSpace(gap) == false)
             {
-                throw new Exception(String.Format(Strings.Bundle_MissingOpenBracket, gap));
+                throw new Exception($"Missing '{{'. Found '{gap}'");
             }
 
             start = end;
@@ -743,7 +743,7 @@ namespace Rug.Osc
 
                 if (gap.Equals(",") == false && Helper.IsNullOrWhiteSpace(gap) == false)
                 {
-                    throw new Exception(String.Format(Strings.Bundle_MissingOpenBracket, gap));
+                    throw new Exception($"Missing '{{'. Found '{gap}'");
                 }
 
                 start = end;

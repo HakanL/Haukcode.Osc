@@ -130,7 +130,7 @@ namespace Rug.Osc
             }
             else
             {
-                throw new ArgumentException(String.Format(Strings.Container_IsValidContainerAddress, address), "address");
+                throw new ArgumentException($"Invalid container address '{address}'", nameof(address));
             }
         }
 
@@ -196,7 +196,7 @@ namespace Rug.Osc
             }
             else
             {
-                throw new ArgumentException(String.Format(Strings.Container_IsValidContainerAddress, address), "address");
+                throw new ArgumentException($"Invalid container address '{address}'", nameof(address));
             }
         }
 
@@ -312,7 +312,7 @@ namespace Rug.Osc
             }
             else
             {
-                throw new Exception(String.Format(Strings.Listener_UnknownOscPacketType, packet.ToString()));
+                throw new Exception($"Unknown osc packet type '{packet}'");
             }
         }
 
@@ -347,7 +347,7 @@ namespace Rug.Osc
                 }
                 else
                 {
-                    throw new Exception(String.Format(Strings.Listener_UnknownOscPacketType, packet.ToString()));
+                    throw new Exception($"Unknown osc packet type '{packet}'");
                 }
             }
 

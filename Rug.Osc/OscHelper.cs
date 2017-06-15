@@ -305,7 +305,7 @@ namespace Rug.Osc
 
                     if (Uri.IsHexDigit(c) == false)
                     {
-                        throw new Exception(string.Format(Strings.Escape_InvalidEscapeSequence_InvalidHexDigit, i, c));
+                        throw new Exception($@"Invalid escape sequence at char '{i}' ""{c}"" is not a valid hex digit.");
                     }
 
                     if (parseHexCount == 2)
@@ -352,7 +352,7 @@ namespace Rug.Osc
 
                         default:
                             // this is not a valid escape sequence
-                            throw new Exception(string.Format(Strings.Escape_InvalidEscapeSequence, i - 1));
+                            throw new Exception($"Invalid escape sequence at char '{i - 1}'.");
                     }
                 }
                 else
@@ -364,12 +364,12 @@ namespace Rug.Osc
 
             if (parseHexNext == true)
             {
-                throw new Exception(string.Format(Strings.Escape_InvalidEscapeSequence_MissingHexValue, str.Length - 1));
+                throw new Exception($"Invalid escape sequence at char '{str.Length - 1}' missing hex value.");
             }
 
             if (isEscaped == true)
             {
-                throw new Exception(string.Format(Strings.Escape_InvalidEscapeSequence, str.Length - 1));
+                throw new Exception($"Invalid escape sequence at char '{str.Length - 1}'.");
             }
 
             // reset the escape state

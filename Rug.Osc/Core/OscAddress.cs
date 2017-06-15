@@ -109,7 +109,7 @@ namespace Rug.Osc
             // Ensure address is valid
             if (IsValidAddressPattern(address) == false)
             {
-                throw new ArgumentException(String.Format(Strings.OscAddress_NotAValidOscAddress, address), "address");
+                throw new ArgumentException($"The address '{address}' is not a valid osc address", nameof(address));
             }
 
             // stash the original string
@@ -186,7 +186,7 @@ namespace Rug.Osc
                     }
                     else
                     {
-                        throw new Exception(String.Format(Strings.OscAddress_UnknownAddressPart, match.Value));
+                        throw new Exception(String.Format("Unknown address part '{0}'", match.Value));
                     }
                 }
             }

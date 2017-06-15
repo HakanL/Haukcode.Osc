@@ -208,7 +208,7 @@ namespace Rug.Osc
             }
             else
             {
-                throw new Exception(String.Format(Strings.TimeTag_InvalidString, str));
+                throw new Exception($"Invalid osc-timetag string \'{str}\'");
             }
         }
 

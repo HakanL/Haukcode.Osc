@@ -222,7 +222,7 @@ namespace Rug.Osc
         /// <returns>the index of the end char</returns>
         protected static int ScanForward_Array(string str, int controlChar)
         {
-            return ScanForward(str, controlChar, '[', ']', Strings.Parser_MissingArrayEndChar);
+            return ScanForward(str, controlChar, '[', ']', @"Expected ']'");
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace Rug.Osc
         /// <returns>the index of the end char</returns>
         protected static int ScanForward_Object(string str, int controlChar)
         {
-            return ScanForward(str, controlChar, '{', '}', Strings.Parser_MissingObjectEndChar);
+            return ScanForward(str, controlChar, '{', '}', @"Expected '}'");
         }
 
         /// <summary>
@@ -288,7 +288,7 @@ namespace Rug.Osc
 
             if (insideString == true)
             {
-                throw new Exception(Strings.Parser_MissingStringEndChar);
+                throw new Exception(@"Expected '""'");
             }
 
             if (count > 0)
