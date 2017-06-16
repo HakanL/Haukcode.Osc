@@ -78,10 +78,10 @@ namespace Rug.Osc
                 }
             });
 
-#pragma warning disable
-            // This should never be reached but should shut up the Unity compiler.
-            return null;
-#pragma warning reset
+//#pragma warning disable
+//            // This should never be reached but should shut up the Unity compiler.
+//            return null;
+//#pragma warning reset
         }
 
         private static string EscapeChar(char c)
