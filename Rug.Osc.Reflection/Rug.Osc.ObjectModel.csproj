@@ -91,6 +91,7 @@
     <Compile Include="Reflection\Serialization\IOscSerializer.cs" />
     <Compile Include="Reflection\Serialization\OscSerializer.cs" />
     <Compile Include="Reflection\Serialization\OscSerializerAttribute.cs" />
+    <Compile Include="Reflection\Serialization\System.Net.Serializers.cs" />
     <Compile Include="Reflection\Serialization\System.Serializers.cs" />
     <Compile Include="Reflection\OscGetSet.cs" />
     <Compile Include="Reflection\OscGetSetReference.cs" />

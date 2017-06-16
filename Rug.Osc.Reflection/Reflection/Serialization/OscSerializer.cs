@@ -13,6 +13,7 @@ namespace Rug.Osc.Reflection.Serialization
 
         static OscSerializer()
         {
+            Register(typeof(Uri), new UriSerializer());
             Register(typeof(string), new StringSerializer());
             Register(typeof(bool), new BoolSerializer());
             Register(typeof(float), new FloatSerializer());

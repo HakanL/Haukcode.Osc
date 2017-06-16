@@ -44,6 +44,8 @@ namespace Rug.Loading
                     continue;
                 }
 
+                System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
+
                 string name = type.Name;
 
                 NameAttribute nameAttribute;
