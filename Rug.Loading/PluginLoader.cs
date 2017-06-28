@@ -13,7 +13,7 @@ namespace Rug.Loading
         {
             Loader.CacheLoadables(typeof(Plugin).Assembly);
 
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins");
 
             string pluginManifestFile = Path.Combine(path, "Plugins.xml");
 

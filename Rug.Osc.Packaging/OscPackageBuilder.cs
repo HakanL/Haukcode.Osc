@@ -21,6 +21,8 @@ namespace Rug.Osc.Packaging
         private int packageIdentifierSize = new OscMessage(OscPackage.PackageAddress, (long)0).SizeInBytes;
         private int packageSize = 0;
 
+        private readonly object addSyncLock = new object(); 
+
         public OscPackageBuilderMode Mode
         {
             get
@@ -61,78 +63,87 @@ namespace Rug.Osc.Packaging
 
         public void Add(params OscPacket[] packets)
         {
-            int size = 0;
-
-            foreach (OscPacket packet in packets)
+            lock (addSyncLock)
             {
-                if (oscPackageBuilderMode == OscPackageBuilderMode.Immediate)
+                int size = 0;
+
+                foreach (OscPacket packet in packets)
                 {
-                    BundleComplete?.Invoke(longPackageID, packet is OscBundle ? packet as OscBundle : new OscBundle(DateTime.Now, packet));
+                    if (oscPackageBuilderMode == OscPackageBuilderMode.Immediate)
+                    {
+                        BundleComplete?.Invoke(longPackageID, packet is OscBundle ? packet as OscBundle : new OscBundle(DateTime.Now, packet));
 
-                    continue;
+                        continue;
+                    }
+
+                    size = packet.SizeInBytes + 4;
+
+                    if (packageSize + size >= maxPackageSize)
+                    {
+                        Flush();
+                    }
+
+                    this.packets.Add(packet);
+
+                    packageSize += size;
                 }
-
-                size = packet.SizeInBytes + 4;
-
-                if (packageSize + size >= maxPackageSize)
-                {
-                    Flush();
-                }
-
-                this.packets.Add(packet);
-
-                packageSize += size;
             }
         }
 
         public void AddPacketIDMessage(ulong id, bool @return)
         {
-            if (oscPackageBuilderMode == OscPackageBuilderMode.Immediate ||
-                oscPackageBuilderMode == OscPackageBuilderMode.Bundled)
+            lock (addSyncLock)
             {
-                return;
+                if (oscPackageBuilderMode == OscPackageBuilderMode.Immediate ||
+                    oscPackageBuilderMode == OscPackageBuilderMode.Bundled)
+                {
+                    return;
+                }
+
+                this.packets.Add(CreatePacketIDMessage(id, @return));
+
+                packageSize += packageIdentifierSize + 4;
             }
-
-            this.packets.Add(CreatePacketIDMessage(id, @return));
-
-            packageSize += packageIdentifierSize + 4;
         }
 
         public void Flush()
         {
-            if (oscPackageBuilderMode == OscPackageBuilderMode.Immediate)
+            lock (addSyncLock)
             {
-                return;
-            }
-
-            if (oscPackageBuilderMode != OscPackageBuilderMode.Bundled)
-            {
-                if (packets.Count == 1)
+                if (oscPackageBuilderMode == OscPackageBuilderMode.Immediate)
                 {
                     return;
+                }
+
+                if (oscPackageBuilderMode != OscPackageBuilderMode.Bundled)
+                {
+                    if (packets.Count == 1)
+                    {
+                        return;
+                    }
+
+                    if (packets.Count == 0)
+                    {
+                        AddPacketHeader();
+                        return;
+                    }
                 }
 
                 if (packets.Count == 0)
                 {
-                    AddPacketHeader();
                     return;
                 }
-            }
 
-            if (packets.Count == 0)
-            {
-                return;
-            }
+                try
+                {
+                    OscBundle bundle = new OscBundle(DateTime.Now, packets.ToArray());
 
-            try
-            {
-                OscBundle bundle = new OscBundle(DateTime.Now, packets.ToArray());
-
-                BundleComplete?.Invoke(longPackageID, bundle);
-            }
-            finally
-            {
-                AddPacketHeader();
+                    BundleComplete?.Invoke(longPackageID, bundle);
+                }
+                finally
+                {
+                    AddPacketHeader();
+                }
             }
         }
 

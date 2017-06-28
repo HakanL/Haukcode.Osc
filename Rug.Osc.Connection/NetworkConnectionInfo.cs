@@ -51,5 +51,10 @@ namespace Rug.Osc.Connection
         {
             return $"{Descriptor}, Send: {Address}:{SendPort}, Receive: {NetworkAdapterIPAddress}:{ReceivePort}";
         }
+
+        public IOscConnectionInfo CloneWithAnyAdapter()
+        {
+            return new NetworkConnectionInfo(Descriptor, IPAddress.Any, Address, SendPort, ReceivePort);
+        }
     }
 }
