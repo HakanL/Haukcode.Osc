@@ -167,10 +167,7 @@ namespace Rug.Osc
 
             bytesToRead = serialPort.Read(readBuffer, 0, bytesToRead);
 
-            if (Statistics != null)
-            {
-                Statistics.BytesReceived.Increment(bytesToRead);
-            }
+            Statistics?.BytesReceived.Increment(bytesToRead);
 
             int processed = 0;
 
@@ -180,17 +177,19 @@ namespace Rug.Osc
 
                 processed += reader.ProcessBytes(readBuffer, processed, bytesToRead - processed, ref packetBytes, out packetLength);
 
-                if (packetLength > 0)
+                if (packetLength <= 0)
                 {
-                    OscPacket oscPacket = OscPacket.Read(packetBytes, packetLength);
-
-                    if (Statistics != null && oscPacket.Error != OscPacketError.None)
-                    {
-                        Statistics.ReceiveErrors.Increment(1);
-                    }
-
-                    PacketRecived?.Invoke(oscPacket);
+                    continue;
                 }
+
+                OscPacket oscPacket = OscPacket.Read(packetBytes, packetLength);
+
+                if (Statistics != null && oscPacket.Error != OscPacketError.None)
+                {
+                    Statistics.ReceiveErrors.Increment(1);
+                }
+
+                PacketRecived?.Invoke(oscPacket);
             }
             while (processed < bytesToRead);
         }

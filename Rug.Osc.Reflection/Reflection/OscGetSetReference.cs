@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Rug.Loading;
@@ -53,7 +54,7 @@ namespace Rug.Osc.Reflection
 
             if (SerializableValue == null)
             {
-                throw new ArgumentException(string.Format("Missing {0} on type {1} referenced by property {2} on type {3}.", nameof(SerializableValue), type.TypeName, property.MemberName, property.OscType.TypeName), nameof(property));
+                throw new ArgumentException($"Missing {nameof(SerializableValue)} on type {type.TypeName} referenced by property {property.MemberName} on type {property.OscType.TypeName}.", nameof(property));
             }
 
             CanRead = property.CanRead;
@@ -125,19 +126,9 @@ namespace Rug.Osc.Reflection
             {
                 found = true;
             }
-            else
+            else if (Alias != null)
             {
-                foreach (string alias in Alias)
-                {
-                    if (Helper.TryGetAttributeValue(node, alias, out valueString) == false)
-                    {
-                        continue;
-                    }
-
-                    found = true;
-
-                    break;
-                }
+                found = Alias.Any(alias => Helper.TryGetAttributeValue(node, alias, out valueString));
             }
 
             if (found == false)
