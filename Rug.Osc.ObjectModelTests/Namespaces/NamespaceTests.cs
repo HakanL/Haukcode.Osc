@@ -4,16 +4,16 @@ using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 using System.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rug.Loading;
 using Rug.Osc.Reflection;
 
 namespace Rug.Osc.Namespaces.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class NamespaceTests
     {
-        [TestMethod()]
+        [Test]
         public void AddRangeTest()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -42,7 +42,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void AddTest()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -65,7 +65,7 @@ namespace Rug.Osc.Namespaces.Tests
         }
 
 
-        [TestMethod()]
+        [Test]
         public void AddTestGeneric()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -83,7 +83,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void AddTest_Move()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -130,7 +130,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void AddTest_Nested()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -179,7 +179,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void AddTest_Nested_Move()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -237,7 +237,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void AssignParent_Root()
         {
             NamespaceTestObject @object = new NamespaceTestObject();
@@ -251,7 +251,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(NamespaceTestHelper.NamePath1, @object.Name.OscAddress);
         }
 
-        [TestMethod()]
+        [Test]
         public void AssignParent_Valid()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -277,55 +277,55 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        //[TestMethod()]
+        //[Test]
         //public void AttachTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void CreateTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void CreateTest1()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void DestroyTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void DestroyTest1()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void DetachTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void GetEnumeratorTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void LoadTest()
         //{
         //    Assert.Fail();
         //}
 
-        [TestMethod()]
+        [Test]
         public void NamespaceTest_Invalid()
         {
             foreach (string invalidAddress in NamespaceTestHelper.InvalidAddresses)
@@ -343,7 +343,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void NamespaceTest_Valid()
         {
             foreach (string validAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -353,7 +353,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void RemoveTest()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -397,7 +397,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void SaveLoadTest()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -468,7 +468,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void SaveLoadTest2()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -540,7 +540,7 @@ namespace Rug.Osc.Namespaces.Tests
         }
 
 
-        [TestMethod()]
+        [Test]
         public void SaveLoadTest3()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -618,7 +618,7 @@ namespace Rug.Osc.Namespaces.Tests
         }
 
 
-        [TestMethod()]
+        [Test]
         public void SaveLoadTestGeneric()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidNamespaceAddresses)
@@ -695,7 +695,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        //[TestMethod()]
+        //[Test]
         //public void SendTest()
         //{
         //    Assert.Fail();

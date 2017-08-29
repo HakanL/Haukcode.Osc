@@ -16,11 +16,14 @@
  *
  */
 
+using System;
+
 namespace Rug.Osc
 {
     /// <summary>
     /// Provides osc timeing information
     /// </summary>
+    [Obsolete]
     public interface IOscTimeProvider
     {
         /// <summary>

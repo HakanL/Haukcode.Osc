@@ -1,23 +1,23 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rug.Loading;
+﻿using Rug.Loading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Rug.Loading.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class LoadContextTests
     {
-        [TestMethod()]
+        [Test]
         public void LoadContextTest()
         {
             LoadContext context = new LoadContext(new DebugReporter()); 
         }
 
-        [TestMethod()]
+        [Test]
         public void ErrorTest()
         {
             LoadContext context = new LoadContext(new DebugReporter());
@@ -38,7 +38,7 @@ namespace Rug.Loading.Tests
             Assert.AreEqual(errorString2, context.Errors[1].Message);
         }
 
-        [TestMethod()]
+        [Test]
         public void ReportErrorsTest()
         {
             LoadContext context = new LoadContext(new DebugReporter());

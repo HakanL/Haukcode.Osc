@@ -23,10 +23,9 @@ namespace Rug.Osc
     /// <summary>
     /// Default implementation of IOscTimeProvider
     /// </summary>
+    [Obsolete]
     public sealed class DefaultTimeProvider : IOscTimeProvider
     {
-        private double frameSizeInSeconds;
-
         /// <summary>
         /// Immutable instance
         /// </summary>
@@ -35,12 +34,12 @@ namespace Rug.Osc
         /// <summary>
         /// Frame size in seconds
         /// </summary>
-        public double FrameSizeInSeconds { get { return frameSizeInSeconds; } set { frameSizeInSeconds = value; } }
+        public double FrameSizeInSeconds { get; set; }
 
         /// <summary>
         /// Get the current time
         /// </summary>
-        public OscTimeTag Now { get { return OscTimeTag.FromDataTime(DateTime.UtcNow); } }
+        public OscTimeTag Now => OscTimeTag.FromDataTime(DateTime.UtcNow);
 
         /// <summary>
         /// Create a new instance of DefaultTimeProvider
@@ -56,15 +55,8 @@ namespace Rug.Osc
         {
             double offset = DifferenceInSeconds(time);
 
-            if (offset > -FrameSizeInSeconds &&
-                offset < FrameSizeInSeconds)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return offset > -FrameSizeInSeconds &&
+                   offset < FrameSizeInSeconds;
         }
 
         /// <summary>

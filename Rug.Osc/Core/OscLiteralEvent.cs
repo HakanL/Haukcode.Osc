@@ -27,7 +27,7 @@ namespace Rug.Osc
 
         public event OscMessageEvent Event;
 
-        public bool IsNull { get { return Event == null; } }
+        public bool IsNull => Event == null;
 
         internal OscLiteralEvent(string address)
         {
@@ -41,10 +41,7 @@ namespace Rug.Osc
         /// <param name="message">message that caused the event</param>
         public void Invoke(OscMessage message)
         {
-            if (Event != null)
-            {
-                Event(message);
-            }
+            Event?.Invoke(message);
         }
 
         /// <summary>

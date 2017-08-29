@@ -23,7 +23,7 @@ namespace Rug.Osc
     /// <summary>
     /// Flags to define when bundles are to be invoked
     /// </summary>
-    [Flags]
+    [Flags, Obsolete]
     public enum OscBundleInvokeMode : int
     {
         /// <summary>

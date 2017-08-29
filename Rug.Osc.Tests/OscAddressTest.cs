@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Rug.Osc.Tests
 {
@@ -7,7 +7,7 @@ namespace Rug.Osc.Tests
     ///This is a test class for OscAddressTest and is intended
     ///to contain all OscAddressTest Unit Tests
     ///</summary>
-    [TestClass()]
+    [TestFixture]
     public class OscAddressTest
     {
         private TestContext testContextInstance;
@@ -66,7 +66,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_LiteralMatch()
         {
             string addressPattern = "/container_A/method_A";
@@ -78,7 +78,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_LiteralMissmatch1()
         {
             string addressPattern = "/container_A/method_A";
@@ -90,7 +90,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_LiteralMissmatch2()
         {
             string addressPattern = "/container_A/method_A";
@@ -102,7 +102,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_PossibleIssueWithAddressPatternWildcard1()
         {
             string addressPattern = "/?*test";
@@ -114,7 +114,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_PossibleIssueWithAddressPatternWildcard2()
         {
             string addressPattern = "/?*?test";
@@ -126,7 +126,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_PossibleIssueWithAddressPatternWildcard3()
         {
             string addressPattern = "/*?test";
@@ -138,7 +138,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_PossibleIssueWithAddressPatternWildcard4()
         {
             string addressPattern = "/?*test";
@@ -150,7 +150,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_PossibleIssueWithAddressPatternWildcard5()
         {
             string addressPattern = "/?*test";
@@ -162,7 +162,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_PossibleIssueWithAddressPatternWildcard6()
         {
             string addressPattern = "/???test";
@@ -174,7 +174,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_PossibleIssueWithAddressPatternWildcard7()
         {
             string addressPattern = "/???test";
@@ -186,7 +186,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_PossibleIssueWithAddressPatternWildcard8()
         {
             string addressPattern = "/???test??";
@@ -198,7 +198,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_PossibleIssueWithAddressPatternWildcard9()
         {
             string addressPattern = "/???test??";
@@ -210,7 +210,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsMatch
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsMatchTest_PossibleIssueWithAddressPatternWildcard10()
         {
             string addressPattern = "/???test*?";
@@ -226,7 +226,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsValidAddressPattern
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsValidAddressPatternTest_Good()
         {
             for (int i = 0; i < UnitTestHelper.Good_AddressPatterns.Length; i++)
@@ -242,7 +242,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for IsValidAddressPattern
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void IsValidAddressPatternTest_Bad()
         {
             for (int i = 0; i < UnitTestHelper.Bad_AddressPatterns.Length; i++)
@@ -262,7 +262,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Constructor
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void OscAddress_Constructor_Good()
         {
             for (int i = 0; i < UnitTestHelper.Good_AddressPatterns.Length; i++)
@@ -282,7 +282,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Constructor
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void AddressPatternMatches()
         {
             for (int i = 0; i < UnitTestHelper.Good_AddressPatterns.Length; i++)

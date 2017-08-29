@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Rug.Osc.Tests
 {
@@ -7,7 +7,7 @@ namespace Rug.Osc.Tests
     ///This is a test class for HelperTest and is intended
     ///to contain all HelperTest Unit Tests
     ///</summary>
-    [TestClass()]
+    [TestFixture]
     public class HelperTest
     {
         private TestContext testContextInstance;
@@ -66,7 +66,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Float()
         {
             byte[] expected = new byte[] { 0x41, 0xCA, 0x00, 0x00 };
@@ -84,7 +84,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for ReadSingle
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadSingleTest()
         {
             byte[] data = new byte[] { 0x41, 0xCA, 0x00, 0x00 };
@@ -106,7 +106,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Int32()
         {
             byte[] expected = new byte[] { 0xAB, 0xCD, 0xEF, 0x42 };
@@ -124,7 +124,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for ReadInt32
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadInt32Test()
         {
             byte[] data = new byte[] { 0xAB, 0xCD, 0xEF, 0x42 };
@@ -146,7 +146,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_UInt32()
         {
             byte[] expected = new byte[] { 0xAB, 0xCD, 0xEF, 0xF2 };
@@ -164,7 +164,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for ReadUInt32
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadUInt32Test()
         {
             byte[] data = new byte[] { 0xAB, 0xCD, 0xEF, 0xF2 };
@@ -186,7 +186,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Int64()
         {
             byte[] expected = new byte[] { 0xA1, 0xC2, 0xE3, 0xF4, 0xA5, 0xC6, 0xE7, 0xF8 };
@@ -204,7 +204,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for ReadInt64
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadInt64Test()
         {
             byte[] data = new byte[] { 0xA1, 0xC2, 0xE3, 0xF4, 0xA5, 0xC6, 0xE7, 0xF8 };
@@ -226,7 +226,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_UInt64()
         {
             byte[] expected = new byte[] { 0xA1, 0xC2, 0xE3, 0xF4, 0xA5, 0xC6, 0xE7, 0xF8 };
@@ -244,7 +244,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for ReadInt64
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadUInt64Test()
         {
             byte[] data = new byte[] { 0xA1, 0xC2, 0xE3, 0xF4, 0xA5, 0xC6, 0xE7, 0xF8 };
@@ -266,7 +266,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Double()
         {
             // 0x4028d8c7e28240b8
@@ -286,7 +286,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for ReadDouble
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadDoubleTest()
         {
             byte[] data = new byte[] { 0x40, 0x28, 0xd8, 0xc7, 0xe2, 0x82, 0x40, 0xb8 };
@@ -308,7 +308,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for WritePadding
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WritePaddingTest_0()
         {
             long expected = 0;
@@ -324,7 +324,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for WritePadding
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WritePaddingTest_1()
         {
             long expected = 4;
@@ -343,7 +343,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for WritePadding
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WritePaddingTest_2()
         {
             long expected = 4;
@@ -363,7 +363,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for WritePadding
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WritePaddingTest_3()
         {
             long expected = 4;
@@ -384,7 +384,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for WritePadding
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WritePaddingTest_4()
         {
             long expected = 4;

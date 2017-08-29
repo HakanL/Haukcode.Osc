@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rug.Osc;
 using System;
 using System.Collections.Generic;
@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Rug.Osc.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class OscHelperTests
     {
-        [TestMethod()]
+        [Test]
         public void ArgumentsToStringTest()
         {
             Assert.AreEqual("", OscHelper.ArgumentsToString(new object[0]));
@@ -112,55 +112,55 @@ namespace Rug.Osc.Tests
 
         }
 
-        //[TestMethod()]
+        //[Test]
         //public void ArgumentsToStringTest1()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void ParseArgumentTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void ParseArgumentTest1()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void EscapeStringTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void UnescapeStringTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void EscapeTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void ToStringBlobTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void IsValidEscapeTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void UnescapeTest()
         //{
         //    Assert.Fail();

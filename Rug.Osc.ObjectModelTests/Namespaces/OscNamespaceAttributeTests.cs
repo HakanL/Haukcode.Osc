@@ -1,14 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rug.Osc.Namespaces;
+﻿using Rug.Osc.Namespaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Rug.Osc.Namespaces.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class OscNamespaceAttributeTests
     {
         string[] validNamespaces = new string[]
@@ -28,7 +28,7 @@ namespace Rug.Osc.Namespaces.Tests
         };
 
 
-        [TestMethod()]
+        [Test]
         public void OscNamespaceAttributeTest_Valid()
         {
             foreach (string address in validNamespaces)
@@ -39,7 +39,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void OscNamespaceAttributeTest_Invalid()
         {
             foreach (string address in invalidNamespaces)

@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Rug.Osc.Tests
 {
@@ -9,7 +9,7 @@ namespace Rug.Osc.Tests
     ///This is a test class for OscReaderTest and is intended
     ///to contain all OscReaderTest Unit Tests
     ///</summary>
-	[TestClass()]
+	[TestFixture]
 	public class OscReaderTest
 	{
 
@@ -66,7 +66,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Read 
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void ReadTest_MultiLine()
 		{			
 			using (MemoryStream stream = new MemoryStream())

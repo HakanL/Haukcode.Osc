@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rug.Loading;
 using System;
 using System.Collections.Generic;
@@ -7,13 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using NUnit.Framework;
 
 namespace Rug.Loading.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class LoaderTests
     {
-        [TestMethod()]
+        [Test]
         public void GetNameTest_TypeNotFound()
         {
             try
@@ -34,7 +35,7 @@ namespace Rug.Loading.Tests
         //    Assert.Fail();
         //}
 
-        [TestMethod()]
+        [Test]
         public void IsTypeLoadableTest()
         {
             Assert.IsTrue(Loader.IsTypeLoadable(typeof(SimpleLoadable)));
@@ -42,7 +43,7 @@ namespace Rug.Loading.Tests
             Assert.IsFalse(Loader.IsTypeLoadable(typeof(object)));
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectTest()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -56,7 +57,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectTest1()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -70,7 +71,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectTest2()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -84,7 +85,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectTest3()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -98,7 +99,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectTest4()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -112,7 +113,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectTest5()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -126,7 +127,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectTest6()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -140,7 +141,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectTest7()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -154,7 +155,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectTest_MissingTypeAttribute()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -176,7 +177,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectTest_InvalidTypeAttribute()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -198,7 +199,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectTest_InvalidConstructor()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -221,7 +222,7 @@ namespace Rug.Loading.Tests
         }
 
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectTest_NoNode()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -322,7 +323,7 @@ namespace Rug.Loading.Tests
         }
 
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectsTest()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -338,7 +339,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectsTest1()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -354,7 +355,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectsTest2()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -370,7 +371,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectsTest3()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -392,7 +393,7 @@ namespace Rug.Loading.Tests
 
 
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectsTest4()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -411,7 +412,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test]
         public void LoadObjectsTest5()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -430,7 +431,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test()]
         public void LoadObjectsTest6()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -449,7 +450,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test()]
         public void LoadObjectsTest7()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -468,7 +469,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test()]
         public void LoadObjectsTest7_NullNode()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -493,7 +494,7 @@ namespace Rug.Loading.Tests
         }
 
 
-        [TestMethod()]
+        [Test()]
         public void LoadObjectsTest8()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -512,7 +513,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test()]
         public void LoadObjectsTest9()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -531,7 +532,7 @@ namespace Rug.Loading.Tests
             context.ReportErrors();
         }
 
-        [TestMethod()]
+        [Test()]
         public void SaveObjectTest()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -552,7 +553,7 @@ namespace Rug.Loading.Tests
             Assert.AreEqual("<Moop Type=\"SimpleLoadable2\" />", document.InnerXml);
         }
 
-        [TestMethod()]
+        [Test()]
         public void SaveObjectTest_NullTag()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -573,7 +574,7 @@ namespace Rug.Loading.Tests
             Assert.AreEqual("<SimpleLoadable2 />", document.InnerXml);
         }
 
-        [TestMethod()]
+        [Test()]
         public void SaveObjectTest_NotLoadable()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -600,7 +601,7 @@ namespace Rug.Loading.Tests
             }
         }
 
-        [TestMethod()]
+        [Test()]
         public void SaveObjectTest1()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -621,7 +622,7 @@ namespace Rug.Loading.Tests
             Assert.AreEqual("<SimpleLoadable2 />", document.InnerXml); 
         }
 
-        [TestMethod()]
+        [Test()]
         public void SaveObjectsTest()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -644,7 +645,7 @@ namespace Rug.Loading.Tests
             Assert.AreEqual("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /></Objects>", document.InnerXml);
         }
 
-        [TestMethod()]
+        [Test()]
         public void SaveObjectsTest1()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -667,7 +668,7 @@ namespace Rug.Loading.Tests
             Assert.AreEqual("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /></Objects>", document.InnerXml);
         }
 
-        [TestMethod()]
+        [Test()]
         public void SaveObjectsTest2()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -692,7 +693,7 @@ namespace Rug.Loading.Tests
             Assert.AreEqual("<Objects><SimpleLoadable2 /><SimpleLoadable2 /><SimpleLoadable2 /></Objects>", document.InnerXml);
         }
 
-        [TestMethod()]
+        [Test()]
         public void SaveObjectsTest3()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -717,7 +718,7 @@ namespace Rug.Loading.Tests
             Assert.AreEqual("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /></Objects>", document.InnerXml);
         }
 
-        [TestMethod()]
+        [Test()]
         public void ToXmlNodeNameTest()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -742,7 +743,7 @@ namespace Rug.Loading.Tests
             Assert.AreEqual($"{GenericLoadable2<char, char>.TypeName}_{Loader.GetTypeName(typeof(char))}.{Loader.GetTypeName(typeof(char))}_", Loader.ToXmlNodeName(Loader.GetTypeName(typeof(GenericLoadable2<char, char>))));
         }
 
-        [TestMethod()]
+        [Test()]
         public void GetTypeNameTest1()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -751,7 +752,7 @@ namespace Rug.Loading.Tests
             Assert.AreEqual(SimpleLoadable2.TypeName, Loader.GetTypeName(typeof(SimpleLoadable2)));
         }
 
-        [TestMethod()]
+        [Test()]
         public void GetTypeNameTest_Generic()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -765,7 +766,7 @@ namespace Rug.Loading.Tests
             Assert.AreEqual($"{GenericLoadable<char>.TypeName}<{Loader.GetTypeName(typeof(char))}>", Loader.GetTypeName(typeof(GenericLoadable<char>)));
         }
 
-        [TestMethod()]
+        [Test()]
         public void GetTypeNameTest_Generic2()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
@@ -774,7 +775,7 @@ namespace Rug.Loading.Tests
         }
 
 
-        [TestMethod()]
+        [Test()]
         public void GetTypeNameTest_Generic3()
         {
             Loader.CacheLoadables(this.GetType().Assembly);

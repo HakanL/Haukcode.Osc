@@ -33,19 +33,19 @@ namespace Rug.Osc
         private byte[] packetBytes;
         private byte[] readBuffer;
 
-        public string PortName { get; private set; }
+        public string PortName { get; }
 
-        public int BaudRate { get; private set; }
+        public int BaudRate { get; }
 
-        public Parity Parity { get; private set; }
+        public Parity Parity { get; }
 
-        public int DataBits { get; private set; }
+        public int DataBits { get; }
 
-        public StopBits StopBits { get; private set; }
+        public StopBits StopBits { get; }
 
-        public int WriteTimeout { get; private set; }
+        public int WriteTimeout { get; }
 
-        public bool RtsCtsEnabled { get; private set; }
+        public bool RtsCtsEnabled { get; }
 
         public OscCommunicationStatistics Statistics { get; set; }
 

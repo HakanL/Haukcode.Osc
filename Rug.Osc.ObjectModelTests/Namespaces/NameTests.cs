@@ -1,8 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿
+using NUnit.Framework;
 
 namespace Rug.Osc.Namespaces.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class NameTests
     {
         private const string testPath0 = "/";
@@ -14,7 +15,7 @@ namespace Rug.Osc.Namespaces.Tests
         private const string testPathLesser = "/0";
         private const string testPathPattern = "/*thing";
 
-        [TestMethod()]
+        [Test]
         public void CompareToTest_Name()
         {
             Name name = new Name(testPath2, true);
@@ -22,7 +23,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(0, name.CompareTo(name));
         }
 
-        [TestMethod()]
+        [Test]
         public void CompareToTest_Name2()
         {
             Name name0 = new Name(testPathLesser, true);
@@ -35,7 +36,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(+1, name1.CompareTo(name0));
         }
 
-        [TestMethod()]
+        [Test]
         public void CompareToTest_OscAddress()
         {
             Name name = new Name(testPath2, true);
@@ -44,7 +45,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(0, name.CompareTo(oscAddress));
         }
 
-        [TestMethod()]
+        [Test]
         public void CompareToTest_OscAddress2()
         {
             Name name = new Name(testPathLesser, true);
@@ -53,7 +54,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(-1, name.CompareTo(oscAddress));
         }
 
-        [TestMethod()]
+        [Test]
         public void CompareToTest_String()
         {
             Name name = new Name(testPath2, true);
@@ -61,7 +62,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(0, name.CompareTo(testPath2));
         }
 
-        [TestMethod()]
+        [Test]
         public void CompareToTest_String2()
         {
             Name name0 = new Name(testPathLesser, true);
@@ -70,7 +71,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(-1, name0.CompareTo(name1));
         }
 
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Name()
         {
             Name name0 = new Name(testPath1, true);
@@ -79,7 +80,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(true, name0.Equals(name1));
         }
 
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Name2()
         {
             Name name0 = new Name(testPath1, true);
@@ -88,7 +89,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(false, name0.Equals(name1));
         }
 
-        [TestMethod()]
+        [Test]
         public void EqualsTest_OscAddress()
         {
             Name name0 = new Name(testPath1, true);
@@ -97,7 +98,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(true, name0.Equals(oscAddress));
         }
 
-        [TestMethod()]
+        [Test]
         public void EqualsTest_OscAddress2()
         {
             Name name0 = new Name(testPath1, true);
@@ -106,7 +107,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(false, name0.Equals(oscAddress));
         }
 
-        [TestMethod()]
+        [Test]
         public void EqualsTest_String()
         {
             Name name0 = new Name(testPath1, true);
@@ -115,7 +116,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(true, name0.Equals(stringName));
         }
 
-        [TestMethod()]
+        [Test]
         public void EqualsTest_String2()
         {
             Name name0 = new Name(testPath1, true);
@@ -124,7 +125,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(false, name0.Equals(stringName));
         }
 
-        [TestMethod()]
+        [Test]
         public void NameTest_Named()
         {
             Name name = new Name(testPath1, true);
@@ -132,7 +133,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(testPath1, name.Value);
         }
 
-        [TestMethod()]
+        [Test]
         public void NameTest_Named_Invalid_Empty()
         {
             try
@@ -147,7 +148,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void NameTest_Named_Invalid_Pattern()
         {
             try
@@ -162,7 +163,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void NameTest_Named2Step()
         {
             Name name = new Name(testPath2, true);
@@ -170,7 +171,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(testPath2, name.Value);
         }
 
-        [TestMethod()]
+        [Test]
         public void NameTest_Root()
         {
             Name name = new Name(testPath0, true);
@@ -178,7 +179,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(testPath0, name.Value);
         }
 
-        [TestMethod()]
+        [Test]
         public void ToStringTest()
         {
             Name name = new Name(testPath2, true);
@@ -186,7 +187,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(testPath2, name.ToString());
         }
 
-        [TestMethod()]
+        [Test]
         public void ChangeName()
         {
             Name name = new Name(testPath1, false);
@@ -196,7 +197,7 @@ namespace Rug.Osc.Namespaces.Tests
             Assert.AreEqual(testPath2, name.Value);
         }
 
-        [TestMethod()]
+        [Test]
         public void ChangeName_Invalid_Pattern()
         {
             try
@@ -213,7 +214,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void ChangeName_Invalid_Readonly()
         {
             try
@@ -230,7 +231,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void ChangeName_Invalid_Empty()
         {
             try

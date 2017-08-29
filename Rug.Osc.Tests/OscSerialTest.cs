@@ -1,5 +1,5 @@
 ﻿using Rug.Osc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.IO.Ports;
 
@@ -11,7 +11,7 @@ namespace Rug.Osc.Tests
     ///This is a test class for OscSerialTest and is intended
     ///to contain all OscSerialTest Unit Tests
     ///</summary>
-	[TestClass()]
+	[TestFixture]
 	public class OscSerialTest
 	{
 
@@ -68,7 +68,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Send
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void SendTest()
 		{
 			string portName = string.Empty; // TODO: Initialize to an appropriate value

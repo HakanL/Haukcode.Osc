@@ -23,7 +23,7 @@ namespace Rug.Osc.Slip
         private byte[] buffer;
         private int index;
 
-        public int BufferSize { get { return buffer.Length; } }
+        public int BufferSize => buffer.Length;
 
         public SlipPacketReader(int bufferSize)
         {

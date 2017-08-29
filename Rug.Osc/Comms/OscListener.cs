@@ -1,19 +1,19 @@
-﻿/* 
- * Rug.Osc 
- * 
+﻿/*
+ * Rug.Osc
+ *
  * Copyright (C) 2013 Phill Tew (peatew@gmail.com)
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
- * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
- * 
+ *
  */
 
 using System;
@@ -27,20 +27,19 @@ namespace Rug.Osc
     /// </summary>
     public class OscListener : IDisposable
     {
-        public readonly OscAddressManager OscAddressManager = new OscAddressManager();
+        public readonly IOscAddressManager OscAddressManager = new OscAddressManager();
         public readonly OscReceiver OscReceiver;
 
         private Thread thread;
+
+        public event OscPacketEvent PacketProcessed;
+
+        public event OscPacketEvent PacketReceived;
 
         /// <summary>
         /// This event will be raised whenever an unknown address is encountered
         /// </summary>
         public event EventHandler<UnknownAddressEventArgs> UnknownAddress;
-
-        public event OscPacketEvent PacketReceived;
-        public event OscPacketEvent PacketProcessed;
-
-        #region Constructors
 
         /// <summary>
         /// Create a new Osc UDP listener. Note the underlying socket will not be connected until Connect is called
@@ -120,7 +119,23 @@ namespace Rug.Osc
             OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
         }
 
-        #endregion
+        /// <summary>
+        /// Attach an event listener on to the given address
+        /// </summary>
+        /// <param name="address">the address of the contianer</param>
+        /// <param name="event">the event to attach</param>
+        public void Attach(string address, OscMessageEvent @event)
+        {
+            OscAddressManager.Attach(address, @event);
+        }
+
+        /// <summary>
+        /// Close the receiver
+        /// </summary>
+        public void Close()
+        {
+            OscReceiver.Close();
+        }
 
         /// <summary>
         /// Connect the receiver and start listening
@@ -138,11 +153,13 @@ namespace Rug.Osc
         }
 
         /// <summary>
-        /// Close the receiver
+        /// Detach an event listener
         /// </summary>
-        public void Close()
+        /// <param name="address">the address of the container</param>
+        /// <param name="event">the event to remove</param>
+        public void Detach(string address, OscMessageEvent @event)
         {
-            OscReceiver.Close();
+            OscAddressManager.Detach(address, @event);
         }
 
         /// <summary>
@@ -154,31 +171,6 @@ namespace Rug.Osc
             OscAddressManager.Dispose();
         }
 
-        /// <summary>
-        /// Attach an event listener on to the given address
-        /// </summary>
-        /// <param name="address">the address of the contianer</param>
-        /// <param name="event">the event to attach</param>
-        public void Attach(string address, OscMessageEvent @event)
-        {
-            OscAddressManager.Attach(address, @event);
-        }
-
-        /// <summary>
-        /// Detach an event listener 
-        /// </summary>
-        /// <param name="address">the address of the container</param>
-        /// <param name="event">the event to remove</param>
-        public void Detach(string address, OscMessageEvent @event)
-        {
-            OscAddressManager.Detach(address, @event);
-        }
-
-        private void OnUnknownAddress(object sender, UnknownAddressEventArgs e)
-        {
-            UnknownAddress?.Invoke(this, e);
-        }
-
         private void ListenLoop()
         {
             try
@@ -186,37 +178,47 @@ namespace Rug.Osc
                 while (OscReceiver.State != OscSocketState.Closed)
                 {
                     // if we are in a state to receive
-                    if (OscReceiver.State == OscSocketState.Connected)
+                    if (OscReceiver.State != OscSocketState.Connected)
                     {
-                        // get the next message 
-                        // this will block until one arrives or the socket is closed
-                        OscPacket packet = OscReceiver.Receive();
-
-                        PacketReceived?.Invoke(packet);
-
-                        switch (OscAddressManager.ShouldInvoke(packet))
-                        {
-                            case OscPacketInvokeAction.Invoke:
-                                OscAddressManager.Invoke(packet);
-                                break;
-                            case OscPacketInvokeAction.DontInvoke:
-                                break;
-                            case OscPacketInvokeAction.HasError:
-                                break;
-                            case OscPacketInvokeAction.Pospone:
-                                break;
-                            default:
-                                break;
-                        }
-
-                        PacketProcessed?.Invoke(packet);
+                        continue;
                     }
+
+                    // get the next message
+                    // this will block until one arrives or the socket is closed
+                    OscPacket packet = OscReceiver.Receive();
+
+                    PacketReceived?.Invoke(packet);
+
+                    switch (OscAddressManager.ShouldInvoke(packet))
+                    {
+                        case OscPacketInvokeAction.Invoke:
+                            OscAddressManager.Invoke(packet);
+                            break;
+
+                        case OscPacketInvokeAction.DontInvoke:
+                            break;
+
+                        case OscPacketInvokeAction.HasError:
+                            break;
+
+                        case OscPacketInvokeAction.Pospone:
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    PacketProcessed?.Invoke(packet);
                 }
             }
             catch (Exception ex)
             {
-
             }
+        }
+
+        private void OnUnknownAddress(object sender, UnknownAddressEventArgs e)
+        {
+            UnknownAddress?.Invoke(this, e);
         }
     }
 }

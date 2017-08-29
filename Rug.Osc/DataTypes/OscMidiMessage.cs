@@ -352,14 +352,14 @@ namespace Rug.Osc
             if (byte.TryParse(parts[index].Trim(), NumberStyles.Integer, provider, out statusByte) == false)
             {
                 OscMidiSystemMessageType systemMessage;
-
-                if (EnumHelper.TryParse<OscMidiSystemMessageType>(parts[index].Trim(), true, out systemMessage) == true)
+                
+                if (Enum.TryParse(parts[index].Trim(), true, out systemMessage) == true)
                 {
                     messageType = OscMidiMessageType.SystemExclusive;
                     statusByte = (byte)((int)messageType | (int)systemMessage);
                     index++;
                 }
-                else if (EnumHelper.TryParse<OscMidiMessageType>(parts[index].Trim(), true, out messageType) == true)
+                else if (Enum.TryParse(parts[index].Trim(), true, out messageType) == true)
                 {
                     index++;
                     byte channel = byte.Parse(parts[index++].Trim(), NumberStyles.Integer, provider);

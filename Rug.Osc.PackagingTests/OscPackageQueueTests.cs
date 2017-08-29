@@ -1,59 +1,59 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace Rug.Osc.Packaging.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class OscPackageQueueTests
     {
-        //[TestMethod()]
+        //[Test]
         //public void OscPackageQueueTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void OscPackageQueueTest1()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void AddTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void CloseTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void ConnectTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void FlushTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void SendPacketReturnMessageTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void PumpTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void DisposeTest()
         //{
         //    Assert.Fail();

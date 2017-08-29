@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace Rug.Osc.Tests
 {
@@ -6,7 +6,7 @@ namespace Rug.Osc.Tests
     ///This is a test class for OscColorTest and is intended
     ///to contain all OscColorTest Unit Tests
     ///</summary>
-    [TestClass()]
+    [TestFixture]
     public class OscColorTest
     {
         private TestContext testContextInstance;
@@ -63,7 +63,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for OscColor Constructor
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void OscColorConstructorTest()
         {
             int value = unchecked((int)0xFFFFFFFF);
@@ -81,7 +81,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for FromArgb
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void FromArgbTest_R()
         {
             byte alpha = 255;
@@ -107,7 +107,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for FromArgb
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void FromArgbTest_G()
         {
             byte alpha = 255;
@@ -133,7 +133,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for FromArgb
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void FromArgbTest_B()
         {
             byte alpha = 255;

@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Rug.Osc.Tests
 {
@@ -9,7 +9,7 @@ namespace Rug.Osc.Tests
     ///This is a test class for OscSocketTest and is intended
     ///to contain all OscSocketTest Unit Tests
     ///</summary>
-	[TestClass()]
+	[TestFixture]
 	public class OscSocketTest
 	{
 
@@ -66,7 +66,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for IsMulticastAddress
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void IsMulticastAddressTest_True()
 		{
 			IPAddress address = IPAddress.Parse("239.0.0.222"); 
@@ -79,7 +79,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for IsMulticastAddress
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void IsMulticastAddressTest_False()
 		{
 			IPAddress address = IPAddress.Parse("127.0.0.1");

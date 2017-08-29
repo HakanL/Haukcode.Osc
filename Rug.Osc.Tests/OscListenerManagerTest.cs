@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Rug.Osc.Tests
 {       
@@ -8,7 +8,7 @@ namespace Rug.Osc.Tests
     ///This is a test class for OscListenerManagerTest and is intended
     ///to contain all OscListenerManagerTest Unit Tests
     ///</summary>
-	[TestClass()]
+	[TestFixture]
 	public class OscListenerManagerTest
 	{
 		private TestContext testContextInstance;
@@ -62,7 +62,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for OscListenerManager Constructor
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void OscListenerManagerConstructorTest()
 		{
 			try
@@ -81,7 +81,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Attach
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void AttachTest()
 		{
 			try
@@ -104,7 +104,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Detach
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void DetachTest()
 		{
 			try
@@ -129,7 +129,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Invoke
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void InvokeTest_Good()
 		{
 			try
@@ -158,7 +158,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Invoke
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void InvokeTest_Bad()
 		{
 			try
@@ -187,7 +187,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Invoke
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void InvokeTest1()
 		{
 			try
@@ -216,7 +216,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Invoke
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void InvokeTest1_Bad()
 		{
 			try

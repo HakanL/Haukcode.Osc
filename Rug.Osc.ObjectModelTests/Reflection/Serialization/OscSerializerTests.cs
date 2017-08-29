@@ -1,41 +1,41 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rug.Osc.Reflection.Serialization;
+﻿using Rug.Osc.Reflection.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Rug.Osc.Reflection.Serialization.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class OscSerializerTests
     {
-        //[TestMethod()]
+        //[Test]
         //public void GetOscSerializerTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void GetOscSerializerTest1()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void TryGetOscSerializerTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void TryGetOscSerializerTest1()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void RegisterTest()
         //{
         //    Assert.Fail();

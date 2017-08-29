@@ -1,17 +1,17 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rug.Loading;
+﻿using Rug.Loading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Rug.Loading.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class AliasAttributeTests
     {
-        [TestMethod()]
+        [Test]
         public void AliasAttributeTest()
         {
             string[] args = new string[] { "Moop", "The.Doop", "TheyThing" };

@@ -1,18 +1,18 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rug.Osc.Connection;
+﻿using Rug.Osc.Connection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Rug.Osc.Connection.Tests
 {
-    [TestClass()]
+    [TestFixture()]
     public class OscMessagesTests
     {
-        [TestMethod()]
+        [Test()]
         public void BindingErrorTest()
         {
             DebugReporter reporter = new DebugReporter();
@@ -21,28 +21,28 @@ namespace Rug.Osc.Connection.Tests
             message = OscMessages.BindingError(BindingErrorType.ObjectInvalidType, "/moop", typeof(int), "/the/doop", typeof(float));
             OscMessages.Print.BindingError(reporter, message);
             Assert.AreEqual(
-                "/error, \"ObjectInvalidType\", \"Could not bind because the object at the destination is of an incompatible type. Expected int found float.\", \"/moop\", \"/the/doop\", \"int\", \"float\"",
+                @"/error, ""ObjectInvalidType"", ""Could not bind because the object at the destination is of an incompatible type. Expected int found float."", ""/moop"", ""/the/doop"", ""int"", ""float""",
                 message.ToString()
                 );
 
             message = OscMessages.BindingError(BindingErrorType.ObjectNotFound, "/moop", typeof(int), "/the/doop", typeof(float));
             OscMessages.Print.BindingError(reporter, message);
             Assert.AreEqual(
-                "/error, \"ObjectNotFound\", \"Could not bind because no object exists at address.\", \"/moop\", \"/the/doop\"",
+                @"/error, ""ObjectNotFound"", ""Could not bind because no object exists at address."", ""/moop"", ""/the/doop""",
                 message.ToString()
                 );
 
             message = OscMessages.BindingError(BindingErrorType.Unspecified, "/moop", typeof(int), "/the/doop", typeof(float));
             OscMessages.Print.BindingError(reporter, message);
             Assert.AreEqual(
-                "/error, \"Unspecified\", \"Could not bind for an unspecified reason.\", \"/moop\", \"/the/doop\"",
+                @"/error, ""Unspecified"", ""Could not bind for an unspecified reason."", ""/moop"", ""/the/doop""",
                 message.ToString()
                 );
 
             OscMessages.Print.BindingError(reporter, new OscMessage("/error", "MOOP"));
         }
 
-        [TestMethod()]
+        [Test()]
         public void ErrorTest()
         {
             DebugReporter reporter = new DebugReporter();
@@ -51,19 +51,19 @@ namespace Rug.Osc.Connection.Tests
             message = OscMessages.Error("String");
             OscMessages.Print.Error(reporter, message);
             Assert.AreEqual(
-                "/error, \"\", \"String\"",
+                @"/error, """", ""String""",
                 message.ToString()
                 );
 
             message = OscMessages.Error("String {0} {1}", "A", "B");
             OscMessages.Print.Error(reporter, message);
             Assert.AreEqual(
-                "/error, \"\", \"String A B\"",
+                @"/error, """", ""String A B""",
                 message.ToString()
                 );
         }
 
-        [TestMethod()]
+        [Test()]
         public void MethodDescriptorTest()
         {
             DebugReporter reporter = new DebugReporter();

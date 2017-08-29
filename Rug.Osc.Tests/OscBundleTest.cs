@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace Rug.Osc.Tests
 {
@@ -6,7 +6,7 @@ namespace Rug.Osc.Tests
     ///This is a test class for OscBundleTest and is intended
     ///to contain all OscBundleTest Unit Tests
     ///</summary>
-    [TestClass()]
+    [TestFixture]
     public class OscBundleTest
     {
         private TestContext testContextInstance;
@@ -63,7 +63,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for OscBundle Constructor
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void OscBundleConstructorTest()
         {
             OscTimeTag timestamp = new OscTimeTag(14236589681638796952);
@@ -74,7 +74,7 @@ namespace Rug.Osc.Tests
             UnitTestHelper.AreEqual(messages, target.ToArray());
         }
 
-        [TestMethod()]
+        [Test]
         public void OscBundleManyMessagesTest_1()
         {
             OscBundle target = OscBundle.Parse("#bundle, 0, { /ping }, { /moop }, { /ping }, { /ping }, { /ping }");
@@ -84,7 +84,7 @@ namespace Rug.Osc.Tests
             UnitTestHelper.AreEqual(target, expected);
         }
 
-        [TestMethod()]
+        [Test]
         public void OscBundleManyMessagesTest_2()
         {
             OscBundle target = OscBundle.Parse("#bundle, 0, { /ping }, { /moop }, { /ping }, { /ping }, { /ping }");
@@ -102,7 +102,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for IsBundle
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void IsBundleTest()
 		{
 			byte[] bytes = null;
@@ -119,7 +119,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest()
         {
             OscTimeTag timestamp = new OscTimeTag(14236589681638796952);
@@ -139,7 +139,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Bad_ToLong()
         {
             byte[] bytes = new byte[] {
@@ -171,7 +171,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Bad_ToShort()
         {
             byte[] bytes = new byte[] {
@@ -204,7 +204,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for ToByteArray
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void ToByteArrayTest()
 		{
 			OscBundle target = null; // TODO: Initialize to an appropriate value
@@ -218,7 +218,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for ToString
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void ToStringTest()
 		{
 			OscBundle target = null; // TODO: Initialize to an appropriate value
@@ -232,7 +232,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Write
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void WriteTest()
 		{
 			OscBundle target = null; // TODO: Initialize to an appropriate value
@@ -248,7 +248,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Write
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void WriteTest1()
 		{
 			OscBundle target = null; // TODO: Initialize to an appropriate value
@@ -264,7 +264,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for ToByteArray
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void Nested_ToArrayTest()
         {
             OscBundle target = UnitTestHelper.DoubleNestedBundle();
@@ -279,7 +279,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for ToString
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void Nested_ToStringTest()
         {
             OscBundle target = UnitTestHelper.DoubleNestedBundle();
@@ -292,7 +292,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void Nested_WriteTest()
         {
             OscBundle target = UnitTestHelper.DoubleNestedBundle();
@@ -309,7 +309,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void Nested_ReadTest()
         {
             OscBundle expected = UnitTestHelper.DoubleNestedBundle();
@@ -323,7 +323,7 @@ namespace Rug.Osc.Tests
             UnitTestHelper.AreEqual(expected, actual);
         }
 
-        [TestMethod()]
+        [Test]
         public void Nested_ParseTest()
         {
             string str = UnitTestHelper.DoubleNestedBundleString;
@@ -336,7 +336,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for TryParse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void TryParseTest_Good()
         {
             bool expected = true;
@@ -353,7 +353,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for TryParse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void TryParseTest_Bad()
         {
             bool expected = false;

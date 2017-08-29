@@ -1,18 +1,18 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rug.Osc.Namespaces;
+﻿using Rug.Osc.Namespaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using NUnit.Framework;
 
 namespace Rug.Osc.Namespaces.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class NamespaceRootTests
     {
-        [TestMethod()]
+        [Test]
         public void AddTest_Move()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidObjectAddresses)
@@ -79,7 +79,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void AddTest_Nested()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidObjectAddresses)
@@ -129,7 +129,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void AddTest_Nested_Move()
         {
             List<INamespaceObject> objectsWeCareAbout = new List<INamespaceObject>();
@@ -229,7 +229,7 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void InvokeTest()
         {
             foreach (string validNamespaceAddress in NamespaceTestHelper.ValidObjectAddresses)
@@ -269,67 +269,67 @@ namespace Rug.Osc.Namespaces.Tests
             }
         }
 
-        //[TestMethod()]
+        //[Test]
         //public void NamespaceRootTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void AttachTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void DetachTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void FindObjectTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void FindObjectTest1()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void FindObjectsTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void SendTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void SendTest1()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void TypeOfTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void UsageTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void UsageTest1()
         //{
         //    Assert.Fail();

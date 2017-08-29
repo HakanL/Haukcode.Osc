@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Rug.Osc.Tests
 {
@@ -9,7 +9,7 @@ namespace Rug.Osc.Tests
     ///This is a test class for OscTimeTagTest and is intended
     ///to contain all OscTimeTagTest Unit Tests
     ///</summary>
-	[TestClass()]
+	[TestFixture]
 	public class OscTimeTagTest
 	{
 
@@ -66,7 +66,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for OscTimeTag Constructor
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void OscTimeTagConstructorTest()
 		{
 			DateTime expected = new DateTime(632413223390120000, DateTimeKind.Utc);
@@ -84,7 +84,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for FromDataTime
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void FromDataTimeTest()
 		{
 			DateTime datetime = new DateTime(632413223390120000, DateTimeKind.Utc);
@@ -97,7 +97,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for ToDataTime
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void ToDataTimeTest()
 		{
 			OscTimeTag target = new OscTimeTag(14236589681638796952);

@@ -16,7 +16,6 @@
  * 
  */
 
-
 namespace Rug.Osc
 {
     public enum OscPacketFormat : int

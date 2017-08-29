@@ -1,11 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace Rug.Osc.Packaging.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class OscPackageBuilderTests
     {
-        [TestMethod()]
+        [Test]
         public void OscPackageBuilderTest()
         {
             OscPackageBuilder builder = new OscPackageBuilder(123) { Mode = OscPackageBuilderMode.PackagedAndQueued };
@@ -13,7 +13,7 @@ namespace Rug.Osc.Packaging.Tests
             Assert.IsTrue(true);
         }
 
-        [TestMethod()]
+        [Test]
         public void AddTest()
         {
             OscMessage message = new OscMessage("/moop");
@@ -25,19 +25,19 @@ namespace Rug.Osc.Packaging.Tests
             Assert.IsTrue(true);
         }
 
-        //[TestMethod()]
+        //[Test]
         //public void AddPacketIDMessageTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void FlushTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void CreatePacketIDMessageTest()
         //{
         //    Assert.Fail();

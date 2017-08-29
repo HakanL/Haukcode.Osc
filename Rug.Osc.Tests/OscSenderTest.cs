@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Rug.Osc.Tests
 {       
@@ -8,7 +8,7 @@ namespace Rug.Osc.Tests
     ///This is a test class for OscSenderTest and is intended
     ///to contain all OscSenderTest Unit Tests
     ///</summary>
-	[TestClass()]
+	[TestFixture]
 	public class OscSenderTest
 	{
 		private TestContext testContextInstance;
@@ -63,7 +63,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Send
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void SendTest()
 		{
 			try

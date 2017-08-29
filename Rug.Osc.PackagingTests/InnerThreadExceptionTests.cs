@@ -1,12 +1,12 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Rug.Osc.Packaging.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class InnerThreadExceptionTests
     {
-        [TestMethod()]
+        [Test]
         public void InnerThreadExceptionTest()
         {
             const string message = "TEST MESSAGE";
@@ -16,7 +16,7 @@ namespace Rug.Osc.Packaging.Tests
             Assert.AreEqual(message, innerThreadException.Message);
         }
 
-        [TestMethod()]
+        [Test]
         public void InnerThreadExceptionTest1()
         {
             const string message = "TEST MESSAGE";

@@ -54,9 +54,9 @@ namespace Rug.Osc
 
     public class OscCommunicationStatistics : IDisposable
     {
-        List<SingleStatistic> statistics = new List<SingleStatistic>();
-        bool shouldStop = false;
-        Thread thread;
+        private readonly List<SingleStatistic> statistics = new List<SingleStatistic>();
+        private bool shouldStop = false;
+        private Thread thread;
 
         public DateTime PeriodStart { get; private set; }
 
@@ -113,10 +113,7 @@ namespace Rug.Osc
         {
             shouldStop = true;
 
-            if (thread != null)
-            {
-                thread.Join();
-            }
+            thread?.Join();
 
             thread = null;
         }
@@ -156,6 +153,7 @@ namespace Rug.Osc
             PeriodStart = now;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Stop();

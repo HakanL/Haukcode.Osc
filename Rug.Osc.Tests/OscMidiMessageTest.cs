@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace Rug.Osc.Tests
 {
@@ -8,7 +8,7 @@ namespace Rug.Osc.Tests
     ///This is a test class for OscMidiMessageTest and is intended
     ///to contain all OscMidiMessageTest Unit Tests
     ///</summary>
-	[TestClass()]
+	[TestFixture]
 	public class OscMidiMessageTest
 	{
 
@@ -65,7 +65,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for OscMidiMessage Constructor
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void OscMidiMessageConstructorTest()
 		{
 			OscMidiMessage expected = new OscMidiMessage(0x03962200);
@@ -87,7 +87,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for OscMidiMessage Constructor
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void OscMidiMessageConstructorTest1()
 		{
 			OscMidiMessage expected = new OscMidiMessage(0x03F35626);
@@ -108,7 +108,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for OscMidiMessage Constructor
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void OscMidiMessageConstructorTest2()
 		{
 			uint value = 0x03F35626; 
@@ -133,7 +133,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Equals
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void EqualsTest()
 		{
 			OscMidiMessage target = new OscMidiMessage(0x03F35626);
@@ -148,7 +148,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Equals
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void EqualsTest2()
 		{
 			OscMidiMessage target = new OscMidiMessage(0x03F35626);
@@ -162,7 +162,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for GetHashCode
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void GetHashCodeTest()
 		{
 			OscMidiMessage target = new OscMidiMessage(0x03F35626);
@@ -175,7 +175,7 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for Data14BitValue
 		///</summary>
-		[TestMethod()]
+		[Test]
 		public void Data14BitValueTest()
 		{
 			ushort expected = 0x1356;

@@ -25,12 +25,10 @@ namespace Rug.Osc
     /// </summary>
     public class OscSocketException : Exception
     {
-        private OscSocket socket;
-
         /// <summary>
         /// The socket that threw the exception
         /// </summary>
-        public OscSocket Socket { get { return socket; } }
+        public OscSocket Socket { get; }
 
         /// <summary>
         /// Creates a new osc socket exception
@@ -40,7 +38,7 @@ namespace Rug.Osc
         public OscSocketException(OscSocket socket, string message)
             : base(message)
         {
-            this.socket = socket;
+            this.Socket = socket;
         }
 
         /// <summary>
@@ -52,7 +50,7 @@ namespace Rug.Osc
         public OscSocketException(OscSocket socket, string message, Exception innerException)
             : base(message, innerException)
         {
-            this.socket = socket;
+            this.Socket = socket;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Rug.Osc;
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Net;
 
 namespace Rug.Osc.Tests
@@ -9,7 +9,7 @@ namespace Rug.Osc.Tests
     ///This is a test class for OscMessageTest and is intended
     ///to contain all OscMessageTest Unit Tests
     ///</summary>
-	[TestClass()]
+	[TestFixture]
     public class OscMessageTest
     {
         private TestContext testContextInstance;
@@ -35,8 +35,8 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for OscMessage Constructor
         ///</summary>
-        [TestMethod()]
-        [DeploymentItem("Rug.Osc.dll")]
+        [Test]
+        ////[DeploymentItem("Rug.Osc.dll")]
         public void OscMessageConstructorTest_EmptyArgs()
         {
             string address = "/test";
@@ -49,8 +49,8 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for OscMessage Constructor
         ///</summary>
-        [TestMethod()]
-        [DeploymentItem("Rug.Osc.dll")]
+        [Test]
+        ////[DeploymentItem("Rug.Osc.dll")]
         public void OscMessageConstructorTest_SingleArg_Int()
         {
             string address = "/test";
@@ -63,8 +63,8 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for OscMessage Constructor
         ///</summary>
-        [TestMethod()]
-        [DeploymentItem("Rug.Osc.dll")]
+        [Test]
+        ////[DeploymentItem("Rug.Osc.dll")]
         public void OscMessageConstructorTest_SingleArg_Float()
         {
             string address = "/test";
@@ -77,8 +77,8 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for OscMessage Constructor
         ///</summary>
-        [TestMethod()]
-        [DeploymentItem("Rug.Osc.dll")]
+        [Test]
+        //[DeploymentItem("Rug.Osc.dll")]
         public void OscMessageConstructorTest_SingleArg_String()
         {
             string address = "/test";
@@ -91,8 +91,8 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for OscMessage Constructor
         ///</summary>
-        [TestMethod()]
-        [DeploymentItem("Rug.Osc.dll")]
+        [Test]
+        //[DeploymentItem("Rug.Osc.dll")]
         public void OscMessageConstructorTest_SingleArg_Blob()
         {
             string address = "/test";
@@ -106,8 +106,8 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for OscMessage Constructor
         ///</summary>
-        [TestMethod()]
-        [DeploymentItem("Rug.Osc.dll")]
+        [Test]
+        //[DeploymentItem("Rug.Osc.dll")]
         public void OscMessageConstructorTest_NoAddress()
         {
             string address = null;
@@ -120,12 +120,12 @@ namespace Rug.Osc.Tests
             }
             catch (Exception ex)
             {
-                Assert.IsInstanceOfType(ex, typeof(ArgumentNullException));
+                Assert.IsInstanceOf(typeof(ArgumentNullException), ex);
             }
         }
 
-        [TestMethod()]
-        [DeploymentItem("Rug.Osc.dll")]
+        [Test]
+        //[DeploymentItem("Rug.Osc.dll")]
         public void OscMessageConstructorTest_OriginAddressArgs()
         {
             IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Loopback, 8001); 
@@ -137,11 +137,11 @@ namespace Rug.Osc.Tests
 
             UnitTestHelper.AreEqual(target, address, 20, value);
 
-            Assert.AreEqual<IPEndPoint>(ipEndPoint, target.Origin, "Supplied IP Endpoint and resolved IP Endpoint do not match."); 
+            Assert.AreEqual(ipEndPoint, target.Origin, "Supplied IP Endpoint and resolved IP Endpoint do not match."); 
         }
 
-        [TestMethod()]
-        [DeploymentItem("Rug.Osc.dll")]
+        [Test]
+        //[DeploymentItem("Rug.Osc.dll")]
         public void OscMessageConstructorTest_OriginAddressArgs_InvalidAddress()
         {
             IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Loopback, 8001);
@@ -157,12 +157,12 @@ namespace Rug.Osc.Tests
             }
             catch (Exception ex)
             {
-                Assert.IsInstanceOfType(ex, typeof(ArgumentException));
+                Assert.IsInstanceOf(typeof(ArgumentException), ex);
             }
         }
 
-        [TestMethod()]
-        [DeploymentItem("Rug.Osc.dll")]
+        [Test]
+        //[DeploymentItem("Rug.Osc.dll")]
         public void OscMessageConstructorTest_OriginAddressArgs_NoAddress()
         {
             IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Loopback, 8001);
@@ -178,7 +178,7 @@ namespace Rug.Osc.Tests
             }
             catch (Exception ex)
             {
-                Assert.IsInstanceOfType(ex, typeof(ArgumentNullException));
+                Assert.IsInstanceOf(typeof(ArgumentNullException), ex);
             }
         }
 
@@ -186,8 +186,8 @@ namespace Rug.Osc.Tests
 		/// <summary>
 		///A test for OscMessage Constructor
 		///</summary>
-		[TestMethod()]
-		[DeploymentItem("Rug.Osc.dll")]
+		[Test]
+		//[DeploymentItem("Rug.Osc.dll")]
 		public void OscMessageConstructorTest_BadArg()
 		{
 			string address = "/test";
@@ -209,8 +209,8 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for OscMessage Constructor
         ///</summary>
-        [TestMethod()]
-        [DeploymentItem("Rug.Osc.dll")]
+        [Test]
+        //[DeploymentItem("Rug.Osc.dll")]
         public void OscMessageConstructorTest_NullArg()
         {
             string address = "/test";
@@ -223,7 +223,7 @@ namespace Rug.Osc.Tests
             }
             catch (Exception ex)
             {
-                Assert.IsInstanceOfType(ex, typeof(ArgumentException));
+                Assert.IsInstanceOf(typeof(ArgumentException), ex);
             }
         }
 
@@ -236,7 +236,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Int_1()
         {
             OscMessage target = UnitTestHelper.Message_Int();
@@ -255,7 +255,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Int_2()
         {
             OscMessage target = UnitTestHelper.Message_Int();
@@ -273,7 +273,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Int()
         {
             OscMessage expected = UnitTestHelper.Message_Int();
@@ -290,7 +290,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Int()
         {
             OscMessage target = UnitTestHelper.Message_Int();
@@ -300,7 +300,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Int()
         {
             string str = UnitTestHelper.MessageString_Int;
@@ -313,7 +313,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Int()
         {
             OscMessage expected = UnitTestHelper.Message_Int();
@@ -334,7 +334,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Long_1()
         {
             OscMessage target = UnitTestHelper.Message_Long();
@@ -353,7 +353,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Long_2()
         {
             OscMessage target = UnitTestHelper.Message_Long();
@@ -372,7 +372,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Long()
         {
             OscMessage expected = UnitTestHelper.Message_Long();
@@ -389,7 +389,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Long()
         {
             OscMessage target = UnitTestHelper.Message_Long();
@@ -400,7 +400,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Long()
         {
             string str = UnitTestHelper.MessageString_Long;
@@ -413,7 +413,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Long()
         {
             OscMessage expected = UnitTestHelper.Message_Long();
@@ -435,7 +435,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Float_1()
         {
             OscMessage target = UnitTestHelper.Message_Float();
@@ -454,7 +454,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Float_2()
         {
             OscMessage target = UnitTestHelper.Message_Float();
@@ -473,7 +473,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Float()
         {
             OscMessage expected = UnitTestHelper.Message_Float();
@@ -490,7 +490,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Float()
         {
             OscMessage target = UnitTestHelper.Message_Float();
@@ -500,7 +500,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Float()
         {
             string str = UnitTestHelper.MessageString_Float;
@@ -513,7 +513,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Float()
         {
             OscMessage expected = UnitTestHelper.Message_Float();
@@ -532,7 +532,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Float_NaN()
         {
             string str = UnitTestHelper.MessageString_Float_NaN;
@@ -545,7 +545,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ToStringTest_Float_NaN()
         {
             OscMessage message = UnitTestHelper.Message_Float_NaN();
@@ -560,7 +560,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Float_PositiveInfinity()
         {
             string str = UnitTestHelper.MessageString_Float_PositiveInfinity;
@@ -573,7 +573,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ToStringTest_Float_PositiveInfinity()
         {
             OscMessage message = UnitTestHelper.Message_Float_PositiveInfinity();
@@ -588,7 +588,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Float_NegativeInfinity()
         {
             string str = UnitTestHelper.MessageString_Float_NegativeInfinity;
@@ -601,7 +601,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ToStringTest_Float_NegativeInfinity()
         {
             OscMessage message = UnitTestHelper.Message_Float_NegativeInfinity();
@@ -618,7 +618,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Double_1()
         {
             OscMessage target = UnitTestHelper.Message_Double();
@@ -637,7 +637,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Double_2()
         {
             OscMessage target = UnitTestHelper.Message_Double();
@@ -656,7 +656,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Double()
         {
             OscMessage expected = UnitTestHelper.Message_Double();
@@ -673,7 +673,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Double()
         {
             OscMessage target = UnitTestHelper.Message_Double();
@@ -684,7 +684,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Double()
         {
             string str = UnitTestHelper.MessageString_Double;
@@ -697,7 +697,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Double()
         {
             OscMessage expected = UnitTestHelper.Message_Double();
@@ -718,7 +718,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_TimeTag_1()
         {
             OscMessage target = UnitTestHelper.Message_TimeTag();
@@ -737,7 +737,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_TimeTag_2()
         {
             OscMessage target = UnitTestHelper.Message_TimeTag();
@@ -756,7 +756,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_TimeTag()
         {
             OscMessage expected = UnitTestHelper.Message_TimeTag();
@@ -775,7 +775,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_TimeTag()
         {
             OscMessage target = UnitTestHelper.Message_TimeTag();
@@ -785,7 +785,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_TimeTag()
         {
             OscMessage expected = UnitTestHelper.Message_TimeTag();
@@ -806,7 +806,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Char_1()
         {
             OscMessage target = UnitTestHelper.Message_Char();
@@ -825,7 +825,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Char_2()
         {
             OscMessage target = UnitTestHelper.Message_Char();
@@ -844,7 +844,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Char()
         {
             OscMessage expected = UnitTestHelper.Message_Char();
@@ -861,7 +861,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Char()
         {
             OscMessage target = UnitTestHelper.Message_Char();
@@ -872,7 +872,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Char()
         {
             string str = UnitTestHelper.MessageString_Char;
@@ -885,7 +885,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Char()
         {
             OscMessage expected = UnitTestHelper.Message_Char();
@@ -908,7 +908,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Color_Red_1()
         {
             OscMessage target = UnitTestHelper.Message_Color_Red();
@@ -927,7 +927,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Color_Red_2()
         {
             OscMessage target = UnitTestHelper.Message_Color_Red();
@@ -946,7 +946,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Color_Red()
         {
             OscMessage expected = UnitTestHelper.Message_Color_Red();
@@ -963,7 +963,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Color_Red()
         {
             OscMessage target = UnitTestHelper.Message_Color_Red();
@@ -973,7 +973,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Color_Red()
         {
             OscMessage expected = UnitTestHelper.Message_Color_Red();
@@ -994,7 +994,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Color_Green_1()
         {
             OscMessage target = UnitTestHelper.Message_Color_Green();
@@ -1013,7 +1013,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Color_Green_2()
         {
             OscMessage target = UnitTestHelper.Message_Color_Green();
@@ -1032,7 +1032,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Color_Green()
         {
             OscMessage expected = UnitTestHelper.Message_Color_Green();
@@ -1049,7 +1049,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Color_Green()
         {
             OscMessage target = UnitTestHelper.Message_Color_Green();
@@ -1059,7 +1059,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Color_Green()
         {
             OscMessage expected = UnitTestHelper.Message_Color_Green();
@@ -1080,7 +1080,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Color_Blue_1()
         {
             OscMessage target = UnitTestHelper.Message_Color_Blue();
@@ -1099,7 +1099,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Color_Blue_2()
         {
             OscMessage target = UnitTestHelper.Message_Color_Blue();
@@ -1118,7 +1118,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Color_Blue()
         {
             OscMessage expected = UnitTestHelper.Message_Color_Blue();
@@ -1135,7 +1135,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Color_Blue()
         {
             OscMessage target = UnitTestHelper.Message_Color_Blue();
@@ -1146,7 +1146,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Color_Blue()
         {
             OscMessage expected = UnitTestHelper.Message_Color_Blue();
@@ -1167,7 +1167,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Color_Transparent_1()
         {
             OscMessage target = UnitTestHelper.Message_Color_Transparent();
@@ -1186,7 +1186,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Color_Transparent_2()
         {
             OscMessage target = UnitTestHelper.Message_Color_Transparent();
@@ -1205,7 +1205,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Color_Transparent()
         {
             OscMessage expected = UnitTestHelper.Message_Color_Transparent();
@@ -1224,7 +1224,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Color_Transparent()
         {
             OscMessage target = UnitTestHelper.Message_Color_Transparent();
@@ -1234,7 +1234,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Color_Transparent()
         {
             OscMessage expected = UnitTestHelper.Message_Color_Transparent();
@@ -1257,7 +1257,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Midi_1()
         {
             OscMessage target = UnitTestHelper.Message_Midi();
@@ -1276,7 +1276,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Midi_2()
         {
             OscMessage target = UnitTestHelper.Message_Midi();
@@ -1295,7 +1295,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Midi()
         {
             OscMessage expected = UnitTestHelper.Message_Midi();
@@ -1312,7 +1312,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Midi()
         {
             OscMessage target = UnitTestHelper.Message_Midi();
@@ -1322,7 +1322,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Midi()
         {
             string str = UnitTestHelper.MessageString_Midi;
@@ -1335,7 +1335,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Midi()
         {
             OscMessage expected = UnitTestHelper.Message_Midi();
@@ -1356,7 +1356,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_True_1()
         {
             OscMessage target = UnitTestHelper.Message_True();
@@ -1375,7 +1375,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_True_2()
         {
             OscMessage target = UnitTestHelper.Message_True();
@@ -1394,7 +1394,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_True()
         {
             OscMessage expected = UnitTestHelper.Message_True();
@@ -1413,7 +1413,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_True()
         {
             OscMessage target = UnitTestHelper.Message_True();
@@ -1424,7 +1424,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_True()
         {
             string str = UnitTestHelper.MessageString_True;
@@ -1437,7 +1437,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_True()
         {
             OscMessage expected = UnitTestHelper.Message_True();
@@ -1458,7 +1458,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_False_1()
         {
             OscMessage target = UnitTestHelper.Message_False();
@@ -1477,7 +1477,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_False_2()
         {
             OscMessage target = UnitTestHelper.Message_False();
@@ -1496,7 +1496,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_False()
         {
             OscMessage expected = UnitTestHelper.Message_False();
@@ -1515,7 +1515,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_False()
         {
             OscMessage target = UnitTestHelper.Message_False();
@@ -1526,7 +1526,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_False()
         {
             string str = UnitTestHelper.MessageString_False;
@@ -1539,7 +1539,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_False()
         {
             OscMessage expected = UnitTestHelper.Message_False();
@@ -1560,7 +1560,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Nil_1()
         {
             OscMessage target = UnitTestHelper.Message_Nil();
@@ -1579,7 +1579,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Nil_2()
         {
             OscMessage target = UnitTestHelper.Message_Nil();
@@ -1598,7 +1598,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Nil()
         {
             OscMessage expected = UnitTestHelper.Message_Nil();
@@ -1615,7 +1615,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Nil()
         {
             OscMessage target = UnitTestHelper.Message_Nil();
@@ -1626,7 +1626,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Nil()
         {
             string str = UnitTestHelper.MessageString_Nil;
@@ -1639,7 +1639,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Nil()
         {
             OscMessage expected = UnitTestHelper.Message_Nil();
@@ -1660,7 +1660,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Infinitum_1()
         {
             OscMessage target = UnitTestHelper.Message_Infinitum();
@@ -1679,7 +1679,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Infinitum_2()
         {
             OscMessage target = UnitTestHelper.Message_Infinitum();
@@ -1698,7 +1698,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Infinitum()
         {
             OscMessage expected = UnitTestHelper.Message_Infinitum();
@@ -1715,7 +1715,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Infinitum()
         {
             OscMessage target = UnitTestHelper.Message_Infinitum();
@@ -1725,7 +1725,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Infinitum()
         {
             string str = UnitTestHelper.MessageString_Infinitum;
@@ -1738,7 +1738,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Infinitum()
         {
             OscMessage expected = UnitTestHelper.Message_Infinitum();
@@ -1759,7 +1759,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_String_1()
         {
             OscMessage target = UnitTestHelper.Message_String();
@@ -1777,7 +1777,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_String_2()
         {
             OscMessage target = UnitTestHelper.Message_String();
@@ -1796,7 +1796,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_String()
         {
             OscMessage expected = UnitTestHelper.Message_String();
@@ -1813,7 +1813,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_String()
         {
             OscMessage target = UnitTestHelper.Message_String();
@@ -1824,7 +1824,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_String()
         {
             string str = UnitTestHelper.MessageString_String;
@@ -1837,7 +1837,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_String()
         {
             OscMessage expected = UnitTestHelper.Message_String();
@@ -1858,7 +1858,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Symbol_1()
         {
             OscMessage target = UnitTestHelper.Message_Symbol();
@@ -1876,7 +1876,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Symbol_2()
         {
             OscMessage target = UnitTestHelper.Message_Symbol();
@@ -1895,7 +1895,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Symbol()
         {
             OscMessage expected = UnitTestHelper.Message_Symbol();
@@ -1912,7 +1912,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Symbol()
         {
             OscMessage target = UnitTestHelper.Message_Symbol();
@@ -1922,7 +1922,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Symbol()
         {
             string str = UnitTestHelper.MessageString_Symbol;
@@ -1935,7 +1935,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Symbol()
         {
             OscMessage expected = UnitTestHelper.Message_Symbol();
@@ -1956,7 +1956,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Blob_1()
         {
             OscMessage target = UnitTestHelper.Message_Blob();
@@ -1974,7 +1974,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Blob_2()
         {
             OscMessage target = UnitTestHelper.Message_Blob();
@@ -1993,7 +1993,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Blob()
         {
             OscMessage expected = UnitTestHelper.Message_Blob();
@@ -2010,7 +2010,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Blob2()
         {
             OscMessage expected = UnitTestHelper.Message_Blob2();
@@ -2027,7 +2027,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Blob()
         {
             OscMessage target = UnitTestHelper.Message_Blob();
@@ -2037,7 +2037,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Blob_Array()
         {
             string str = UnitTestHelper.MessageString_Blob_Array;
@@ -2050,7 +2050,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Blob_Hex()
         {
             string str = UnitTestHelper.MessageString_Blob_Hex;
@@ -2063,7 +2063,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Blob_Base64()
         {
             string str = UnitTestHelper.MessageString_Blob_Base64;
@@ -2076,7 +2076,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Blob()
         {
             OscMessage expected = UnitTestHelper.Message_Blob();
@@ -2099,7 +2099,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Array_Ints()
         {
             OscMessage target = UnitTestHelper.Message_Array_Ints();
@@ -2118,7 +2118,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Array_Ints()
         {
             OscMessage expected = UnitTestHelper.Message_Array_Ints();
@@ -2135,7 +2135,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Array_Ints()
         {
             OscMessage target = UnitTestHelper.Message_Array_Ints();
@@ -2146,7 +2146,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Array_Ints()
         {
             string str = UnitTestHelper.MessageString_Array_Ints;
@@ -2159,7 +2159,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Array_Ints()
         {
             OscMessage expected = UnitTestHelper.Message_Array_Ints();
@@ -2176,7 +2176,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Array_Ints2()
         {
             OscMessage target = UnitTestHelper.Message_Array_Ints2();
@@ -2195,7 +2195,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Array_Ints2()
         {
             OscMessage expected = UnitTestHelper.Message_Array_Ints2();
@@ -2212,7 +2212,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Array_Ints2()
         {
             OscMessage target = UnitTestHelper.Message_Array_Ints2();
@@ -2222,7 +2222,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Array_Ints2()
         {
             string str = UnitTestHelper.MessageString_Array_Ints2;
@@ -2235,7 +2235,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Array_Ints2()
         {
             OscMessage expected = UnitTestHelper.Message_Array_Ints2();
@@ -2252,7 +2252,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Array_NestedInts()
         {
             OscMessage target = UnitTestHelper.Message_Array_NestedInts();
@@ -2271,7 +2271,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Array_NestedInts()
         {
             OscMessage expected = UnitTestHelper.Message_Array_NestedInts();
@@ -2288,7 +2288,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Array_NestedInts()
         {
             OscMessage target = UnitTestHelper.Message_Array_NestedInts();
@@ -2298,7 +2298,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Array_NestedInts()
         {
             string str = UnitTestHelper.MessageString_Array_NestedInts;
@@ -2311,7 +2311,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Array_NestedInts()
         {
             OscMessage expected = UnitTestHelper.Message_Array_NestedInts();
@@ -2334,7 +2334,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Float2()
         {
             OscMessage target = UnitTestHelper.Message_Float2();
@@ -2353,7 +2353,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Float2_2()
         {
             OscMessage target = UnitTestHelper.Message_Float2();
@@ -2372,7 +2372,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Float2()
         {
             OscMessage expected = UnitTestHelper.Message_Float2();
@@ -2389,7 +2389,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Float2()
         {
             OscMessage target = UnitTestHelper.Message_Float2();
@@ -2400,7 +2400,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Float2()
         {
             string str = UnitTestHelper.MessageString_Float2;
@@ -2413,7 +2413,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Float2()
         {
             OscMessage expected = UnitTestHelper.Message_Float2();
@@ -2434,7 +2434,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Float3()
         {
             OscMessage target = UnitTestHelper.Message_Float3();
@@ -2453,7 +2453,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Write
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void WriteTest_Float3_2()
         {
             OscMessage target = UnitTestHelper.Message_Float3();
@@ -2472,7 +2472,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Read
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ReadTest_Float3()
         {
             OscMessage expected = UnitTestHelper.Message_Float3();
@@ -2489,7 +2489,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for MessageSize
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void MessageSizeTest_Float3()
         {
             OscMessage target = UnitTestHelper.Message_Float3();
@@ -2499,7 +2499,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Parse
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void ParseTest_Float3()
         {
             string str = UnitTestHelper.MessageString_Float3;
@@ -2512,7 +2512,7 @@ namespace Rug.Osc.Tests
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void EqualsTest_Float3()
         {
             OscMessage expected = UnitTestHelper.Message_Float3();
@@ -2532,7 +2532,7 @@ namespace Rug.Osc.Tests
 
         #region Badly Formed Message
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_PacketLength()
         {
             try
@@ -2549,7 +2549,7 @@ namespace Rug.Osc.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_Address1()
         {
             try
@@ -2566,7 +2566,7 @@ namespace Rug.Osc.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_Address2()
         {
             try
@@ -2583,7 +2583,7 @@ namespace Rug.Osc.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_MissingComma()
         {
             try
@@ -2600,7 +2600,7 @@ namespace Rug.Osc.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_MissingTypeTag()
         {
             try
@@ -2620,7 +2620,7 @@ namespace Rug.Osc.Tests
 
         /* 
 		// No longer a fail case
-		[TestMethod()]
+		[Test]
 		public void BadlyFormedMessage_MissingArgs()
 		{
 			try
@@ -2638,7 +2638,7 @@ namespace Rug.Osc.Tests
 		}
 		*/
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_ErrorParsingDouble()
         {
             try
@@ -2656,7 +2656,7 @@ namespace Rug.Osc.Tests
         }
 
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_UnknownArguemntType()
         {
             try
@@ -2673,7 +2673,7 @@ namespace Rug.Osc.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_ErrorParsingBlob()
         {
             try
@@ -2690,7 +2690,7 @@ namespace Rug.Osc.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_ErrorParsingBlob2()
         {
             try
@@ -2707,7 +2707,7 @@ namespace Rug.Osc.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_ErrorParsingString()
         {
             try
@@ -2724,7 +2724,7 @@ namespace Rug.Osc.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_ErrorParsingString2()
         {
             try
@@ -2741,7 +2741,7 @@ namespace Rug.Osc.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_ErrorParsingInt()
         {
             try
@@ -2758,7 +2758,7 @@ namespace Rug.Osc.Tests
             }
         }
 
-        [TestMethod()]
+        [Test]
         public void BadlyFormedMessage_ErrorParsingFloat()
         {
             try

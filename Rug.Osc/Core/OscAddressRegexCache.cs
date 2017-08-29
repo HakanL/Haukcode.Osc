@@ -38,17 +38,15 @@ namespace Rug.Osc
 
         private static readonly Dictionary<string, Regex> lookup = new Dictionary<string, Regex>();
 
-        private static bool enabled;
-
         /// <summary>
         /// Enable regex caching for the entire program (Enabled by default)
         /// </summary>
-        public static bool Enabled { get { return enabled; } set { enabled = value; } }
+        public static bool Enabled { get; set; }
 
         /// <summary>
         /// The number of cached regex(s)
         /// </summary>
-        public static int Count { get { return lookup.Count; } }
+        public static int Count => lookup.Count;
 
         static OscAddressRegexCache()
         {

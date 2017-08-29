@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 using System.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rug.Loading;
 using Rug.Osc.Reflection;
 

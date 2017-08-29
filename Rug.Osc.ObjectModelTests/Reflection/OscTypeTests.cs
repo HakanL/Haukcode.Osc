@@ -1,59 +1,59 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rug.Osc.Reflection;
+﻿using Rug.Osc.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Rug.Osc.Reflection.Tests
 {
-    [TestClass()]
+    [TestFixture]
     public class OscTypeTests
     {
-        //[TestMethod()]
+        //[Test]
         //public void DescribeTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void ToStringTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void GetMemberAddressTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void GetMemberAddressTest1()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void GetTypeTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void LoadTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void SaveTest()
         //{
         //    Assert.Fail();
         //}
 
-        //[TestMethod()]
+        //[Test]
         //public void TryGetTypeTest()
         //{
         //    Assert.Fail();

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Rug.Osc.Tests
 {

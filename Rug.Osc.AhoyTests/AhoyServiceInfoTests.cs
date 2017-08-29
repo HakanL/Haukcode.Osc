@@ -1,8 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace Rug.Osc.Ahoy.Tests
 {
-    [TestClass()]
+    [TestFixture()]
     public class AhoyServiceInfoTests
     {
         //[TestMethod()]

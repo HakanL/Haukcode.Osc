@@ -34,52 +34,24 @@ namespace Rug.Osc
         /// </summary>
         public const int DefaultMessageBufferSize = 600;
 
-        #region Private Members
-
-        private readonly object syncLock = new object();
-        private readonly AutoResetEvent queueEmpty = new AutoResetEvent(true);
-
         private readonly byte[] buffer;
-
+        private readonly AutoResetEvent queueEmpty = new AutoResetEvent(true);
         private readonly OscPacket[] sendQueue;
-
-        private int writeIndex = 0;
-        private int readIndex = 0;
+        private readonly object syncLock = new object();
         private int count = 0;
-
-        #endregion Private Members
-
-        #region Properties
-
-        public override OscSocketType OscSocketType
-        {
-            get { return Osc.OscSocketType.Send; }
-        }
+        private int readIndex = 0;
+        private int writeIndex = 0;
 
         public event OscPacketEvent PacketSent;
+
+        public string DEBUG_ConnectedState { get { return Socket != null ? "Socket Connected: " + Socket.Connected : "NO SOCKET"; } }
 
         /// <summary>
         /// Use a value greater than 0 to set the disconnect time out in milliseconds use a value less than or equal to 0 for an infinite timeout
         /// </summary>
         public int DisconnectTimeout { get; set; }
 
-        /// <summary>
-        /// The next queue index to write messages to
-        /// </summary>
-        private int NextWriteIndex
-        {
-            get
-            {
-                int index = writeIndex + 1;
-
-                if (index >= sendQueue.Length)
-                {
-                    index -= sendQueue.Length;
-                }
-
-                return index;
-            }
-        }
+        public override OscSocketType OscSocketType { get; } = Osc.OscSocketType.Send;
 
         /// <summary>
         /// The next queue index to read messages from
@@ -99,11 +71,23 @@ namespace Rug.Osc
             }
         }
 
-        public string DEBUG_ConnectedState { get { return Socket != null ? "Socket Connected: " + Socket.Connected : "NO SOCKET"; } }
+        /// <summary>
+        /// The next queue index to write messages to
+        /// </summary>
+        private int NextWriteIndex
+        {
+            get
+            {
+                int index = writeIndex + 1;
 
-        #endregion Properties
+                if (index >= sendQueue.Length)
+                {
+                    index -= sendQueue.Length;
+                }
 
-        #region Constructors
+                return index;
+            }
+        }
 
         /// <summary>
         /// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
@@ -235,25 +219,6 @@ namespace Rug.Osc
             sendQueue = new OscPacket[messageBufferSize];
         }
 
-        #endregion Constructors
-
-        #region Protected Overrides
-
-        protected override void OnConnect()
-        {
-            // set the timeout for send
-            // Socket.SendTimeout = 1000;
-        }
-
-        protected override void OnClosing()
-        {
-            WaitForAllMessagesToComplete();
-        }
-
-        #endregion Protected Overrides
-
-        #region Send
-
         /// <summary>
         /// Add a osc message to the send queue
         /// </summary>
@@ -295,10 +260,6 @@ namespace Rug.Osc
             }
         }
 
-        #endregion Send
-
-        #region Wait For All Messages To Complete
-
         /// <summary>
         /// Wait till all messages in the queue have been sent
         /// </summary>
@@ -307,9 +268,16 @@ namespace Rug.Osc
             queueEmpty.WaitOne(Math.Max(-1, DisconnectTimeout));
         }
 
-        #endregion Wait For All Messages To Complete
+        protected override void OnClosing()
+        {
+            WaitForAllMessagesToComplete();
+        }
 
-        #region Private Methods
+        protected override void OnConnect()
+        {
+            // set the timeout for send
+            // Socket.SendTimeout = 1000;
+        }
 
         private void Send_Callback(IAsyncResult ar)
         {
@@ -359,7 +327,5 @@ namespace Rug.Osc
                 Dispose();
             }
         }
-
-        #endregion Private Methods
     }
 }

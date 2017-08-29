@@ -33,47 +33,16 @@ namespace Rug.Osc
         /// </summary>
         public const int DefaultMessageBufferSize = 600;
 
-        #region Private Members
-
-        private readonly object syncLock = new object();
-        private readonly AutoResetEvent messageReceived = new AutoResetEvent(false);
-
         private readonly byte[] buffer;
-
+        private readonly AutoResetEvent messageReceived = new AutoResetEvent(false);
         private readonly OscPacket[] receiveQueue;
-
-        private int writeIndex = 0;
-        private int readIndex = 0;
+        private readonly object syncLock = new object();
         private int count = 0;
-
         private bool isReceiving = false;
+        private int readIndex = 0;
+        private int writeIndex = 0;
 
-        #endregion Private Members
-
-        #region Properties
-
-        public override OscSocketType OscSocketType
-        {
-            get { return Osc.OscSocketType.Receive; }
-        }
-
-        /// <summary>
-        /// The next queue index to write messages to
-        /// </summary>
-        private int NextWriteIndex
-        {
-            get
-            {
-                int index = writeIndex + 1;
-
-                if (index >= receiveQueue.Length)
-                {
-                    index -= receiveQueue.Length;
-                }
-
-                return index;
-            }
-        }
+        public override OscSocketType OscSocketType { get; } = Osc.OscSocketType.Receive;
 
         /// <summary>
         /// The next queue index to read messages from
@@ -93,9 +62,23 @@ namespace Rug.Osc
             }
         }
 
-        #endregion Properties
+        /// <summary>
+        /// The next queue index to write messages to
+        /// </summary>
+        private int NextWriteIndex
+        {
+            get
+            {
+                int index = writeIndex + 1;
 
-        #region Constructors
+                if (index >= receiveQueue.Length)
+                {
+                    index -= receiveQueue.Length;
+                }
+
+                return index;
+            }
+        }
 
         /// <summary>
         /// Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
@@ -174,71 +157,6 @@ namespace Rug.Osc
         {
         }
 
-        #endregion Constructors
-
-        public override string ToString()
-        {
-            return "RX " + LocalAddress + ":" + LocalPort + " <- " + RemoteEndPoint.Port;
-        }
-
-        #region Protected Overrides
-
-        protected override void OnConnect()
-        {
-            Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, buffer.Length * 4);
-
-            isReceiving = false;
-        }
-
-        protected override void OnClosing()
-        {
-            messageReceived.Set();
-        }
-
-        #endregion Protected Overrides
-
-        #region Receive
-
-        /// <summary>
-        /// Try to receive a osc message, this method is non-blocking and will return imediatly with a message or null
-        /// </summary>
-        /// <param name="message">an osc message if one is ready else null if there are none</param>
-        /// <returns>true if a message was ready</returns>
-        public bool TryReceive(out OscPacket message)
-        {
-            message = null;
-
-            if (State == OscSocketState.Connected)
-            {
-                if (count > 0)
-                {
-                    lock (syncLock)
-                    {
-                        message = receiveQueue[readIndex];
-
-                        readIndex = NextReadIndex;
-
-                        count--;
-
-                        return true;
-                    }
-                }
-                // if we are not receiving then start
-                else if (isReceiving == false)
-                {
-                    lock (syncLock)
-                    {
-                        if (isReceiving == false && State == OscSocketState.Connected)
-                        {
-                            BeginReceiving();
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
         /// <summary>
         /// Receive a osc message, this method is blocking and will only return once a message is recived
         /// </summary>
@@ -313,9 +231,67 @@ namespace Rug.Osc
             throw new OscSocketStateException(this, OscSocketState.Closed, "The receiver socket has been disconnected");
         }
 
-        #endregion Receive
+        public override string ToString()
+        {
+            return "RX " + LocalAddress + ":" + LocalPort + " <- " + RemoteEndPoint.Port;
+        }
 
-        #region Private Methods
+        /// <summary>
+        /// Try to receive a osc message, this method is non-blocking and will return imediatly with a message or null
+        /// </summary>
+        /// <param name="message">an osc message if one is ready else null if there are none</param>
+        /// <returns>true if a message was ready</returns>
+        public bool TryReceive(out OscPacket message)
+        {
+            message = null;
+
+            if (State != OscSocketState.Connected)
+            {
+                return false;
+            }
+
+            if (count > 0)
+            {
+                lock (syncLock)
+                {
+                    message = receiveQueue[readIndex];
+
+                    readIndex = NextReadIndex;
+
+                    count--;
+
+                    return true;
+                }
+            }
+
+            // if we are not receiving then start
+            if (isReceiving != false)
+            {
+                return false;
+            }
+
+            lock (syncLock)
+            {
+                if (isReceiving == false && State == OscSocketState.Connected)
+                {
+                    BeginReceiving();
+                }
+            }
+
+            return false;
+        }
+
+        protected override void OnClosing()
+        {
+            messageReceived.Set();
+        }
+
+        protected override void OnConnect()
+        {
+            Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, buffer.Length * 4);
+
+            isReceiving = false;
+        }
 
         private void BeginReceiving()
         {
@@ -379,7 +355,5 @@ namespace Rug.Osc
                 Socket.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags, ref origin, Receive_Callback, null);
             }
         }
-
-        #endregion Private Methods
     }
 }
