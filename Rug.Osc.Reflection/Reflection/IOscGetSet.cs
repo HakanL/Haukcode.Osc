@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Xml;
+using System.Xml.Linq;
 using Rug.Loading;
 using Rug.Osc.Reflection.Serialization;
 
@@ -27,11 +27,11 @@ namespace Rug.Osc.Reflection
 
         Type ValueType { get; }
 
-        void AppendAttributeAndValue(object instance, LoadContext context, XmlElement element);
+        void AppendAttributeAndValue(object instance, LoadContext context, XElement element);
 
         object Get(object instance);
 
-        void GetAttributeValue(object instance, LoadContext context, XmlNode node);
+        void GetAttributeValue(object instance, LoadContext context, XElement node);
 
         void Set(object instance, object value);
     }

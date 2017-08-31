@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using System.Xml;
+using System.Xml.Linq;
 using Rug.Loading;
 using Rug.Osc.Connection;
 using Rug.Osc.Namespaces;
@@ -122,7 +122,7 @@ namespace Rug.Osc.Reflection
             OscSerializer = oscSerializer;
         }
 
-        public void AppendAttributeAndValue(object instance, LoadContext context, XmlElement element)
+        public void AppendAttributeAndValue(object instance, LoadContext context, XElement element)
         {
             if (IsExcluded == true)
             {
@@ -168,7 +168,7 @@ namespace Rug.Osc.Reflection
             }
         }
 
-        public void GetAttributeValue(object instance, LoadContext context, XmlNode node)
+        public void GetAttributeValue(object instance, LoadContext context, XElement node)
         {
             if (IsExcluded == true)
             {

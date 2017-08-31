@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace Rug.Loading
 {
@@ -106,18 +107,18 @@ namespace Rug.Loading
         /// <param name="node">XML node that is the source of the error.</param>
         /// <param name="isCriticalError">if set to <c>true</c> [is critical error].</param>
         /// <param name="exception">The ex.</param>
-        public void Error(string message, XmlNode node, bool isCriticalError = true, Exception exception = null)
+        public void Error(string message, XObject node, bool isCriticalError = true, Exception exception = null)
         {
             string sourceFile = null; 
             int lineNumber = 0;
             int linePosition = 0;
-            bool hasSourceInformation = false; 
+            bool hasSourceInformation = false;
 
-            if (node is XmlElementWithPosition)
+            if (node != null)
             {
-                XmlElementWithPosition nodeWithPosition = node as XmlElementWithPosition;
-
-                sourceFile = (nodeWithPosition.OwnerDocument as XmlDocumentWithPosition)?.FileName;
+                IXmlLineInfo nodeWithPosition = node as IXmlLineInfo;
+               
+                sourceFile = node.Document?.BaseUri ?? "Unknown File";
 
                 if (nodeWithPosition.HasLineInfo() == true)
                 {

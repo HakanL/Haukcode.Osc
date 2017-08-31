@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Xml;
+using System.Xml.Linq;
 using Rug.Loading;
 using Rug.Osc.Reflection;
 
@@ -43,7 +43,7 @@ namespace Rug.Osc.Namespaces
             {
                 if (value != null && value != "/" && Rug.Osc.OscAddress.IsValidAddressLiteral(value) == false)
                 {
-                    throw new ArgumentException(string.Format("\"{0}\" is not a valid namespace.", value), nameof(value));
+                    throw new ArgumentException($@"""{value}"" is not a valid namespace.", nameof(value));
                 }
 
                 lock (syncLock)
@@ -65,23 +65,7 @@ namespace Rug.Osc.Namespaces
             }
         }
 
-        public NamespaceRoot NamespaceRoot
-        {
-            get
-            {
-                if (namespaceRoot != null)
-                {
-                    return namespaceRoot;
-                }
-
-                if (Parent != null)
-                {
-                    return Parent.NamespaceRoot;
-                }
-
-                return null;
-            }
-        }
+        public NamespaceRoot NamespaceRoot => namespaceRoot ?? Parent?.NamespaceRoot;
 
         public string OscAddress { get; private set; } = "/";
 
@@ -122,7 +106,7 @@ namespace Rug.Osc.Namespaces
             }
         }
 
-        public int Count { get { return objects.Count; } }
+        public int Count => objects.Count;
 
         INamespaceObject INamespace.this[string name]
         {
@@ -142,7 +126,7 @@ namespace Rug.Osc.Namespaces
 
                 if (TryGetObject(name, out @object) == false)
                 {
-                    throw new KeyNotFoundException(string.Format("No object found at the address \"{0}\" in the namespace \"{1}\".", name, OscAddress));
+                    throw new KeyNotFoundException($@"No object found at the address ""{name}"" in the namespace ""{OscAddress}"".");
                 }
 
                 return @object;
@@ -445,14 +429,14 @@ namespace Rug.Osc.Namespaces
 
         #region Loadable
 
-        public void Load(LoadContext context, XmlNode node)
+        public void Load(LoadContext context, XElement node)
         {
             Name = Helper.GetAttributeValue(node, nameof(Name), Name);
 
             AddRange(Loader.LoadObjects<T>(context, node, LoaderMode.UnknownNodesError));
         }
 
-        public void Save(LoadContext context, XmlElement element)
+        public void Save(LoadContext context, XElement element)
         {
             Helper.AppendAttributeAndValue(element, nameof(Name), Name);
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
-using System.Xml;
+using System.Xml.Linq;
 using NUnit.Framework;
 using Rug.Loading;
 using Rug.Osc.Reflection;
@@ -419,13 +419,13 @@ namespace Rug.Osc.Namespaces.Tests
                 Loader.CacheLoadables(typeof(INamespace).Assembly);
                 Loader.CacheLoadables(this.GetType().Assembly);
 
-                XmlDocument doc = new XmlDocument();
+                XDocument doc = new XDocument();
 
                 Loader.SaveObject(context, doc, parent);
 
                 context.ReportErrors();
 
-                string cachedString = doc.OuterXml;
+                string cachedString = doc.InnerXml();
 
                 Debug.Print("************ XML ************");
                 Debug.Print(cachedString);
@@ -435,6 +435,7 @@ namespace Rug.Osc.Namespaces.Tests
 
                 context = new LoadContext(new DebugReporter());
 
+                // root element mod !?! 
                 INamespace loadedParent = Loader.LoadObject<INamespace>(context, doc, LoaderMode.UnknownNodesError);
 
                 context.ReportErrors();
@@ -450,13 +451,13 @@ namespace Rug.Osc.Namespaces.Tests
 
 
                 context = new LoadContext(new DebugReporter());
-                XmlDocument doc2 = new XmlDocument();
+                XDocument doc2 = new XDocument();
 
                 Loader.SaveObject(context, doc2, loadedParent);
 
                 context.ReportErrors();
 
-                string cachedString2 = doc.OuterXml;
+                string cachedString2 = doc.InnerXml();
 
                 Debug.Print("************ XML ************");
                 Debug.Print(cachedString2);
@@ -490,13 +491,13 @@ namespace Rug.Osc.Namespaces.Tests
                 Loader.CacheLoadables(typeof(INamespace).Assembly);
                 Loader.CacheLoadables(this.GetType().Assembly);
 
-                XmlDocument doc = new XmlDocument();
+                XDocument doc = new XDocument();
 
                 Loader.SaveObject(context, doc, parent);
 
                 context.ReportErrors();
 
-                string cachedString = doc.OuterXml;
+                string cachedString = doc.InnerXml();
 
                 Debug.Print("************ XML ************");
                 Debug.Print(cachedString);
@@ -521,13 +522,13 @@ namespace Rug.Osc.Namespaces.Tests
 
 
                 context = new LoadContext(new DebugReporter());
-                XmlDocument doc2 = new XmlDocument();
+                XDocument doc2 = new XDocument();
 
                 Loader.SaveObject(context, doc2, loadedParent);
 
                 context.ReportErrors();
 
-                string cachedString2 = doc.OuterXml;
+                string cachedString2 = doc.InnerXml();
 
                 Debug.Print("************ XML ************");
                 Debug.Print(cachedString2);
@@ -569,13 +570,13 @@ namespace Rug.Osc.Namespaces.Tests
                 Loader.CacheLoadables(typeof(INamespace).Assembly);
                 Loader.CacheLoadables(this.GetType().Assembly);
 
-                XmlDocument doc = new XmlDocument();
+                XDocument doc = new XDocument();
 
                 Loader.SaveObject(context, doc, parent);
 
                 context.ReportErrors();
 
-                string cachedString = doc.OuterXml;
+                string cachedString = doc.InnerXml();
 
                 Debug.Print("************ XML ************");
                 Debug.Print(cachedString);
@@ -599,13 +600,13 @@ namespace Rug.Osc.Namespaces.Tests
                 Debug.Print("");
 
                 context = new LoadContext(new DebugReporter());
-                XmlDocument doc2 = new XmlDocument();
+                XDocument doc2 = new XDocument();
 
                 Loader.SaveObject(context, doc2, loadedParent);
 
                 context.ReportErrors();
 
-                string cachedString2 = doc.OuterXml;
+                string cachedString2 = doc.InnerXml();
 
                 Debug.Print("************ XML ************");
                 Debug.Print(cachedString2);
@@ -647,13 +648,13 @@ namespace Rug.Osc.Namespaces.Tests
                 Loader.CacheLoadables(typeof(INamespace).Assembly);
                 Loader.CacheLoadables(this.GetType().Assembly);
 
-                XmlDocument doc = new XmlDocument();
+                XDocument doc = new XDocument();
 
                 Loader.SaveObject(context, doc, parent);
 
                 context.ReportErrors();
 
-                string cachedString = doc.OuterXml;
+                string cachedString = doc.InnerXml();
 
                 Debug.Print("************ XML ************");
                 Debug.Print(cachedString);
@@ -677,13 +678,13 @@ namespace Rug.Osc.Namespaces.Tests
                 Debug.Print("");
 
                 context = new LoadContext(new DebugReporter());
-                XmlDocument doc2 = new XmlDocument();
+                XDocument doc2 = new XDocument();
 
                 Loader.SaveObject(context, doc2, loadedParent);
 
                 context.ReportErrors();
 
-                string cachedString2 = doc.OuterXml;
+                string cachedString2 = doc.InnerXml();
 
                 Debug.Print("************ XML ************");
                 Debug.Print(cachedString2);

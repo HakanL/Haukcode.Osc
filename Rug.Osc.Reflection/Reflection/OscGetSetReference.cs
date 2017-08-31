@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Xml;
+using System.Xml.Linq;
 using Rug.Loading;
 using Rug.Osc.Connection;
 using Rug.Osc.Reflection.Serialization;
@@ -63,7 +63,7 @@ namespace Rug.Osc.Reflection
             OscSerializer = null;
         }
 
-        public void AppendAttributeAndValue(object instance, LoadContext context, XmlElement element)
+        public void AppendAttributeAndValue(object instance, LoadContext context, XElement element)
         {
             if (IsExcluded == true)
             {
@@ -108,7 +108,7 @@ namespace Rug.Osc.Reflection
             return SerializableValue.Get(refrenceInstance);
         }
 
-        public void GetAttributeValue(object instance, LoadContext context, XmlNode node)
+        public void GetAttributeValue(object instance, LoadContext context, XElement node)
         {
             if (IsExcluded == true)
             {

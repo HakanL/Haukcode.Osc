@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
-using System.Xml;
+using System.Xml.Linq;
 using NUnit.Framework;
 using Rug.Loading;
 using Rug.Osc.Reflection;

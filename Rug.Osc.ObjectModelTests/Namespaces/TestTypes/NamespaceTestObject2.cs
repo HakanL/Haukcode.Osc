@@ -16,12 +16,12 @@ namespace Rug.Osc.Namespaces.Tests
         [OscMember]
         public NamespaceTestObject TestLoadableMember2 { get; private set; } = new NamespaceTestObject("/test-loadable-member2");
 
-        public void Load(LoadContext context, System.Xml.XmlNode node)
+        public void Load(LoadContext context, System.Xml.Linq.XElement node)
         {
             OscType.Load(this, context, node);
         }
 
-        public void Save(LoadContext context, System.Xml.XmlElement element)
+        public void Save(LoadContext context, System.Xml.Linq.XElement element)
         {
             OscType.Save(this, context, element);
         }

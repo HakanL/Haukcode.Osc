@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Xml;
+using System.Xml.Linq;
 
 namespace Rug.Loading
 {
@@ -22,11 +22,9 @@ namespace Rug.Loading
                 return;
             }
 
-            XmlDocument pluginManifest = new XmlDocument();
+            XDocument pluginManifest = XDocument.Load(pluginManifestFile);
 
-            pluginManifest.Load(pluginManifestFile);
-
-            Plugin[] plugins = Loader.LoadObjects<Plugin>(context, pluginManifest.DocumentElement, LoaderMode.UnknownNodesError);
+            Plugin[] plugins = Loader.LoadObjects<Plugin>(context, pluginManifest.Root, LoaderMode.UnknownNodesError);
 
             context.ReportErrors();
 
@@ -71,7 +69,7 @@ namespace Rug.Loading
             }
         }
 
-        public void Load(LoadContext context, XmlNode node)
+        public void Load(LoadContext context, XElement node)
         {
             Name = Helper.GetAttributeValue(node, nameof(Name), null);
             Path = Helper.GetAttributeValue(node, nameof(Path), null);
@@ -87,7 +85,7 @@ namespace Rug.Loading
             }
         }
 
-        public void Save(LoadContext context, XmlElement element)
+        public void Save(LoadContext context, XElement element)
         {
             Helper.AppendAttributeAndValue(element, nameof(Name), Name);
             Helper.AppendAttributeAndValue(element, nameof(Path), Path);

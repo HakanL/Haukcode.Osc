@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Xml;
+using System.Xml.Linq;
 using Rug.Loading;
 using Rug.Osc.Connection;
 using Rug.Osc.Namespaces;
@@ -196,7 +196,7 @@ namespace Rug.Osc.Reflection
             }
         }
 
-        public static void Load(object @object, LoadContext context, XmlNode node)
+        public static void Load(object @object, LoadContext context, XElement node)
         {
             try
             {
@@ -223,7 +223,7 @@ namespace Rug.Osc.Reflection
                                 continue;
                             }
 
-                            XmlNode namespaceNode = node.SelectSingleNode(getSet.MemberName);
+                            XElement namespaceNode = node.Element(getSet.MemberName);
 
                             if (namespaceNode == null)
                             {
@@ -252,7 +252,7 @@ namespace Rug.Osc.Reflection
                                 continue;
                             }
 
-                            XmlNode loadableNode = node.SelectSingleNode(getSet.MemberName);
+                            XElement loadableNode = node.Element(getSet.MemberName);
 
                             if (loadableNode == null)
                             {
@@ -284,7 +284,7 @@ namespace Rug.Osc.Reflection
             }
         }
 
-        public static void Save(object @object, LoadContext context, XmlElement element)
+        public static void Save(object @object, LoadContext context, XElement element)
         {
             try
             {

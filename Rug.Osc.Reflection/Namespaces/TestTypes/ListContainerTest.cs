@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml;
+using System.Xml.Linq;
 using Rug.Loading;
 using Rug.Osc.Reflection;
 
@@ -25,14 +25,14 @@ namespace Rug.Osc.Namespaces.TestTypes
             List = new Collections.List<ItemTest>(Namespace); 
         }
 
-        public void Load(LoadContext context, XmlNode node)
+        public void Load(LoadContext context, XElement node)
         {
             OscType.Load(this, context, node);
 
             List.AddRange(Loader.LoadObjects<ItemTest>(context, node, LoaderMode.UnknownNodesError));
         }
 
-        public void Save(LoadContext context, XmlElement element)
+        public void Save(LoadContext context, XElement element)
         {
             OscType.Save(this, context, element);
 
@@ -56,12 +56,12 @@ namespace Rug.Osc.Namespaces.TestTypes
         [OscMember]
         public float Value { get; set; }
 
-        public void Load(LoadContext context, XmlNode node)
+        public void Load(LoadContext context, XElement node)
         {
             OscType.Load(this, context, node);
         }
 
-        public void Save(LoadContext context, XmlElement element)
+        public void Save(LoadContext context, XElement element)
         {
             OscType.Save(this, context, element);
         }

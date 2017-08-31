@@ -3,10 +3,12 @@ using Rug.Loading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 using NUnit.Framework;
 
 namespace Rug.Loading.Tests
@@ -49,9 +51,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><SimpleLoadable2 /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><SimpleLoadable2 /></Objects>"));
 
-            Assert.IsNotNull(Loader.LoadObject(typeof(SimpleLoadable2), context, document.DocumentElement, LoaderMode.UnknownNodesError));
+            Assert.IsNotNull(Loader.LoadObject(typeof(SimpleLoadable2), context, document.Root, LoaderMode.UnknownNodesError));
             Assert.AreEqual(0, context.Errors.Count);
 
             context.ReportErrors();
@@ -63,9 +65,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><SimpleLoadable2 /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><SimpleLoadable2 /></Objects>"));
 
-            Assert.IsNotNull(Loader.LoadObject<SimpleLoadable2>(context, document.DocumentElement, LoaderMode.UnknownNodesError));
+            Assert.IsNotNull(Loader.LoadObject<SimpleLoadable2>(context, document.Root, LoaderMode.UnknownNodesError));
             Assert.AreEqual(0, context.Errors.Count);
 
             context.ReportErrors();
@@ -77,9 +79,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><Moop type=\"SimpleLoadable2\" /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><Moop type=\"SimpleLoadable2\" /></Objects>"));
 
-            Assert.IsNotNull(Loader.LoadObject<SimpleLoadable2>(context, document.DocumentElement, "Moop", LoaderMode.UnknownNodesError));
+            Assert.IsNotNull(Loader.LoadObject<SimpleLoadable2>(context, document.Root, "Moop", LoaderMode.UnknownNodesError));
             Assert.AreEqual(0, context.Errors.Count);
 
             context.ReportErrors();
@@ -91,9 +93,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><Moop Type=\"SimpleLoadable2\" /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><Moop Type=\"SimpleLoadable2\" /></Objects>"));
 
-            Assert.IsNotNull(Loader.LoadObject(typeof(SimpleLoadable2), context, document.DocumentElement, "Moop", LoaderMode.UnknownNodesError));
+            Assert.IsNotNull(Loader.LoadObject(typeof(SimpleLoadable2), context, document.Root, "Moop", LoaderMode.UnknownNodesError));
             Assert.AreEqual(0, context.Errors.Count);
 
             context.ReportErrors();
@@ -105,9 +107,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><Moop Type=\"SimpleLoadable2\" /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><Moop Type=\"SimpleLoadable2\" /></Objects>"));
 
-            Assert.IsNotNull(Loader.LoadObject<SimpleLoadable2>(context, document.DocumentElement, "Moop", new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError));
+            Assert.IsNotNull(Loader.LoadObject<SimpleLoadable2>(context, document.Root, "Moop", new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError));
             Assert.AreEqual(0, context.Errors.Count);
 
             context.ReportErrors();
@@ -119,9 +121,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><Moop type=\"SimpleLoadable2\" /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><Moop type=\"SimpleLoadable2\" /></Objects>"));
 
-            Assert.IsNotNull(Loader.LoadObject(typeof(SimpleLoadable2), context, document.DocumentElement, "Moop", new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError));
+            Assert.IsNotNull(Loader.LoadObject(typeof(SimpleLoadable2), context, document.Root, "Moop", new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError));
             Assert.AreEqual(0, context.Errors.Count);
 
             context.ReportErrors();
@@ -133,9 +135,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><SimpleLoadable2 /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><SimpleLoadable2 /></Objects>"));
 
-            Assert.IsNotNull(Loader.LoadObject<SimpleLoadable2>(context, document.DocumentElement, new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError));
+            Assert.IsNotNull(Loader.LoadObject<SimpleLoadable2>(context, document.Root, new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError));
             Assert.AreEqual(0, context.Errors.Count);
 
             context.ReportErrors();
@@ -147,9 +149,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><SimpleLoadable2 /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><SimpleLoadable2 /></Objects>"));
 
-            Assert.IsNotNull(Loader.LoadObject(typeof(SimpleLoadable2), context, document.DocumentElement, new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError));
+            Assert.IsNotNull(Loader.LoadObject(typeof(SimpleLoadable2), context, document.Root, new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError));
             Assert.AreEqual(0, context.Errors.Count);
 
             context.ReportErrors();
@@ -161,11 +163,11 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><Moop /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><Moop /></Objects>"));
 
             try
             {
-                Loader.LoadObject<SimpleLoadable2>(context, document.DocumentElement, "Moop", LoaderMode.UnknownNodesError);
+                Loader.LoadObject<SimpleLoadable2>(context, document.Root, "Moop", LoaderMode.UnknownNodesError);
 
                 Assert.Fail(); 
             }
@@ -183,11 +185,11 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><Moop Type=\"NoType\"/></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><Moop Type=\"NoType\"/></Objects>"));
 
             try
             {
-                Loader.LoadObject<SimpleLoadable2>(context, document.DocumentElement, "Moop", LoaderMode.UnknownNodesError);
+                Loader.LoadObject<SimpleLoadable2>(context, document.Root, "Moop", LoaderMode.UnknownNodesError);
 
                 Assert.Fail();
             }
@@ -205,11 +207,11 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><SimpleLoadable2 /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><SimpleLoadable2 /></Objects>"));
 
             try
             {
-                Loader.LoadObject<SimpleLoadable2>(context, document.DocumentElement, new Type[] { typeof(string) }, new []{ "INVALID ARGUMENT" }, LoaderMode.UnknownNodesError);
+                Loader.LoadObject<SimpleLoadable2>(context, document.Root, new Type[] { typeof(string) }, new []{ "INVALID ARGUMENT" }, LoaderMode.UnknownNodesError);
 
                 Assert.Fail();
             }
@@ -228,11 +230,11 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects></Objects>"));
 
             try
             {
-                Loader.LoadObject<SimpleLoadable2>(context, document.DocumentElement, LoaderMode.UnknownNodesError);
+                Loader.LoadObject<SimpleLoadable2>(context, document.Root, LoaderMode.UnknownNodesError);
 
                 Assert.Fail();
             }
@@ -243,7 +245,7 @@ namespace Rug.Loading.Tests
 
             try
             {
-                Loader.LoadObject<SimpleLoadable2>(context, document.DocumentElement, "Moop", LoaderMode.UnknownNodesError);
+                Loader.LoadObject<SimpleLoadable2>(context, document.Root, "Moop", LoaderMode.UnknownNodesError);
 
                 Assert.Fail();
             }
@@ -254,7 +256,7 @@ namespace Rug.Loading.Tests
 
             try
             {
-                Loader.LoadObject<SimpleLoadable2>(context, document.DocumentElement, new Type[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
+                Loader.LoadObject<SimpleLoadable2>(context, document.Root, new Type[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
 
                 Assert.Fail();
             }
@@ -265,7 +267,7 @@ namespace Rug.Loading.Tests
 
             try
             {
-                Loader.LoadObject<SimpleLoadable2>(context, document.DocumentElement, "Moop", new Type[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
+                Loader.LoadObject<SimpleLoadable2>(context, document.Root, "Moop", new Type[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
 
                 Assert.Fail();
             }
@@ -277,7 +279,7 @@ namespace Rug.Loading.Tests
 
             try
             {
-                Loader.LoadObject(typeof(SimpleLoadable2), context, document.DocumentElement, LoaderMode.UnknownNodesError);
+                Loader.LoadObject(typeof(SimpleLoadable2), context, document.Root, LoaderMode.UnknownNodesError);
 
                 Assert.Fail();
             }
@@ -288,7 +290,7 @@ namespace Rug.Loading.Tests
 
             try
             {
-                Loader.LoadObject(typeof(SimpleLoadable2), context, document.DocumentElement, "Moop", LoaderMode.UnknownNodesError);
+                Loader.LoadObject(typeof(SimpleLoadable2), context, document.Root, "Moop", LoaderMode.UnknownNodesError);
 
                 Assert.Fail();
             }
@@ -299,7 +301,7 @@ namespace Rug.Loading.Tests
 
             try
             {
-                Loader.LoadObject(typeof(SimpleLoadable2), context, document.DocumentElement, new Type[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
+                Loader.LoadObject(typeof(SimpleLoadable2), context, document.Root, new Type[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
 
                 Assert.Fail();
             }
@@ -310,7 +312,7 @@ namespace Rug.Loading.Tests
 
             try
             {
-                Loader.LoadObject(typeof(SimpleLoadable2), context, document.DocumentElement, "Moop", new Type[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
+                Loader.LoadObject(typeof(SimpleLoadable2), context, document.Root, "Moop", new Type[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
 
                 Assert.Fail();
             }
@@ -329,9 +331,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><SimpleLoadable2 /><SimpleLoadable2 /><SimpleLoadable2 /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><SimpleLoadable2 /><SimpleLoadable2 /><SimpleLoadable2 /></Objects>"));
 
-            ILoadable[] loadables = Loader.LoadObjects(typeof(SimpleLoadable2), context, document.DocumentElement, LoaderMode.UnknownNodesError);
+            ILoadable[] loadables = Loader.LoadObjects(typeof(SimpleLoadable2), context, document.Root, LoaderMode.UnknownNodesError);
 
             Assert.AreEqual(3, loadables.Length);
             Assert.AreEqual(0, context.Errors.Count);
@@ -345,9 +347,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><SimpleLoadable2 /><SimpleLoadable2 /><SimpleLoadable2 /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><SimpleLoadable2 /><SimpleLoadable2 /><SimpleLoadable2 /></Objects>"));
 
-            ILoadable[] loadables = Loader.LoadObjects(typeof(SimpleLoadable2), context, document.DocumentElement, new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
+            ILoadable[] loadables = Loader.LoadObjects(typeof(SimpleLoadable2), context, document.Root, new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
 
             Assert.AreEqual(3, loadables.Length);
             Assert.AreEqual(0, context.Errors.Count);
@@ -361,9 +363,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument { InnerXml = "<Objects><SimpleLoadable2 /><SimpleLoadable2 /><SimpleLoadable2 /></Objects>" };
+            XDocument document = XDocument.Load(new StringReader("<Objects><SimpleLoadable2 /><SimpleLoadable2 /><SimpleLoadable2 /></Objects>"));
 
-            SimpleLoadable2[] loadables = Loader.LoadObjects<SimpleLoadable2>(context, document.DocumentElement, LoaderMode.UnknownNodesError);
+            SimpleLoadable2[] loadables = Loader.LoadObjects<SimpleLoadable2>(context, document.Root, LoaderMode.UnknownNodesError);
 
             Assert.AreEqual(3, loadables.Length);
             Assert.AreEqual(0, context.Errors.Count);
@@ -377,12 +379,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument
-            {
-                InnerXml = "<Objects><SimpleLoadable2 /><SimpleLoadable2 /><SimpleLoadable2 /></Objects>"
-            };
+            XDocument document = XDocument.Load(new StringReader("<Objects><SimpleLoadable2 /><SimpleLoadable2 /><SimpleLoadable2 /></Objects>"));
 
-            SimpleLoadable2[] loadables = Loader.LoadObjects<SimpleLoadable2>(context, document.DocumentElement, new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
+            SimpleLoadable2[] loadables = Loader.LoadObjects<SimpleLoadable2>(context, document.Root, new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
 
             Assert.AreEqual(3, loadables.Length);
             Assert.AreEqual(0, context.Errors.Count);
@@ -399,12 +398,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument
-            {
-                InnerXml = "<Objects><Moop Type=\"SimpleLoadable2\" /><Moop type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /></Objects>"
-            };
+            XDocument document = XDocument.Load(new StringReader("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /></Objects>"));
 
-            ILoadable[] loadables = Loader.LoadObjects(typeof(SimpleLoadable2), context, document.DocumentElement, "Moop", LoaderMode.UnknownNodesError);
+            ILoadable[] loadables = Loader.LoadObjects(typeof(SimpleLoadable2), context, document.Root, "Moop", LoaderMode.UnknownNodesError);
 
             Assert.AreEqual(3, loadables.Length);
             Assert.AreEqual(0, context.Errors.Count);
@@ -418,12 +414,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument
-            {
-                InnerXml = "<Objects><Moop Type=\"SimpleLoadable2\" /><Moop type=\"SimpleLoadable2\" /><Moop type=\"SimpleLoadable2\" /></Objects>"
-            };
+            XDocument document = XDocument.Load(new StringReader("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop type=\"SimpleLoadable2\" /><Moop type=\"SimpleLoadable2\" /></Objects>"));
 
-            ILoadable[] loadables = Loader.LoadObjects(typeof(SimpleLoadable2), context, document.DocumentElement, "Moop", new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
+            ILoadable[] loadables = Loader.LoadObjects(typeof(SimpleLoadable2), context, document.Root, "Moop", new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
 
             Assert.AreEqual(3, loadables.Length);
             Assert.AreEqual(0, context.Errors.Count);
@@ -437,12 +430,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument
-            {
-                InnerXml = "<Objects><Moop Type=\"SimpleLoadable2\" /><Moop type=\"SimpleLoadable2\" /><Moop type=\"SimpleLoadable2\" /></Objects>"
-            };
+            XDocument document = XDocument.Load(new StringReader("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop type=\"SimpleLoadable2\" /><Moop type=\"SimpleLoadable2\" /></Objects>"));
 
-            SimpleLoadable2[] loadables = Loader.LoadObjects<SimpleLoadable2>(context, document.DocumentElement, "Moop", LoaderMode.UnknownNodesError);
+            SimpleLoadable2[] loadables = Loader.LoadObjects<SimpleLoadable2>(context, document.Root, "Moop", LoaderMode.UnknownNodesError);
 
             Assert.AreEqual(3, loadables.Length);
             Assert.AreEqual(0, context.Errors.Count);
@@ -456,12 +446,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument
-            {
-                InnerXml = "<Objects><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /><Moop type=\"SimpleLoadable2\" /></Objects>"
-            };
+            XDocument document = XDocument.Load(new StringReader("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /><Moop type=\"SimpleLoadable2\" /></Objects>"));
 
-            SimpleLoadable2[] loadables = Loader.LoadObjects<SimpleLoadable2>(context, document.DocumentElement, "Moop", new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
+            SimpleLoadable2[] loadables = Loader.LoadObjects<SimpleLoadable2>(context, document.Root, "Moop", new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
 
             Assert.AreEqual(3, loadables.Length);
             Assert.AreEqual(0, context.Errors.Count);
@@ -500,12 +487,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument
-            {
-                InnerXml = "<Objects><Moop Type=\"SimpleLoadable3a\" /><Moop Type=\"SimpleLoadable3b\" /><Moop type=\"SimpleLoadable3c\" /></Objects>"
-            };
+            XDocument document = XDocument.Load(new StringReader("<Objects><Moop Type=\"SimpleLoadable3a\" /><Moop Type=\"SimpleLoadable3b\" /><Moop type=\"SimpleLoadable3c\" /></Objects>"));
 
-            SimpleLoadable3[] loadables = Loader.LoadObjects<SimpleLoadable3>(context, document.DocumentElement, "Moop", new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
+            SimpleLoadable3[] loadables = Loader.LoadObjects<SimpleLoadable3>(context, document.Root, "Moop", new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
 
             Assert.AreEqual(3, loadables.Length);
             Assert.AreEqual(0, context.Errors.Count);
@@ -519,12 +503,9 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument
-            {
-                InnerXml = "<Objects><SimpleLoadable3a /><SimpleLoadable3b /><SimpleLoadable3c /></Objects>"
-            };
+            XDocument document = XDocument.Load(new StringReader("<Objects><SimpleLoadable3a /><SimpleLoadable3b /><SimpleLoadable3c /></Objects>"));
 
-            SimpleLoadable3[] loadables = Loader.LoadObjects<SimpleLoadable3>(context, document.DocumentElement, new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
+            SimpleLoadable3[] loadables = Loader.LoadObjects<SimpleLoadable3>(context, document.Root, new[] { typeof(int) }, new object[] { 123 }, LoaderMode.UnknownNodesError);
 
             Assert.AreEqual(3, loadables.Length);
             Assert.AreEqual(0, context.Errors.Count);
@@ -538,7 +519,7 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument();
+            XDocument document = new XDocument();
 
             SimpleLoadable2 savable = new SimpleLoadable2();
 
@@ -548,9 +529,9 @@ namespace Rug.Loading.Tests
 
             context.ReportErrors();
 
-            Debug.Print(document.InnerXml);
+            Debug.Print(document.InnerXml());
 
-            Assert.AreEqual("<Moop Type=\"SimpleLoadable2\" />", document.InnerXml);
+            Assert.AreEqual("<Moop Type=\"SimpleLoadable2\" />", document.InnerXml());
         }
 
         [Test()]
@@ -559,7 +540,7 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument();
+            XDocument document = new XDocument();
 
             SimpleLoadable2 savable = new SimpleLoadable2();
 
@@ -569,9 +550,9 @@ namespace Rug.Loading.Tests
 
             context.ReportErrors();
 
-            Debug.Print(document.InnerXml);
+            Debug.Print(document.InnerXml());
 
-            Assert.AreEqual("<SimpleLoadable2 />", document.InnerXml);
+            Assert.AreEqual("<SimpleLoadable2 />", document.InnerXml());
         }
 
         [Test()]
@@ -580,7 +561,7 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument();
+            XDocument document = new XDocument();
             object notSavable = new object();
 
             try
@@ -593,7 +574,7 @@ namespace Rug.Loading.Tests
 
                 context.ReportErrors();
 
-                Debug.Print(document.InnerXml);
+                Debug.Print(document.InnerXml());
             }
             catch (Exception ex)
             {
@@ -607,7 +588,7 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument();
+            XDocument document = new XDocument();
 
             SimpleLoadable2 savable = new SimpleLoadable2();                 
 
@@ -617,9 +598,9 @@ namespace Rug.Loading.Tests
 
             context.ReportErrors();
 
-            Debug.Print(document.InnerXml);
+            Debug.Print(document.InnerXml());
 
-            Assert.AreEqual("<SimpleLoadable2 />", document.InnerXml); 
+            Assert.AreEqual("<SimpleLoadable2 />", document.InnerXml()); 
         }
 
         [Test()]
@@ -628,7 +609,7 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument();
+            XDocument document = new XDocument();
 
             SimpleLoadable2 savable1 = new SimpleLoadable2();
             SimpleLoadable2 savable2 = new SimpleLoadable2();
@@ -640,9 +621,9 @@ namespace Rug.Loading.Tests
 
             context.ReportErrors();
 
-            Debug.Print(document.InnerXml);
+            Debug.Print(document.InnerXml());
 
-            Assert.AreEqual("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /></Objects>", document.InnerXml);
+            Assert.AreEqual("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /></Objects>", document.InnerXml());
         }
 
         [Test()]
@@ -651,7 +632,7 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument();
+            XDocument document = new XDocument();
 
             SimpleLoadable2 savable1 = new SimpleLoadable2();
             SimpleLoadable2 savable2 = new SimpleLoadable2();
@@ -663,9 +644,9 @@ namespace Rug.Loading.Tests
 
             context.ReportErrors();
 
-            Debug.Print(document.InnerXml);
+            Debug.Print(document.InnerXml());
 
-            Assert.AreEqual("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /></Objects>", document.InnerXml);
+            Assert.AreEqual("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /></Objects>", document.InnerXml());
         }
 
         [Test()]
@@ -674,9 +655,11 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument();
+            XDocument document = new XDocument();
 
-            XmlElement node = document.AppendChild(Helper.CreateElement(document, "Objects")) as XmlElement; 
+            XElement node = new XElement("Objects");
+
+            document.Add(node); 
 
             SimpleLoadable2 savable1 = new SimpleLoadable2();
             SimpleLoadable2 savable2 = new SimpleLoadable2();
@@ -688,9 +671,9 @@ namespace Rug.Loading.Tests
 
             context.ReportErrors();
 
-            Debug.Print(document.InnerXml);
+            Debug.Print(document.InnerXml());
 
-            Assert.AreEqual("<Objects><SimpleLoadable2 /><SimpleLoadable2 /><SimpleLoadable2 /></Objects>", document.InnerXml);
+            Assert.AreEqual("<Objects><SimpleLoadable2 /><SimpleLoadable2 /><SimpleLoadable2 /></Objects>", document.InnerXml());
         }
 
         [Test()]
@@ -699,9 +682,11 @@ namespace Rug.Loading.Tests
             Loader.CacheLoadables(this.GetType().Assembly);
 
             LoadContext context = new LoadContext(new DebugReporter());
-            XmlDocument document = new XmlDocument();
+            XDocument document = new XDocument();
 
-            XmlElement node = document.AppendChild(Helper.CreateElement(document, "Objects")) as XmlElement;
+            XElement node = new XElement("Objects"); 
+
+            document.Add(node); 
 
             SimpleLoadable2 savable1 = new SimpleLoadable2();
             SimpleLoadable2 savable2 = new SimpleLoadable2();
@@ -713,13 +698,13 @@ namespace Rug.Loading.Tests
 
             context.ReportErrors();
 
-            Debug.Print(document.InnerXml);
+            Debug.Print(document.InnerXml());
 
-            Assert.AreEqual("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /></Objects>", document.InnerXml);
+            Assert.AreEqual("<Objects><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /><Moop Type=\"SimpleLoadable2\" /></Objects>", document.InnerXml());
         }
 
         [Test()]
-        public void ToXmlNodeNameTest()
+        public void ToXElementNameTest()
         {
             Loader.CacheLoadables(this.GetType().Assembly);
 
@@ -795,13 +780,13 @@ namespace Rug.Loading.Tests
             public const string TypeName = "SomethingNotTheTypeName";
 
             /// <inheritdoc />
-            public void Load(LoadContext context, XmlNode node)
+            public void Load(LoadContext context, XElement node)
             {
 
             }
 
             /// <inheritdoc />
-            public void Save(LoadContext context, XmlElement element)
+            public void Save(LoadContext context, XElement element)
             {
 
             }
@@ -822,13 +807,13 @@ namespace Rug.Loading.Tests
             }
 
             /// <inheritdoc />
-            public void Load(LoadContext context, XmlNode node)
+            public void Load(LoadContext context, XElement node)
             {
 
             }
 
             /// <inheritdoc />
-            public void Save(LoadContext context, XmlElement element)
+            public void Save(LoadContext context, XElement element)
             {
 
             }
@@ -850,13 +835,13 @@ namespace Rug.Loading.Tests
             }
 
             /// <inheritdoc />
-            public void Load(LoadContext context, XmlNode node)
+            public void Load(LoadContext context, XElement node)
             {
 
             }
 
             /// <inheritdoc />
-            public void Save(LoadContext context, XmlElement element)
+            public void Save(LoadContext context, XElement element)
             {
 
             }
@@ -870,13 +855,13 @@ namespace Rug.Loading.Tests
             public T Value { get; set; }
 
             /// <inheritdoc />
-            public void Load(LoadContext context, XmlNode node)
+            public void Load(LoadContext context, XElement node)
             {
 
             }
 
             /// <inheritdoc />
-            public void Save(LoadContext context, XmlElement element)
+            public void Save(LoadContext context, XElement element)
             {
 
             }
@@ -891,13 +876,13 @@ namespace Rug.Loading.Tests
             public T2 Value2 { get; set; }
 
             /// <inheritdoc />
-            public void Load(LoadContext context, XmlNode node)
+            public void Load(LoadContext context, XElement node)
             {
 
             }
 
             /// <inheritdoc />
-            public void Save(LoadContext context, XmlElement element)
+            public void Save(LoadContext context, XElement element)
             {
 
             }
