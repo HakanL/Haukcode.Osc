@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
@@ -36,15 +37,12 @@ namespace Rug.Osc
 
         private readonly byte[] buffer;
         private readonly AutoResetEvent queueEmpty = new AutoResetEvent(true);
-        private readonly OscPacket[] sendQueue;
-        private readonly object syncLock = new object();
-        private int count = 0;
-        private int readIndex = 0;
-        private int writeIndex = 0;
+        private readonly ConcurrentQueue<OscPacket> sendQueue = new ConcurrentQueue<OscPacket>();
+        private int messageBufferSize;
 
         public event OscPacketEvent PacketSent;
 
-        public string DEBUG_ConnectedState { get { return Socket != null ? "Socket Connected: " + Socket.Connected : "NO SOCKET"; } }
+        //public string DEBUG_ConnectedState { get { return Socket != null ? "Socket Connected: " + Socket.Connected : "NO SOCKET"; } }
 
         /// <summary>
         /// Use a value greater than 0 to set the disconnect time out in milliseconds use a value less than or equal to 0 for an infinite timeout
@@ -52,42 +50,6 @@ namespace Rug.Osc
         public int DisconnectTimeout { get; set; }
 
         public override OscSocketType OscSocketType { get; } = Osc.OscSocketType.Send;
-
-        /// <summary>
-        /// The next queue index to read messages from
-        /// </summary>
-        private int NextReadIndex
-        {
-            get
-            {
-                int index = readIndex + 1;
-
-                if (index >= sendQueue.Length)
-                {
-                    index -= sendQueue.Length;
-                }
-
-                return index;
-            }
-        }
-
-        /// <summary>
-        /// The next queue index to write messages to
-        /// </summary>
-        private int NextWriteIndex
-        {
-            get
-            {
-                int index = writeIndex + 1;
-
-                if (index >= sendQueue.Length)
-                {
-                    index -= sendQueue.Length;
-                }
-
-                return index;
-            }
-        }
 
         /// <summary>
         /// Create a new Osc UDP sender. Note the underlying socket will not be connected until Connect is called
@@ -216,7 +178,8 @@ namespace Rug.Osc
             DisconnectTimeout = 1000;
 
             buffer = new byte[maxPacketSize];
-            sendQueue = new OscPacket[messageBufferSize];
+
+            this.messageBufferSize = messageBufferSize;
         }
 
         /// <summary>
@@ -225,39 +188,37 @@ namespace Rug.Osc
         /// <param name="message">message to send</param>
         public void Send(OscPacket message)
         {
-            if (State == OscSocketState.Connected)
+            if (State != OscSocketState.Connected)
             {
-                lock (syncLock)
-                {
-                    queueEmpty.Reset();
-
-                    if (count >= sendQueue.Length)
-                    {
-                        return;
-                    }
-
-                    sendQueue[writeIndex] = message;
-
-                    writeIndex = NextWriteIndex;
-                    count++;
-
-                    if (count == 1)
-                    {
-                        int size = message.Write(buffer);
-
-                        if (Statistics != null)
-                        {
-                            message.IncrementSendStatistics(Statistics);
-
-                            Statistics.BytesSent.Increment(size);
-                        }
-
-                        PacketSent?.Invoke(message);
-
-                        Socket.BeginSend(buffer, 0, size, SocketFlags, Send_Callback, message);
-                    }
-                }
+                return;
             }
+
+            queueEmpty.Reset();
+
+            if (sendQueue.Count >= messageBufferSize)
+            {
+                return;
+            }
+
+            sendQueue.Enqueue(message);
+
+            if (sendQueue.Count != 1)
+            {
+                return;
+            }
+
+            int size = message.Write(buffer);
+
+            if (Statistics != null)
+            {
+                message.IncrementSendStatistics(Statistics);
+
+                Statistics.BytesSent.Increment(size);
+            }
+
+            PacketSent?.Invoke(message);
+
+            Socket.BeginSend(buffer, 0, size, SocketFlags, Send_Callback, message);
         }
 
         /// <summary>
@@ -283,48 +244,50 @@ namespace Rug.Osc
         {
             bool shouldClose = false;
 
-            lock (syncLock)
+            try
             {
-                try
+                SocketError error;
+
+                Socket.EndSend(ar, out error);
+
+                shouldClose = Socket.Connected == false;
+
+                OscPacket packet;
+
+                if (sendQueue.TryDequeue(out packet) == false)
                 {
-                    SocketError error;
-
-                    Socket.EndSend(ar, out error);
-
-                    if (sendQueue[readIndex].IsSameInstance(ar.AsyncState as OscPacket) == false)
-                    {
-                        Debug.WriteLine("Objects do not match at index " + readIndex);
-                    }
-
-                    shouldClose = Socket.Connected == false;
-
-                    count--;
-                    readIndex = NextReadIndex;
-
-                    if (count > 0 && State == OscSocketState.Connected)
-                    {
-                        OscPacket packet = sendQueue[readIndex];
-
-                        int size = packet.Write(buffer);
-
-                        PacketSent?.Invoke(packet);
-
-                        Socket.BeginSend(buffer, 0, size, SocketFlags, Send_Callback, packet);
-                    }
-                    else
-                    {
-                        queueEmpty.Set();
-                    }
+                    Debug.WriteLine("Could not dequeue packet");
+                    return;
                 }
-                catch
+
+                if (packet.IsSameInstance(ar.AsyncState as OscPacket) == false)
+                {
+                    Debug.WriteLine("Queue packet and async objects do not match");
+                }
+
+                if (sendQueue.TryPeek(out packet) && State == OscSocketState.Connected)
+                {
+                    int size = packet.Write(buffer);
+
+                    PacketSent?.Invoke(packet);
+
+                    Socket.BeginSend(buffer, 0, size, SocketFlags, Send_Callback, packet);
+                }
+                else
                 {
                     queueEmpty.Set();
                 }
             }
-
-            if (shouldClose == true)
+            catch
             {
-                Dispose();
+                queueEmpty.Set();
+            }
+            finally
+            {
+                if (shouldClose == true)
+                {
+                    Dispose();
+                }
             }
         }
     }

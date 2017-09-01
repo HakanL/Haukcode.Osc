@@ -25,10 +25,7 @@ namespace Rug.Osc.Packaging
 
         public OscPackageBuilderMode Mode
         {
-            get
-            {
-                return oscPackageBuilderMode;
-            }
+            get => oscPackageBuilderMode;
 
             set
             {
@@ -65,8 +62,6 @@ namespace Rug.Osc.Packaging
         {
             lock (addSyncLock)
             {
-                int size = 0;
-
                 foreach (OscPacket packet in packets)
                 {
                     if (oscPackageBuilderMode == OscPackageBuilderMode.Immediate)
@@ -76,7 +71,7 @@ namespace Rug.Osc.Packaging
                         continue;
                     }
 
-                    size = packet.SizeInBytes + 4;
+                    int size = packet.SizeInBytes + 4;
 
                     if (packageSize + size >= maxPackageSize)
                     {

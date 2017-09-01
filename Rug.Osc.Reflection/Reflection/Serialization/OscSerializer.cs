@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -8,8 +9,8 @@ namespace Rug.Osc.Reflection.Serialization
 {
     public static class OscSerializer
     {
-        private static readonly object syncLock = new object();
-        private static readonly Dictionary<Type, IOscSerializer> oscSerializers = new Dictionary<Type, IOscSerializer>();
+        //private static readonly object syncLock = new object();
+        private static readonly ConcurrentDictionary<Type, IOscSerializer> OscSerializers = new ConcurrentDictionary<Type, IOscSerializer>();
 
         static OscSerializer()
         {
@@ -37,9 +38,8 @@ namespace Rug.Osc.Reflection.Serialization
 
             object[] args = new object[serializer.ArgumentCount];
             int index = 0;
-            string errorMessage;
 
-            if (serializer.ToMessage(args, ref index, obj, out errorMessage) == false)
+            if (serializer.ToMessage(args, ref index, obj, out string errorMessage) == false)
             {
                 throw new Exception(errorMessage); 
             }
@@ -53,9 +53,8 @@ namespace Rug.Osc.Reflection.Serialization
 
             T result = default(T);
             int index = 0;
-            string errorMessage;
 
-            if (serializer.FromMessage(message, ref index, out result, out errorMessage) == false)
+            if (serializer.FromMessage(message, ref index, out result, out string errorMessage) == false)
             {
                 throw new Exception(errorMessage);
             }
@@ -70,11 +69,9 @@ namespace Rug.Osc.Reflection.Serialization
 
         public static IOscSerializer GetOscSerializer(Type type)
         {
-            IOscSerializer oscSerializer;
-
-            if (TryGetOscSerializer(type, out oscSerializer) == false)
+            if (TryGetOscSerializer(type, out IOscSerializer oscSerializer) == false)
             {
-                throw new Exception($"No OSC serialize found for the type \"{Loader.GetTypeName(type)}\".");
+                throw new Exception($@"No OSC serialize found for the type ""{Loader.GetTypeName(type)}"".");
             }
 
             return oscSerializer;
@@ -82,9 +79,7 @@ namespace Rug.Osc.Reflection.Serialization
 
         public static bool TryGetOscSerializer<T>(out IOscSerializer<T> oscSerializer)
         {
-            IOscSerializer untypedOscSerializer;
-
-            if (TryGetOscSerializer(typeof(T), out untypedOscSerializer) == false)
+            if (TryGetOscSerializer(typeof(T), out IOscSerializer untypedOscSerializer) == false)
             {
                 oscSerializer = null; 
 
@@ -93,38 +88,35 @@ namespace Rug.Osc.Reflection.Serialization
 
             oscSerializer = untypedOscSerializer as IOscSerializer<T>;
 
-            return true; 
+            return oscSerializer != null; 
         }
 
         public static bool TryGetOscSerializer(Type type, out IOscSerializer oscSerializer)
         {
-            lock (syncLock)
+            try
             {
-                if (oscSerializers.TryGetValue(type, out oscSerializer) == true)
+                oscSerializer = OscSerializers.GetOrAdd(type, func =>
                 {
-                    return true;
-                }
+                    if (Helper.TryGetSingleAttribute(type, true, out OscSerializerAttribute oscSerializerAttribute) == false)
+                    {
+                        throw new Exception($@"Type ""{Loader.GetTypeName(type)}"" does not support OSC serialization");
+                    }
 
-                OscSerializerAttribute oscSerializerAttribute;
-                if (Helper.TryGetSingleAttribute(type, true, out oscSerializerAttribute) == false)
-                {
-                    return false;
-                }
-
-                oscSerializer = (IOscSerializer)Activator.CreateInstance(oscSerializerAttribute.OscSerializerType);
-
-                oscSerializers.Add(type, oscSerializer);
+                    return (IOscSerializer) Activator.CreateInstance(oscSerializerAttribute.OscSerializerType);
+                });
 
                 return true;
+            }
+            catch
+            {
+                oscSerializer = null; 
+                return false;
             }
         }
 
         public static void Register(Type type, IOscSerializer oscSerializer)
         {
-            lock (syncLock)
-            {
-                oscSerializers.Add(type, oscSerializer);
-            }
+            OscSerializers[type] = oscSerializer;
         }
     }
 }

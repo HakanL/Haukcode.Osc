@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Rug.Osc.Namespaces;
 using Rug.Osc.Reflection;
@@ -10,14 +11,14 @@ namespace Rug.Osc.Reflection
     /// </summary>
     public sealed class OscInvoker : IDisposable
     {
-        private readonly object syncLock = new object();
-        private readonly Dictionary<string, IOscMemberAdapter> oscMemberAdapters = new Dictionary<string, IOscMemberAdapter>();
+        //private readonly object syncLock = new object();
+        private readonly ConcurrentDictionary<string, IOscMemberAdapter> oscMemberAdapters = new ConcurrentDictionary<string, IOscMemberAdapter>();
 
-        public IOscAddressManager OscAddressManager { get; private set; } 
+        public IOscAddressManager OscAddressManager { get; private set; }
 
         public OscInvoker(IOscAddressManager oscAddressManager)
         {
-            OscAddressManager = oscAddressManager; 
+            OscAddressManager = oscAddressManager;
         }
 
         public void Attach(string baseAddress, object instance)
@@ -34,7 +35,7 @@ namespace Rug.Osc.Reflection
 
             if (baseAddress == "/")
             {
-                baseAddress = string.Empty; 
+                baseAddress = string.Empty;
             }
 
             if (baseAddress != string.Empty && OscAddress.IsValidAddressLiteral(baseAddress) == false)
@@ -42,59 +43,59 @@ namespace Rug.Osc.Reflection
                 throw new ArgumentException($@"Invalid container address ""{baseAddress}""", nameof(baseAddress));
             }
 
-            OscType type = OscType.GetType(instance.GetType()); 
+            OscType type = OscType.GetType(instance.GetType());
 
-            lock (syncLock)
+            //lock (syncLock)
+            //{
+            List<string> oscAddresses = new List<string>();
+
+            foreach (IOscMember member in type.Members)
             {
-                List<string> oscAddresses = new List<string>(); 
+                IOscGetSet oscGetSet = member as IOscGetSet;
 
-                foreach (IOscMember member in type.Members)
+                if (oscGetSet != null && oscGetSet.IsNamespace == true)
                 {
-                    IOscGetSet oscGetSet = member as IOscGetSet;
+                    //INamespace @namespace = oscGetSet.Get(instance) as INamespace;
 
-                    if (oscGetSet != null && oscGetSet.IsNamespace == true)
-                    {
-                        //INamespace @namespace = oscGetSet.Get(instance) as INamespace;
+                    //@namespace?.Attach();
 
-                        //@namespace?.Attach();
-
-                        continue;
-                    }
-
-                    string address = baseAddress + member.OscAddress; 
-
-                    if (oscMemberAdapters.ContainsKey(address) == true ||
-                        oscAddresses.Contains(address) == true)
-                    {
-                        throw new Exception($@"A member already exists at the address ""{address}"".");
-                    }
-
-                    if (OscAddress.IsValidAddressLiteral(address) == false)
-                    {
-                        throw new Exception($@"Invalid osc address ""{address}"".");
-                    }
-
-                    oscAddresses.Add(address); 
+                    continue;
                 }
 
-                foreach (IOscMember member in type.Members)
+                string address = baseAddress + member.OscAddress;
+
+                if (oscMemberAdapters.ContainsKey(address) == true ||
+                    oscAddresses.Contains(address) == true)
                 {
-                    if ((member is IOscGetSet) && (member as IOscGetSet).IsNamespace == true)
-                    {
-                        continue;
-                    }
-
-                    string address = baseAddress + member.OscAddress;
-
-                    IOscMemberAdapter adapter = OscMemberAdapterFactory.Create(address, instance, member);
-
-                    // add it to the lookup 
-                    oscMemberAdapters.Add(address, adapter);
-                    OscAddressManager.Attach(address, adapter.Invoke);
+                    throw new Exception($@"A member already exists at the address ""{address}"".");
                 }
+
+                if (OscAddress.IsValidAddressLiteral(address) == false)
+                {
+                    throw new Exception($@"Invalid osc address ""{address}"".");
+                }
+
+                oscAddresses.Add(address);
             }
+
+            foreach (IOscMember member in type.Members)
+            {
+                if ((member is IOscGetSet) && (member as IOscGetSet).IsNamespace == true)
+                {
+                    continue;
+                }
+
+                string address = baseAddress + member.OscAddress;
+
+                IOscMemberAdapter adapter = OscMemberAdapterFactory.Create(address, instance, member);
+
+                // add it to the lookup 
+                oscMemberAdapters[address] = adapter;
+                OscAddressManager.Attach(address, adapter.Invoke);
+            }
+            //}
         }
-        
+
         public void Detach(string baseAddress, object instance)
         {
             if (baseAddress == null)
@@ -117,57 +118,38 @@ namespace Rug.Osc.Reflection
                 throw new ArgumentException($@"Invalid container address ""{baseAddress}""", nameof(baseAddress));
             }
 
-            OscType type = OscType.GetType(instance.GetType());            
+            OscType type = OscType.GetType(instance.GetType());
 
-            lock (syncLock)
+            foreach (IOscMember member in type.Members)
             {
-                List<string> oscAddresses = new List<string>(); 
-
-                foreach (IOscMember member in type.Members)
+                if (member is IOscGetSet oscGetSet && oscGetSet.IsNamespace == true)
                 {
-                    IOscGetSet oscGetSet = member as IOscGetSet;
+                    //INamespace @namespace = oscGetSet.Get(instance) as INamespace;
 
-                    if (oscGetSet != null && oscGetSet.IsNamespace == true)
-                    {
-                        //INamespace @namespace = oscGetSet.Get(instance) as INamespace;
+                    //@namespace?.Detach();
 
-                        //@namespace?.Detach();
-
-                        continue;
-                    }
-
-                    string address = baseAddress + member.OscAddress;
-
-                    if (oscMemberAdapters.ContainsKey(address) == false)
-                    {
-                        throw new Exception($@"No member exists at the address ""{address}"".");
-                    }
-
-                    if (OscAddress.IsValidAddressLiteral(address) == false)
-                    {
-                        throw new Exception($@"Invalid osc address ""{address}"".");
-                    }
-
-                    oscAddresses.Add(address); 
+                    continue;
                 }
 
-                foreach (string oscAddress in oscAddresses)
+                string address = baseAddress + member.OscAddress;
+
+                if (oscMemberAdapters.ContainsKey(address) == false)
                 {
-                    IOscMemberAdapter adapter;
-
-                    if (oscMemberAdapters.TryGetValue(oscAddress, out adapter) == false)
-                    {
-                        // no container was found so abort
-                        return;
-                    }
-
-                    OscAddressManager.Detach(oscAddress, adapter.Invoke);
-
-                    oscMemberAdapters.Remove(oscAddress);
-
-                    // TODO, is this vital or not?
-                    //adapter.Dispose();
+                    throw new Exception($@"No member exists at the address ""{address}"".");
                 }
+
+                if (OscAddress.IsValidAddressLiteral(address) == false)
+                {
+                    throw new Exception($@"Invalid osc address ""{address}"".");
+                }
+
+                if (oscMemberAdapters.TryRemove(address, out IOscMemberAdapter adapter) == false)
+                {
+                    // no container was found so abort
+                    continue;
+                }
+
+                OscAddressManager.Detach(address, adapter.Invoke);
             }
         }
 
@@ -195,70 +177,53 @@ namespace Rug.Osc.Reflection
 
             OscType type = OscType.GetType(instance.GetType());
 
-            lock (syncLock)
+            foreach (IOscMember member in type.Members)
             {
-                foreach (IOscMember member in type.Members)
+                if (member is IOscGetSet oscGetSet && oscGetSet.IsNamespace == true)
                 {
-                    IOscGetSet oscGetSet = member as IOscGetSet;
+                    INamespace @namespace = oscGetSet.Get(instance) as INamespace;
 
-                    if (oscGetSet != null && oscGetSet.IsNamespace == true)
-                    {
-                        INamespace @namespace = oscGetSet.Get(instance) as INamespace;
+                    @namespace?.State();
 
-                        @namespace?.State(); 
-
-                        continue;
-                    }
-
-                    string address = baseAddress + member.OscAddress;
-
-                    if (OscAddress.IsValidAddressLiteral(address) == false)
-                    {
-                        throw new Exception($@"Invalid osc address ""{address}"".");
-                    }
-
-                    IOscMemberAdapter adapter;
-
-                    if (oscMemberAdapters.TryGetValue(address, out adapter) == false)
-                    {
-                        // no container was found so abort
-                        throw new Exception($@"Unknown osc address ""{address}"".");
-                    }
-
-                    adapter.State();
+                    continue;
                 }
+
+                string address = baseAddress + member.OscAddress;
+
+                if (OscAddress.IsValidAddressLiteral(address) == false)
+                {
+                    throw new Exception($@"Invalid osc address ""{address}"".");
+                }
+
+                if (oscMemberAdapters.TryGetValue(address, out IOscMemberAdapter adapter) == false)
+                {
+                    // no container was found so abort
+                    throw new Exception($@"Unknown osc address ""{address}"".");
+                }
+
+                adapter.State();
             }
         }
 
         public bool TypeOf(string queryAddress)
         {
-            lock (syncLock)
+            if (oscMemberAdapters.TryGetValue(queryAddress, out IOscMemberAdapter adapter) == false)
             {
-                IOscMemberAdapter adapter;
+                return false;
+            }
 
-                if (oscMemberAdapters.TryGetValue(queryAddress, out adapter) == false)
-                {
-                    return false; 
-                }
+            adapter.TypeOf();
 
-                adapter.TypeOf();                
-
-                return true;
-            }     
+            return true;
         }
-        
+
         public bool Usage(string address)
         {
             bool invoked = false;
 
             if (address == "/" || OscAddress.IsValidAddressLiteral(address) == true)
             {
-                IOscMemberAdapter adapter = null;
-
-                lock (syncLock)
-                {
-                    invoked = oscMemberAdapters.TryGetValue(address, out adapter);
-                }
+                invoked = oscMemberAdapters.TryGetValue(address, out IOscMemberAdapter adapter);
 
                 adapter?.Usage();
             }
@@ -268,17 +233,16 @@ namespace Rug.Osc.Reflection
 
                 OscAddress oscAddress = new OscAddress(address);
 
-                lock (syncLock)
+                foreach (KeyValuePair<string, IOscMemberAdapter> value in oscMemberAdapters)
                 {
-                    foreach (KeyValuePair<string, IOscMemberAdapter> value in oscMemberAdapters)
+                    if (oscAddress.Match(value.Key) != true)
                     {
-                        if (oscAddress.Match(value.Key) == true)
-                        {
-                            adapters.Add(value.Value);
-
-                            invoked = true;
-                        }
+                        continue;
                     }
+
+                    adapters.Add(value.Value);
+
+                    invoked = true;
                 }
 
                 foreach (IOscMemberAdapter adapter in adapters)
@@ -292,17 +256,14 @@ namespace Rug.Osc.Reflection
 
         public void Dispose()
         {
-            lock (syncLock)
+            foreach (KeyValuePair<string, IOscMemberAdapter> value in oscMemberAdapters)
             {
-                foreach (KeyValuePair<string, IOscMemberAdapter> value in oscMemberAdapters)
-                {
-                    OscAddressManager.Detach(value.Key, value.Value.Invoke); 
+                OscAddressManager.Detach(value.Key, value.Value.Invoke);
 
-                    value.Value.Dispose();
-                }
-
-                oscMemberAdapters.Clear();
+                value.Value.Dispose();
             }
+
+            oscMemberAdapters.Clear();
         }
     }
 }

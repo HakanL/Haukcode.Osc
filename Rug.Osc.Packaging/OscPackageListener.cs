@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -9,10 +10,8 @@ namespace Rug.Osc.Packaging
 {
     public sealed class OscPackageListener : IDisposable
     {
-        private readonly Dictionary<ulong, DateTime> activePackages = new Dictionary<ulong, DateTime>();
-        private readonly ManualResetEvent expungeComplete = new ManualResetEvent(true);
-        private readonly object syncLock = new object();
-        private readonly List<ulong> toRemove = new List<ulong>();
+        private readonly ConcurrentDictionary<ulong, DateTime> activePackages = new ConcurrentDictionary<ulong, DateTime>();
+        //private readonly ManualResetEvent expungeComplete = new ManualResetEvent(true);
         private Thread thread;
 
         public readonly OscAddressManager OscAddressManager;
@@ -77,18 +76,12 @@ namespace Rug.Osc.Packaging
 
         public void Cancel(ulong id)
         {
-            lock (syncLock)
-            {
-                activePackages.Remove(id);
-            }
+            activePackages.TryRemove(id, out DateTime _);
         }
 
         public void Clear()
         {
-            lock (syncLock)
-            {
-                activePackages.Clear();
-            }
+            activePackages.Clear();
         }
 
         public void Close()
@@ -99,8 +92,7 @@ namespace Rug.Osc.Packaging
         public void Connect()
         {
             OscReceiver.Connect();
-            thread = new Thread(new ThreadStart(this.ListenLoop));
-            thread.Name = "Osc Package Listener " + OscReceiver.ToString();
+            thread = new Thread(this.ListenLoop) { Name = "Osc Package Listener " + OscReceiver };
             thread.Start();
         }
 
@@ -117,64 +109,44 @@ namespace Rug.Osc.Packaging
 
         public void Expunge()
         {
-            lock (syncLock)
+            //expungeComplete.WaitOne();
+
+            DateTime time = DateTime.Now;
+
+            foreach (KeyValuePair<ulong, DateTime> record in activePackages)
             {
-                expungeComplete.WaitOne();
-
-                DateTime time = DateTime.Now;
-
-                foreach (KeyValuePair<ulong, DateTime> record in activePackages)
+                if (record.Value == DateTime.MaxValue)
                 {
-                    if (record.Value == DateTime.MaxValue)
-                    {
-                        continue;
-                    }
-
-                    if (record.Value >= time)
-                    {
-                        continue;
-                    }
-
-                    toRemove.Add(record.Key);
+                    continue;
                 }
 
-                foreach (ulong id in toRemove)
+                if (record.Value >= time)
                 {
-                    activePackages.Remove(id);
+                    continue;
                 }
 
-                expungeComplete.Reset();
+                activePackages.TryRemove(record.Key, out DateTime _);
+                PackageExpired?.Invoke(record.Key, EventArgs.Empty);
             }
 
-            try
-            {
-                if (PackageExpired != null)
-                {
-                    foreach (ulong id in toRemove)
-                    {
-                        PackageExpired?.Invoke(id, EventArgs.Empty);
-                    }
-                }
-            }
-            finally
-            {
-                toRemove.Clear();
-                expungeComplete.Set();
-            }
+            //expungeComplete.Reset();
         }
+
+        //finally
+        //{
+        //    toRemove.Clear();
+        //    expungeComplete.Set();
+        //}
 
         public void FilterPacket(ulong id, float seconds = float.PositiveInfinity)
         {
-            lock (syncLock)
+            if (seconds == float.PositiveInfinity)
             {
-                if (seconds == float.PositiveInfinity)
-                {
-                    activePackages.Add(id, DateTime.MaxValue);
-                }
-                else
-                {
-                    activePackages.Add(id, DateTime.Now.AddSeconds(seconds));
-                }
+                activePackages[id] = DateTime.MaxValue;
+            }
+            else
+            {
+                activePackages[id] = DateTime.Now.AddSeconds(seconds);
             }
         }
 
@@ -261,12 +233,9 @@ namespace Rug.Osc.Packaging
 
             ulong id = unchecked((ulong)(long)(message[0]));
 
-            lock (syncLock)
+            if (activePackages.ContainsKey(id) == false)
             {
-                if (activePackages.ContainsKey(id) == false)
-                {
-                    return true;
-                }
+                return true;
             }
 
             //Cancel(id);

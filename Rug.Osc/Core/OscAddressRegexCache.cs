@@ -16,6 +16,7 @@
  *
  */
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -34,9 +35,7 @@ namespace Rug.Osc
     /// </remarks>
     public static class OscAddressRegexCache
     {
-        private static readonly object syncLock = new object();
-
-        private static readonly Dictionary<string, Regex> lookup = new Dictionary<string, Regex>();
+        private static readonly ConcurrentDictionary<string, Regex> Lookup = new ConcurrentDictionary<string, Regex>();
 
         /// <summary>
         /// Enable regex caching for the entire program (Enabled by default)
@@ -46,7 +45,7 @@ namespace Rug.Osc
         /// <summary>
         /// The number of cached regex(s)
         /// </summary>
-        public static int Count => lookup.Count;
+        public static int Count => Lookup.Count;
 
         static OscAddressRegexCache()
         {
@@ -59,10 +58,7 @@ namespace Rug.Osc
         /// </summary>
         public static void Clear()
         {
-            lock (syncLock)
-            {
-                lookup.Clear();
-            }
+            Lookup.Clear();
         }
 
         /// <summary>
@@ -72,32 +68,14 @@ namespace Rug.Osc
         /// <returns>a regex created from or retrieved for the pattern</returns>
         public static Regex Aquire(string regex)
         {
-            // if caching is disabled then just return a new regex
-            if (Enabled == false)
-            {
-                // do not compile!
-                return new Regex(regex, RegexOptions.None);
-            }
-
-            lock (syncLock)
-            {
-                Regex result;
-
-                // see if we have one cached
-                if (lookup.TryGetValue(regex, out result) == true)
-                {
-                    return result;
-                }
-
-                // create a new one, we can compile it as it will probably be resued
-                result = new Regex(regex, RegexOptions.Compiled);
-
-                // add it to the lookup
-                lookup.Add(regex, result);
-
-                // return the new regex
-                return result;
-            }
+            return Enabled == false ?
+                // if caching is disabled then just return a new regex
+                new Regex(regex, RegexOptions.None) :
+                // else see if we have one cached
+                Lookup.GetOrAdd(regex,
+                    // create a new one, we can compile it as it will probably be resued
+                    func => new Regex(regex, RegexOptions.Compiled)
+                );
         }
     }
 }

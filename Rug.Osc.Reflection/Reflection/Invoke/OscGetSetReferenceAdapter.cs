@@ -14,7 +14,7 @@ namespace Rug.Osc.Reflection
         private readonly object syncLock = new object();
         private T cachedInstance = null;
         private IOscGetSetAdapter instanceMemberAdapter;
-        private OscGetSetAdapter<T> referenceAdapter;
+        private readonly OscGetSetAdapter<T> referenceAdapter;
 
         public OscGetSetReferenceAdapter(string oscAddress, object instance, IOscGetSetReference oscGetSetReference)
         {

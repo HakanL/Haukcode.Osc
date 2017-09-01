@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,14 +34,12 @@ namespace Rug.Osc
         /// <summary>
         /// Lookup of all literal addresses to listeners
         /// </summary>
-        private readonly Dictionary<string, OscLiteralEvent> literalAddresses = new Dictionary<string, OscLiteralEvent>();
+        private readonly ConcurrentDictionary<string, OscLiteralEvent> literalAddresses = new ConcurrentDictionary<string, OscLiteralEvent>();
 
         /// <summary>
         /// Lookup of all pattern address to filters
         /// </summary>
-        private readonly Dictionary<OscAddress, OscPatternEvent> patternAddresses = new Dictionary<OscAddress, OscPatternEvent>();
-
-        private readonly object syncLock = new object();
+        private readonly ConcurrentDictionary<OscAddress, OscPatternEvent> patternAddresses = new ConcurrentDictionary<OscAddress, OscPatternEvent>();
 
         /// <summary>
         /// This event will be raised whenever an unknown address is encountered
@@ -82,19 +81,7 @@ namespace Rug.Osc
             // if the address is a literal then add it to the literal lookup
             if (OscAddress.IsValidAddressLiteral(address) == true)
             {
-                OscLiteralEvent container;
-
-                lock (syncLock)
-                {
-                    if (literalAddresses.TryGetValue(address, out container) == false)
-                    {
-                        // no container was found so create one
-                        container = new OscLiteralEvent(address);
-
-                        // add it to the lookup
-                        literalAddresses.Add(address, container);
-                    }
-                }
+                OscLiteralEvent container = literalAddresses.GetOrAdd(address, func => new OscLiteralEvent(address));
 
                 // attach the event
                 container.Event += @event;
@@ -102,20 +89,10 @@ namespace Rug.Osc
             // if the address is a pattern add it to the pattern lookup
             else if (OscAddress.IsValidAddressPattern(address) == true)
             {
-                OscPatternEvent container;
                 OscAddress oscAddress = new OscAddress(address);
 
-                lock (syncLock)
-                {
-                    if (patternAddresses.TryGetValue(oscAddress, out container) == false)
-                    {
-                        // no container was found so create one
-                        container = new OscPatternEvent(oscAddress);
-
-                        // add it to the lookup
-                        patternAddresses.Add(oscAddress, container);
-                    }
-                }
+                // add it to the lookup
+                OscPatternEvent container = patternAddresses.GetOrAdd(oscAddress, func => new OscPatternEvent(oscAddress));
 
                 // attach the event
                 container.Event += @event;
@@ -160,37 +137,29 @@ namespace Rug.Osc
 
             if (OscAddress.IsValidAddressLiteral(address) == true)
             {
-                OscLiteralEvent container;
-
-                lock (syncLock)
+                if (literalAddresses.TryGetValue(address, out OscLiteralEvent container) == false)
                 {
-                    if (literalAddresses.TryGetValue(address, out container) == false)
-                    {
-                        // no container was found so abort
-                        return;
-                    }
+                    // no container was found so abort
+                    return;
                 }
+
                 // unregiser the event
                 container.Event -= @event;
 
                 // if the container is now empty remove it from the lookup
                 if (container.IsNull == true)
                 {
-                    literalAddresses.Remove(container.Address);
+                    literalAddresses.TryRemove(container.Address, out container);
                 }
             }
             else if (OscAddress.IsValidAddressPattern(address) == true)
             {
-                OscPatternEvent container;
                 OscAddress oscAddress = new OscAddress(address);
 
-                lock (syncLock)
+                if (patternAddresses.TryGetValue(oscAddress, out OscPatternEvent container) == false)
                 {
-                    if (patternAddresses.TryGetValue(oscAddress, out container) == false)
-                    {
-                        // no container was found so abort
-                        return;
-                    }
+                    // no container was found so abort
+                    return;
                 }
 
                 // unregiser the event
@@ -199,7 +168,7 @@ namespace Rug.Osc
                 // if the container is now empty remove it from the lookup
                 if (container.IsNull == true)
                 {
-                    patternAddresses.Remove(container.Address);
+                    patternAddresses.TryRemove(container.Address, out container);
                 }
             }
             else
@@ -213,22 +182,19 @@ namespace Rug.Osc
         /// </summary>
         public void Dispose()
         {
-            lock (syncLock)
+            foreach (KeyValuePair<string, OscLiteralEvent> value in literalAddresses)
             {
-                foreach (KeyValuePair<string, OscLiteralEvent> value in literalAddresses)
-                {
-                    value.Value.Clear();
-                }
-
-                literalAddresses.Clear();
-
-                foreach (KeyValuePair<OscAddress, OscPatternEvent> value in patternAddresses)
-                {
-                    value.Value.Clear();
-                }
-
-                patternAddresses.Clear();
+                value.Value.Clear();
             }
+
+            literalAddresses.Clear();
+
+            foreach (KeyValuePair<OscAddress, OscPatternEvent> value in patternAddresses)
+            {
+                value.Value.Clear();
+            }
+
+            patternAddresses.Clear();
         }
 
         public IEnumerator<OscAddress> GetEnumerator()
@@ -245,14 +211,12 @@ namespace Rug.Osc
         {
             Statistics?.PacketsReceived.Increment(1);
 
-            if (packet is OscMessage)
+            switch (packet)
             {
-                return Invoke((OscMessage)packet);
-            }
-
-            if (packet is OscBundle)
-            {
-                return Invoke((OscBundle)packet);
+                case OscMessage _:
+                    return Invoke((OscMessage)packet);
+                case OscBundle _:
+                    return Invoke((OscBundle)packet);
             }
 
             throw new Exception($"Unknown osc packet type '{packet}'");
@@ -276,17 +240,16 @@ namespace Rug.Osc
                     continue;
                 }
 
-                if (packet is OscMessage)
+                switch (packet)
                 {
-                    result |= Invoke(packet as OscMessage);
-                }
-                else if (packet is OscBundle)
-                {
-                    result |= Invoke(packet as OscBundle);
-                }
-                else
-                {
-                    throw new Exception($"Unknown osc packet type '{packet}'");
+                    case OscMessage _:
+                        result |= Invoke(packet as OscMessage);
+                        break;
+                    case OscBundle _:
+                        result |= Invoke(packet as OscBundle);
+                        break;
+                    default:
+                        throw new Exception($"Unknown osc packet type '{packet}'");
                 }
             }
 
@@ -303,73 +266,74 @@ namespace Rug.Osc
             bool invoked = false;
             OscAddress oscAddress = null;
 
-            List<OscLiteralEvent> shouldInvoke = new List<OscLiteralEvent>();
-            List<OscPatternEvent> shouldInvoke_Filter = new List<OscPatternEvent>();
+            //List<OscLiteralEvent> shouldInvoke = new List<OscLiteralEvent>();
+            //List<OscPatternEvent> shouldInvoke_Filter = new List<OscPatternEvent>();
 
             Statistics?.MessagesReceived.Increment(1);
 
             do
             {
-                lock (syncLock)
+                if (OscAddress.IsValidAddressLiteral(message.Address) == true)
                 {
-                    if (OscAddress.IsValidAddressLiteral(message.Address) == true)
+                    if (literalAddresses.TryGetValue(message.Address, out OscLiteralEvent container) == true)
                     {
-                        OscLiteralEvent container;
+                        //container.Invoke(message);
+                        //shouldInvoke.Add(container);
+                        container.Invoke(message);
 
-                        if (literalAddresses.TryGetValue(message.Address, out container) == true)
-                        {
-                            //container.Invoke(message);
-                            shouldInvoke.Add(container);
-                            invoked = true;
-                        }
+                        invoked = true;
                     }
-                    else
+                }
+                else
+                {
+                    oscAddress = new OscAddress(message.Address);
+
+                    foreach (KeyValuePair<string, OscLiteralEvent> value in literalAddresses)
+                    {
+                        if (oscAddress.Match(value.Key) != true)
+                        {
+                            continue;
+                        }
+
+                        //value.Value.Invoke(message);
+                        //shouldInvoke.Add(value.Value);
+                        value.Value.Invoke(message);
+                        invoked = true;
+                    }
+                }
+
+                if (patternAddresses.Count > 0)
+                {
+                    if (oscAddress == null)
                     {
                         oscAddress = new OscAddress(message.Address);
-
-                        foreach (KeyValuePair<string, OscLiteralEvent> value in literalAddresses)
-                        {
-                            if (oscAddress.Match(value.Key) == true)
-                            {
-                                //value.Value.Invoke(message);
-                                shouldInvoke.Add(value.Value);
-                                invoked = true;
-                            }
-                        }
                     }
 
-                    if (patternAddresses.Count > 0)
+                    foreach (KeyValuePair<OscAddress, OscPatternEvent> value in patternAddresses)
                     {
-                        if (oscAddress == null)
+                        if (oscAddress.Match(value.Key) == false)
                         {
-                            oscAddress = new OscAddress(message.Address);
+                            continue;
                         }
 
-                        foreach (KeyValuePair<OscAddress, OscPatternEvent> value in patternAddresses)
-                        {
-                            if (oscAddress.Match(value.Key) == false)
-                            {
-                                continue;
-                            }
-
-                            //value.Value.Invoke(message);
-                            shouldInvoke_Filter.Add(value.Value);
-                            invoked = true;
-                        }
+                        //value.Value.Invoke(message);
+                        //shouldInvoke_Filter.Add(value.Value);
+                        value.Value.Invoke(message);
+                        invoked = true;
                     }
                 }
             }
             while (invoked == false && OnUnknownAddress(message.Address, message) == true);
 
-            foreach (OscLiteralEvent @event in shouldInvoke)
-            {
-                @event.Invoke(message);
-            }
+            //foreach (OscLiteralEvent @event in shouldInvoke)
+            //{
+            //    @event.Invoke(message);
+            //}
 
-            foreach (OscPatternEvent @event in shouldInvoke_Filter)
-            {
-                @event.Invoke(message);
-            }
+            //foreach (OscPatternEvent @event in shouldInvoke_Filter)
+            //{
+            //    @event.Invoke(message);
+            //}
 
             return invoked;
         }
@@ -465,12 +429,9 @@ namespace Rug.Osc
         {
             List<OscAddress> addresses = new List<OscAddress>();
 
-            lock (syncLock)
-            {
-                addresses.AddRange(patternAddresses.Keys);
+            addresses.AddRange(patternAddresses.Keys);
 
-                addresses.AddRange(literalAddresses.Keys.Select(address => new OscAddress(address)));
-            }
+            addresses.AddRange(literalAddresses.Keys.Select(address => new OscAddress(address)));
 
             return addresses;
         }
