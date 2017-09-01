@@ -136,16 +136,19 @@ namespace Rug.Osc
                         BeginReceiving();
                     }
 
-                    OscPacket message;
+                    OscPacket message = null;
 
-                    while (receiveQueue.TryDequeue(out message) == false)
+                    while (State == OscSocketState.Connected && receiveQueue.TryDequeue(out message) == false)
                     {
                         // wait for a new message
                         messageReceived.WaitOne();
                         messageReceived.Reset();
                     }
 
-                    return message;
+                    if (message != null)
+                    {
+                        return message;
+                    }
                 }
             }
             catch (Exception ex)
