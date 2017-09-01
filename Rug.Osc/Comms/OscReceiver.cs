@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -35,50 +36,11 @@ namespace Rug.Osc
 
         private readonly byte[] buffer;
         private readonly AutoResetEvent messageReceived = new AutoResetEvent(false);
-        private readonly OscPacket[] receiveQueue;
-        private readonly object syncLock = new object();
-        private int count = 0;
+        private readonly ConcurrentQueue<OscPacket> receiveQueue = new ConcurrentQueue<OscPacket>();
         private bool isReceiving = false;
-        private int readIndex = 0;
-        private int writeIndex = 0;
+        private int messageBufferSize;
 
         public override OscSocketType OscSocketType { get; } = Osc.OscSocketType.Receive;
-
-        /// <summary>
-        /// The next queue index to read messages from
-        /// </summary>
-        private int NextReadIndex
-        {
-            get
-            {
-                int index = readIndex + 1;
-
-                if (index >= receiveQueue.Length)
-                {
-                    index -= receiveQueue.Length;
-                }
-
-                return index;
-            }
-        }
-
-        /// <summary>
-        /// The next queue index to write messages to
-        /// </summary>
-        private int NextWriteIndex
-        {
-            get
-            {
-                int index = writeIndex + 1;
-
-                if (index >= receiveQueue.Length)
-                {
-                    index -= receiveQueue.Length;
-                }
-
-                return index;
-            }
-        }
 
         /// <summary>
         /// Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
@@ -92,12 +54,13 @@ namespace Rug.Osc
             : base(address, multicast, port)
         {
             buffer = new byte[maxPacketSize];
-            receiveQueue = new OscPacket[messageBufferSize];
 
             if (IsMulticastEndPoint == false)
             {
                 throw new ArgumentException("The suppied address must be a multicast address", nameof(multicast));
             }
+
+            this.messageBufferSize = messageBufferSize;
         }
 
         /// <summary>
@@ -111,7 +74,7 @@ namespace Rug.Osc
             : base(address, port)
         {
             buffer = new byte[maxPacketSize];
-            receiveQueue = new OscPacket[messageBufferSize];
+            this.messageBufferSize = messageBufferSize;
         }
 
         /// <summary>
@@ -145,7 +108,7 @@ namespace Rug.Osc
             : base(port)
         {
             buffer = new byte[maxPacketSize];
-            receiveQueue = new OscPacket[messageBufferSize];
+            this.messageBufferSize = messageBufferSize;
         }
 
         /// <summary>
@@ -168,54 +131,21 @@ namespace Rug.Osc
                 if (State == OscSocketState.Connected)
                 {
                     // if we are not receiving then start
-                    if (isReceiving == false)
+                    if (isReceiving == false && State == OscSocketState.Connected)
                     {
-                        lock (syncLock)
-                        {
-                            if (isReceiving == false && State == OscSocketState.Connected)
-                            {
-                                BeginReceiving();
-                            }
-                        }
+                        BeginReceiving();
                     }
 
-                    if (count > 0)
+                    OscPacket message;
+
+                    while (receiveQueue.TryDequeue(out message) == false)
                     {
-                        lock (syncLock)
-                        {
-                            OscPacket message = receiveQueue[readIndex];
-
-                            readIndex = NextReadIndex;
-
-                            count--;
-
-                            // if we have eaten all the messages then reset the signal
-                            if (count == 0)
-                            {
-                                messageReceived.Reset();
-                            }
-
-                            return message;
-                        }
+                        // wait for a new message
+                        messageReceived.WaitOne();
+                        messageReceived.Reset();
                     }
 
-                    // wait for a new message
-                    messageReceived.WaitOne();
-                    messageReceived.Reset();
-
-                    if (count > 0)
-                    {
-                        lock (syncLock)
-                        {
-                            OscPacket message = receiveQueue[readIndex];
-
-                            readIndex = NextReadIndex;
-
-                            count--;
-
-                            return message;
-                        }
-                    }
+                    return message;
                 }
             }
             catch (Exception ex)
@@ -228,7 +158,7 @@ namespace Rug.Osc
                 throw new OscSocketException(this, "An unexpected error occured while waiting for a message");
             }
 
-            throw new OscSocketStateException(this, OscSocketState.Closed, "The receiver socket has been disconnected");
+            throw new OscSocketStateException(this, OscSocketState.Closed, "The receiver socket is not connected");
         }
 
         public override string ToString()
@@ -250,32 +180,17 @@ namespace Rug.Osc
                 return false;
             }
 
-            if (count > 0)
+            if (receiveQueue.TryDequeue(out message) == false)
             {
-                lock (syncLock)
-                {
-                    message = receiveQueue[readIndex];
-
-                    readIndex = NextReadIndex;
-
-                    count--;
-
-                    return true;
-                }
+                // wait for a new message
+                messageReceived.WaitOne();
+                messageReceived.Reset();
             }
 
             // if we are not receiving then start
-            if (isReceiving != false)
+            if (isReceiving == false && State == OscSocketState.Connected)
             {
-                return false;
-            }
-
-            lock (syncLock)
-            {
-                if (isReceiving == false && State == OscSocketState.Connected)
-                {
-                    BeginReceiving();
-                }
+                BeginReceiving();
             }
 
             return false;
@@ -313,10 +228,7 @@ namespace Rug.Osc
 
                 int count = Socket.EndReceiveFrom(ar, ref origin);
 
-                if (Statistics != null)
-                {
-                    Statistics.BytesReceived.Increment(count);
-                }
+                Statistics?.BytesReceived.Increment(count);
 
                 OscPacket message = OscPacket.Read(buffer, count, (IPEndPoint)origin);
 
@@ -325,23 +237,30 @@ namespace Rug.Osc
                     Statistics.ReceiveErrors.Increment(1);
                 }
 
-                lock (syncLock)
+                if (receiveQueue.Count < messageBufferSize)
                 {
-                    if (this.count < receiveQueue.Length)
-                    {
-                        receiveQueue[writeIndex] = message;
+                    receiveQueue.Enqueue(message);
 
-                        writeIndex = NextWriteIndex;
-
-                        this.count++;
-
-                        // if this was the first message then signal
-                        if (this.count == 1)
-                        {
-                            messageReceived.Set();
-                        }
-                    }
+                    messageReceived.Set();
                 }
+
+                //lock (syncLock)
+                //{
+                //    if (this.count < receiveQueue.Length)
+                //    {
+                //        receiveQueue[writeIndex] = message;
+
+                //        writeIndex = NextWriteIndex;
+
+                //        this.count++;
+
+                //        // if this was the first message then signal
+                //        if (this.count == 1)
+                //        {
+                //            messageReceived.Set();
+                //        }
+                //    }
+                //}
             }
             catch
             {

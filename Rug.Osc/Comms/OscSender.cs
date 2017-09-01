@@ -38,7 +38,7 @@ namespace Rug.Osc
         private readonly byte[] buffer;
         private readonly AutoResetEvent queueEmpty = new AutoResetEvent(true);
         private readonly ConcurrentQueue<OscPacket> sendQueue = new ConcurrentQueue<OscPacket>();
-        private int messageBufferSize;
+        private readonly int messageBufferSize;
 
         public event OscPacketEvent PacketSent;
 
