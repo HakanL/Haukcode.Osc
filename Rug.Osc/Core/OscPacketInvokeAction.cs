@@ -16,8 +16,11 @@
  *
  */
 
+using System;
+
 namespace Rug.Osc
 {
+    [Obsolete]
     public enum OscPacketInvokeAction
     {
         Invoke,

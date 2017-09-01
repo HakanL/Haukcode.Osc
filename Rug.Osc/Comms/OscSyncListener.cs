@@ -169,23 +169,9 @@ namespace Rug.Osc
 
                 PacketReceived?.Invoke(packet);
 
-                switch (OscAddressManager.ShouldInvoke(packet))
+                if (packet.Error == OscPacketError.None)
                 {
-                    case OscPacketInvokeAction.Invoke:
-                        OscAddressManager.Invoke(packet);
-                        break;
-
-                    case OscPacketInvokeAction.DontInvoke:
-                        break;
-
-                    case OscPacketInvokeAction.HasError:
-                        break;
-
-                    case OscPacketInvokeAction.Pospone:
-                        break;
-
-                    default:
-                        break;
+                    OscAddressManager.Invoke(packet);
                 }
 
                 PacketProcessed?.Invoke(packet);

@@ -156,27 +156,27 @@ namespace Rug.Osc.Packaging
             {
                 while (OscReceiver.State != OscSocketState.Closed)
                 {
-                    if (OscReceiver.State == OscSocketState.Connected)
+                    if (OscReceiver.State != OscSocketState.Connected)
                     {
-                        OscPacket packet = this.OscReceiver.Receive();
-
-                        BeginSessionContext?.Invoke(packet.Origin);
-
-                        if (ShouldProcessPackage(packet) == false)
-                        {
-                            continue;
-                        }
-
-                        switch (OscAddressManager.ShouldInvoke(packet))
-                        {
-                            case OscPacketInvokeAction.Invoke:
-                                PacketReceived?.Invoke(packet);
-                                OscAddressManager.Invoke(packet);
-                                break;
-                        }
-
-                        EndSessionContext?.Invoke(packet.Origin);
+                        continue;
                     }
+
+                    OscPacket packet = this.OscReceiver.Receive();
+
+                    BeginSessionContext?.Invoke(packet.Origin);
+
+                    if (ShouldProcessPackage(packet) == false)
+                    {
+                        continue;
+                    }
+
+                    if (packet.Error == OscPacketError.None)
+                    {
+                        PacketReceived?.Invoke(packet);
+                        OscAddressManager.Invoke(packet);
+                    }                        
+
+                    EndSessionContext?.Invoke(packet.Origin);
                 }
             }
             catch (Exception ex)

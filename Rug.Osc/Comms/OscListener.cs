@@ -53,7 +53,7 @@ namespace Rug.Osc
         {
             OscReceiver = new OscReceiver(address, multicast, port, messageBufferSize, maxPacketSize);
 
-            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+            OscAddressManager.UnknownAddress += OnUnknownAddress;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Rug.Osc
         {
             OscReceiver = new OscReceiver(address, port, messageBufferSize, maxPacketSize);
 
-            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+            OscAddressManager.UnknownAddress += OnUnknownAddress;
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Rug.Osc
         {
             OscReceiver = new OscReceiver(address, port);
 
-            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+            OscAddressManager.UnknownAddress += OnUnknownAddress;
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Rug.Osc
         {
             OscReceiver = new OscReceiver(address, multicast, port);
 
-            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+            OscAddressManager.UnknownAddress += OnUnknownAddress;
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Rug.Osc
         {
             OscReceiver = new OscReceiver(port, messageBufferSize, maxPacketSize);
 
-            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+            OscAddressManager.UnknownAddress += OnUnknownAddress;
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Rug.Osc
         {
             OscReceiver = new OscReceiver(port);
 
-            OscAddressManager.UnknownAddress += new EventHandler<UnknownAddressEventArgs>(OnUnknownAddress);
+            OscAddressManager.UnknownAddress += OnUnknownAddress;
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace Rug.Osc
 
             thread = new Thread(ListenLoop)
             {
-                Name = "Osc Listener " + OscReceiver.ToString()
+                Name = "Osc Listener " + OscReceiver
             };
 
             thread.Start();
@@ -189,24 +189,10 @@ namespace Rug.Osc
 
                     PacketReceived?.Invoke(packet);
 
-                    switch (OscAddressManager.ShouldInvoke(packet))
+                    if (packet.Error == OscPacketError.None)
                     {
-                        case OscPacketInvokeAction.Invoke:
-                            OscAddressManager.Invoke(packet);
-                            break;
-
-                        case OscPacketInvokeAction.DontInvoke:
-                            break;
-
-                        case OscPacketInvokeAction.HasError:
-                            break;
-
-                        case OscPacketInvokeAction.Pospone:
-                            break;
-
-                        default:
-                            break;
-                    }
+                        OscAddressManager.Invoke(packet);
+                    }                    
 
                     PacketProcessed?.Invoke(packet);
                 }

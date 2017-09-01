@@ -8,17 +8,7 @@ namespace Rug.Osc
     /// </summary>
     public interface IOscAddressManager : IEnumerable<OscAddress>, IDisposable
     {
-        /// <summary>
-        /// Bundle invoke mode, the default is OscBundleInvokeMode.InvokeAllBundlesImmediately
-        /// </summary>
-        OscBundleInvokeMode BundleInvokeMode { get; set; }
-
         OscCommunicationStatistics Statistics { get; set; }
-
-        /// <summary>
-        /// Osc time provider, used for filtering bundles by time, if null then the DefaultTimeProvider is used
-        /// </summary>
-        IOscTimeProvider TimeProvider { get; set; }
 
         /// <summary>
         /// This event will be raised whenever an unknown address is encountered
@@ -64,13 +54,6 @@ namespace Rug.Osc
         /// <param name="bundle">an osc bundle of messages</param>
         /// <returns>true if there was a listener to invoke for any message in the otherwise false</returns>
         bool Invoke(OscBundle bundle);
-
-        /// <summary>
-        /// Determine if the packet should be invoked
-        /// </summary>
-        /// <param name="packet">A packet</param>
-        /// <returns>The appropriate action that should be taken with the packet</returns>
-        OscPacketInvokeAction ShouldInvoke(OscPacket packet);
 
         bool Contains(OscAddress oscAddress);
 

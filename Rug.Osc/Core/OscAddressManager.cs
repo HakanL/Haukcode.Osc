@@ -46,25 +46,7 @@ namespace Rug.Osc
         /// </summary>
         public event EventHandler<UnknownAddressEventArgs> UnknownAddress;
 
-        /// <summary>
-        /// Bundle invoke mode, the default is OscBundleInvokeMode.InvokeAllBundlesImmediately
-        /// </summary>
-        public OscBundleInvokeMode BundleInvokeMode { get; set; }
-
         public OscCommunicationStatistics Statistics { get; set; }
-
-        /// <summary>
-        /// Osc time provider, used for filtering bundles by time, if null then the DefaultTimeProvider is used
-        /// </summary>
-        public IOscTimeProvider TimeProvider { get; set; }
-
-        /// <summary>
-        /// Create a osc address manager
-        /// </summary>
-        public OscAddressManager()
-        {
-            BundleInvokeMode = OscBundleInvokeMode.InvokeAllBundlesImmediately;
-        }
 
         /// <summary>
         /// Attach an event listener on to the given address
@@ -266,9 +248,6 @@ namespace Rug.Osc
             bool invoked = false;
             OscAddress oscAddress = null;
 
-            //List<OscLiteralEvent> shouldInvoke = new List<OscLiteralEvent>();
-            //List<OscPatternEvent> shouldInvoke_Filter = new List<OscPatternEvent>();
-
             Statistics?.MessagesReceived.Increment(1);
 
             do
@@ -277,8 +256,6 @@ namespace Rug.Osc
                 {
                     if (literalAddresses.TryGetValue(message.Address, out OscLiteralEvent container) == true)
                     {
-                        //container.Invoke(message);
-                        //shouldInvoke.Add(container);
                         container.Invoke(message);
 
                         invoked = true;
@@ -295,8 +272,6 @@ namespace Rug.Osc
                             continue;
                         }
 
-                        //value.Value.Invoke(message);
-                        //shouldInvoke.Add(value.Value);
                         value.Value.Invoke(message);
                         invoked = true;
                     }
@@ -316,8 +291,6 @@ namespace Rug.Osc
                             continue;
                         }
 
-                        //value.Value.Invoke(message);
-                        //shouldInvoke_Filter.Add(value.Value);
                         value.Value.Invoke(message);
                         invoked = true;
                     }
@@ -325,101 +298,9 @@ namespace Rug.Osc
             }
             while (invoked == false && OnUnknownAddress(message.Address, message) == true);
 
-            //foreach (OscLiteralEvent @event in shouldInvoke)
-            //{
-            //    @event.Invoke(message);
-            //}
-
-            //foreach (OscPatternEvent @event in shouldInvoke_Filter)
-            //{
-            //    @event.Invoke(message);
-            //}
-
             return invoked;
         }
-
-        /// <summary>
-        /// Determine if the packet should be invoked
-        /// </summary>
-        /// <param name="packet">A packet</param>
-        /// <returns>The appropriate action that should be taken with the packet</returns>
-        public OscPacketInvokeAction ShouldInvoke(OscPacket packet)
-        {
-            if (packet.Error != OscPacketError.None)
-            {
-                return OscPacketInvokeAction.HasError;
-            }
-
-            if (packet is OscMessage)
-            {
-                return OscPacketInvokeAction.Invoke;
-            }
-
-            if (packet is OscBundle)
-            {
-                OscBundle bundle = packet as OscBundle;
-
-                if (BundleInvokeMode == OscBundleInvokeMode.NeverInvoke)
-                {
-                    return OscPacketInvokeAction.DontInvoke;
-                }
-                else if (BundleInvokeMode != OscBundleInvokeMode.InvokeAllBundlesImmediately)
-                {
-                    double delay;
-
-                    IOscTimeProvider provider = TimeProvider;
-
-                    if (TimeProvider == null)
-                    {
-                        provider = DefaultTimeProvider.Instance;
-                    }
-
-                    delay = provider.DifferenceInSeconds(bundle.Timestamp);
-
-                    if ((BundleInvokeMode & OscBundleInvokeMode.InvokeEarlyBundlesImmediately) !=
-                        OscBundleInvokeMode.InvokeEarlyBundlesImmediately)
-                    {
-                        if (delay > 0 && provider.IsWithinTimeFrame(bundle.Timestamp) == false)
-                        {
-                            if ((BundleInvokeMode & OscBundleInvokeMode.PosponeEarlyBundles) !=
-                                OscBundleInvokeMode.PosponeEarlyBundles)
-                            {
-                                return OscPacketInvokeAction.Pospone;
-                            }
-                            else
-                            {
-                                return OscPacketInvokeAction.DontInvoke;
-                            }
-                        }
-                    }
-
-                    if ((BundleInvokeMode & OscBundleInvokeMode.InvokeLateBundlesImmediately) !=
-                        OscBundleInvokeMode.InvokeLateBundlesImmediately)
-                    {
-                        if (delay < 0 && provider.IsWithinTimeFrame(bundle.Timestamp) == false)
-                        {
-                            return OscPacketInvokeAction.DontInvoke;
-                        }
-                    }
-
-                    if ((BundleInvokeMode & OscBundleInvokeMode.InvokeOnTimeBundles) !=
-                        OscBundleInvokeMode.InvokeOnTimeBundles)
-                    {
-                        if (provider.IsWithinTimeFrame(bundle.Timestamp) == true)
-                        {
-                            return OscPacketInvokeAction.DontInvoke;
-                        }
-                    }
-                }
-
-                return OscPacketInvokeAction.Invoke;
-            }
-            else
-            {
-                return OscPacketInvokeAction.DontInvoke;
-            }
-        }
-
+        
         IEnumerator IEnumerable.GetEnumerator()
         {
             return (GetAllAddresses() as IEnumerable).GetEnumerator();

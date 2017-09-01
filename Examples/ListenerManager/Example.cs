@@ -99,29 +99,18 @@ namespace ListenerManager
 		{
 			try
 			{
-				// parse the message
+			    // parse the message
 				OscPacket packet = OscPacket.Parse(m_MessageBox.Text);
 
-				switch (m_Manager.ShouldInvoke(packet))
-				{
-					case OscPacketInvokeAction.Invoke:
-						m_Manager.Invoke(packet);
-						break;
-					case OscPacketInvokeAction.DontInvoke:
-						Debug.WriteLine("Cannot invoke");
-						Debug.WriteLine(packet.ToString());
-						break;
-					case OscPacketInvokeAction.HasError:
-						Debug.WriteLine("Error reading osc packet, " + packet.Error);
-						Debug.WriteLine(packet.ErrorMessage);
-						break;
-					case OscPacketInvokeAction.Pospone:
-						Debug.WriteLine("Posponed bundle");
-						Debug.WriteLine(packet.ToString());
-						break;
-					default:
-						break;
-				}	
+			    if (packet.Error != OscPacketError.None)
+			    {
+			        Debug.WriteLine("Error reading osc packet, " + packet.Error);
+			        Debug.WriteLine(packet.ErrorMessage);
+
+			        return; 
+			    }
+
+                m_Manager.Invoke(packet);
 			}
 			catch (Exception ex)
 			{
