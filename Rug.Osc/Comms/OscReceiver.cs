@@ -142,7 +142,7 @@ namespace Rug.Osc
                     {
                         // wait for a new message
                         messageReceived.WaitOne();
-                        messageReceived.Reset();
+                        //messageReceived.Reset();
                     }
 
                     if (message != null)
@@ -187,7 +187,7 @@ namespace Rug.Osc
             {
                 // wait for a new message
                 messageReceived.WaitOne();
-                messageReceived.Reset();
+                //messageReceived.Reset();
             }
 
             // if we are not receiving then start
@@ -214,7 +214,7 @@ namespace Rug.Osc
         private void BeginReceiving()
         {
             isReceiving = true;
-            messageReceived.Reset();
+            //messageReceived.Reset();
 
             // create an empty origin
             EndPoint origin = UseIPv6 ? Helper.EmptyEndPointIPv6 : Helper.EmptyEndPoint;
