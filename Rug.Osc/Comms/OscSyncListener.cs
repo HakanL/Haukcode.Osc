@@ -155,31 +155,29 @@ namespace Rug.Osc
         public bool TryReceive()
         {
             // if we are in a state to receive
-            if (OscReceiver.State == OscSocketState.Connected)
+            if (OscReceiver?.State != OscSocketState.Connected)
             {
-                OscPacket packet;
-
-                // try and get the next message
-                bool packetReceived = OscReceiver.TryReceive(out packet);
-
-                if (packetReceived == false)
-                {
-                    return false;
-                }
-
-                PacketReceived?.Invoke(packet);
-
-                if (packet.Error == OscPacketError.None)
-                {
-                    OscAddressManager.Invoke(packet);
-                }
-
-                PacketProcessed?.Invoke(packet);
-
-                return true;
+                return false;
             }
 
-            return false;
+            // try and get the next message
+            bool packetReceived = OscReceiver.TryReceive(out OscPacket packet);
+
+            if (packetReceived == false)
+            {
+                return false;
+            }
+
+            PacketReceived?.Invoke(packet);
+
+            if (packet?.Error == OscPacketError.None)
+            {
+                OscAddressManager.Invoke(packet);
+            }
+
+            PacketProcessed?.Invoke(packet);
+
+            return true;
         }
     }
 }

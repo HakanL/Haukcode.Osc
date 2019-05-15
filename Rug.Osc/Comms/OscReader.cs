@@ -91,7 +91,7 @@ namespace Rug.Osc
 
                 case OscPacketFormat.Slip:
                     binaryReader = new BinaryReader(this.BaseStream);
-                    slipReader = new Slip.SlipPacketReader(1024);
+                    slipReader = new Slip.SlipPacketReader(1024 * 8);
 
                     slipByteCache = new byte[1024];
                     slipByteIndex = 0;

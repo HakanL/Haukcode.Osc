@@ -186,7 +186,7 @@ namespace Rug.Osc
             if (receiveQueue.TryDequeue(out message) == false)
             {
                 // wait for a new message
-                messageReceived.WaitOne();
+                //messageReceived.WaitOne();
                 //messageReceived.Reset();
             }
 
@@ -196,7 +196,7 @@ namespace Rug.Osc
                 BeginReceiving();
             }
 
-            return false;
+            return message != null;
         }
 
         protected override void OnClosing()

@@ -17,6 +17,7 @@ namespace Rug.Osc.Ahoy
         private readonly List<IPAddress> potentialAdapters = new List<IPAddress>();
         private readonly List<IAhoyQuery> queriesList = new List<IAhoyQuery>();
         private readonly object queriesListSyncLock = new object();
+        private readonly int serviceExpiryPeriod; 
 
         public int Count { get { return ahoyServiceInfoList.Count; } }
 
@@ -38,9 +39,19 @@ namespace Rug.Osc.Ahoy
         {
             Namespace = @namespace;
 
+            serviceExpiryPeriod = AhoyConstants.DefaultServiceExpiryPeriod; 
+
             potentialAdapters.AddRange(adapterAddress);
         }
 
+        public AhoyQueryMultipleAdapters(string @namespace, int serviceExpiryPeriod, params IPAddress[] adapterAddress)
+        {
+            Namespace = @namespace;
+
+            this.serviceExpiryPeriod = serviceExpiryPeriod; 
+
+            potentialAdapters.AddRange(adapterAddress);
+        }
         public void BeginSearch(int sendInterval = 100)
         {
             EndSearch();
@@ -192,7 +203,7 @@ namespace Rug.Osc.Ahoy
         {
             try
             {
-                IAhoyQuery query = AhoyQuery.CreateQuery(Namespace, adapterAddress);
+                IAhoyQuery query = AhoyQuery.CreateQuery(Namespace, serviceExpiryPeriod, adapterAddress);
 
                 query.AnyReceived += OnAnyReceived;
 
@@ -229,36 +240,21 @@ namespace Rug.Osc.Ahoy
         {
             OscMessageEvent @event = AnyReceived;
 
-            if (@event == null)
-            {
-                return;
-            }
-
-            @event(message);
+            @event?.Invoke(message);
         }
 
         private void OnMessageReceived(OscMessage message)
         {
             OscMessageEvent @event = MessageReceived;
 
-            if (@event == null)
-            {
-                return;
-            }
-
-            @event(message);
+            @event?.Invoke(message);
         }
 
         private void OnMessageSent(OscMessage message)
         {
             OscMessageEvent @event = MessageSent;
 
-            if (@event == null)
-            {
-                return;
-            }
-
-            @event(message);
+            @event?.Invoke(message);
         }
 
         private void OnServiceDiscovered(AhoyServiceInfo serviceInfo)

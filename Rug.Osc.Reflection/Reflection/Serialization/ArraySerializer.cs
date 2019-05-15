@@ -42,7 +42,8 @@ namespace Rug.Osc.Reflection.Serialization
         {
             if (argumentIndex + 1 > message.Count)
             {
-                errorMessage = SerializerHelpers.TooFewArguments; value = default(T[]);
+                errorMessage = SerializerHelpers.TooFewArguments; 
+                value = default(T[]);
                 return false;
             }
 
@@ -69,7 +70,7 @@ namespace Rug.Osc.Reflection.Serialization
                         continue;
                     }
 
-                    errorMessage = string.Format(SerializerHelpers.UnexpectedArgument, $"at index {i} of argumnet {argumentIndex}", Loader.GetTypeName(valueObjectArray[i].GetType()), Loader.GetTypeName(typeof(T)));
+                    errorMessage = string.Format(SerializerHelpers.UnexpectedArgument, $"at index {i} of argument {argumentIndex}", Loader.GetTypeName(valueObjectArray[i].GetType()), Loader.GetTypeName(typeof(T)));
                     value = default(T[]);
 
                     return false;
@@ -78,21 +79,47 @@ namespace Rug.Osc.Reflection.Serialization
                 return true;
             }
 
-            if ((message[argumentIndex] is OscNull) == false)
+            if ((message[argumentIndex] is OscNull) == true)
             {
-                errorMessage = string.Format(SerializerHelpers.UnexpectedArgument, argumentIndex,
-                    Loader.GetTypeName(message[argumentIndex].GetType()),
-                    Loader.GetTypeName(typeof(T[]))
-                    );
+                value = default(T[]);
+                argumentIndex++;
+                
+                return true;
+            }
+            
+            value = new T[message.Count - argumentIndex];
+            
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (message[argumentIndex] is T)
+                {
+                    value[i] = (T)message[argumentIndex++];
+                    continue;
+                }
+
+                errorMessage = string.Format(SerializerHelpers.UnexpectedArgument, $"at index {i} of argument {argumentIndex}", Loader.GetTypeName(message[argumentIndex].GetType()), Loader.GetTypeName(typeof(T)));
                 value = default(T[]);
 
                 return false;
             }
 
-            value = default(T[]);
-            argumentIndex++;
-
             return true;
+            
+            // object[] valueObjectArray = (object[])message[argumentIndex++];
+
+//            errorMessage = string.Format(
+//                SerializerHelpers.UnexpectedArgument,
+//                argumentIndex,
+//                Loader.GetTypeName(
+//                    message[argumentIndex]
+//                        .GetType()
+//                ),
+//                Loader.GetTypeName(typeof(T[]))
+//            );
+//            
+//            value = default(T[]);
+//
+//            return false;
         }
 
         public bool ToMessage(object[] arguments, ref int argumentIndex, object value, out string errorMessage)

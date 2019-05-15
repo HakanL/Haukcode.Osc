@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rug.Osc", "Rug.Osc\Rug.Osc.csproj", "{190500D7-9779-466D-A73F-BCE13606B3EF}"
 EndProject
@@ -71,6 +71,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rug.Osc.Packaging.Tests", "Tests\Rug.Osc.Packaging.Tests\Rug.Osc.Packaging.Tests.csproj", "{312AA1BA-125B-40CA-BEE8-855E7FC8DBDA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rug.Osc.Tests", "Tests\Rug.Osc.Tests\Rug.Osc.Tests.csproj", "{F9907394-673A-46B5-9A25-AD8AC566EFDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profile", "Profilling\Profile\Profile.csproj", "{41A67F1A-7C79-4CF9-92B8-E9914DB7DEB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -296,6 +298,14 @@ Global
 		{F9907394-673A-46B5-9A25-AD8AC566EFDE}.Release (No Tests)|Any CPU.Build.0 = Release|Any CPU
 		{F9907394-673A-46B5-9A25-AD8AC566EFDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9907394-673A-46B5-9A25-AD8AC566EFDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41A67F1A-7C79-4CF9-92B8-E9914DB7DEB1}.Debug (No Tests)|Any CPU.ActiveCfg = Debug|Any CPU
+		{41A67F1A-7C79-4CF9-92B8-E9914DB7DEB1}.Debug (No Tests)|Any CPU.Build.0 = Debug|Any CPU
+		{41A67F1A-7C79-4CF9-92B8-E9914DB7DEB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41A67F1A-7C79-4CF9-92B8-E9914DB7DEB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41A67F1A-7C79-4CF9-92B8-E9914DB7DEB1}.Release (No Tests)|Any CPU.ActiveCfg = Release|Any CPU
+		{41A67F1A-7C79-4CF9-92B8-E9914DB7DEB1}.Release (No Tests)|Any CPU.Build.0 = Release|Any CPU
+		{41A67F1A-7C79-4CF9-92B8-E9914DB7DEB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41A67F1A-7C79-4CF9-92B8-E9914DB7DEB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -321,6 +331,10 @@ Global
 		{24B9C461-BD86-4CFC-A0AE-CA7C8B461DBB} = {CE2BC8DA-3644-4F61-938C-D4440C8E6321}
 		{312AA1BA-125B-40CA-BEE8-855E7FC8DBDA} = {CE2BC8DA-3644-4F61-938C-D4440C8E6321}
 		{F9907394-673A-46B5-9A25-AD8AC566EFDE} = {CE2BC8DA-3644-4F61-938C-D4440C8E6321}
+		{41A67F1A-7C79-4CF9-92B8-E9914DB7DEB1} = {510D8309-C9ED-4967-AAD6-0ED85C8FFB0E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3DF0D20F-0431-433C-B542-B42A735D037D}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Rug.Osc.vsmdi

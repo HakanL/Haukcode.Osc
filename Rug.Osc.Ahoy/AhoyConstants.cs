@@ -3,6 +3,11 @@
     public static class AhoyConstants
     {
         /// <summary>
+        /// Default service expiry period period in milliseconds.
+        /// </summary>
+        public const int DefaultServiceExpiryPeriod = 3000; 
+        
+        /// <summary>
         /// Ahoy broadcast port as defined in protocol. The ASCII value of the MSB and LSB are 'a' and 'h' respectively.
         /// </summary>
         public const int AhoyBroadcastPort = 0x6168; // 24936

@@ -33,6 +33,7 @@ namespace Rug.Loading.Tests
 
         //[TestMethod()]
         //public void GetTypeOfTypeTest()
+        
         //{
         //    Assert.Fail();
         //}
