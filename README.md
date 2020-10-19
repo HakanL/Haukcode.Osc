@@ -1,10 +1,11 @@
 # Haukcode.Osc [![NuGet Version](http://img.shields.io/nuget/v/Haukcode.Osc.svg?style=flat)](https://www.nuget.org/packages/Haukcode.Osc/)
 
 Simple, complete, open source OSC implementation for .NET Standard 2.0
-Fork from Rug.Osc
+
+*Fork from [Rug.Osc](https://bitbucket.org/rugcode) which hasn't seen updates in several years*
 
 # Key Features: 
-* Pure .NET (C#) (2.0 or greater) so any .NET / Mono platform is supported. (Windows, OS-X, Linux, Android, I-OS, Unity3D and more)
+* Pure .NET (C#) Standard 2.0
 * Message argument types supported are: **int**, **long**, **float**, **double**, **string**, **symbol**, **bool**, **RGBA**, **Osc-Null**, **Osc-Timetag**, **Osc-Midi**, **impulse**, **char**, **blob** and **arrays**.
 * Message address patterns and pattern matching.
 * Osc message bundles.
@@ -22,12 +23,10 @@ Fork from Rug.Osc
 # Send Example
 
 ```
-#!c#
-
-IPAddress address = IPAddress.Parse("127.0.0.1"); 
+var address = IPAddress.Parse("127.0.0.1"); 
 int port = 12345;
 
-using (OscSender sender = new OscSender(address, port)) 
+using (var sender = new OscSender(address, port)) 
 {
 	sender.Connect();
 
