@@ -2,7 +2,7 @@
 
 Simple, complete, open source OSC implementation for .NET Standard 2.0
 
-*Fork from [Rug.Osc](https://bitbucket.org/rugcode) which hasn't seen updates in several years*
+*Fork from [Rug.Osc](https://bitbucket.org/rugcode/rug.osc) which hasn't seen updates in several years*
 
 # Key Features: 
 * Pure .NET (C#) Standard 2.0
