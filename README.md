@@ -1,4 +1,4 @@
-# Haukcode.Osc
+# Haukcode.Osc [![NuGet Version](http://img.shields.io/nuget/v/Haukcode.Osc.svg?style=flat)](https://www.nuget.org/packages/Haukcode.Osc/)
 
 Simple, complete, open source OSC implementation for .NET Standard 2.0
 Fork from Rug.Osc
