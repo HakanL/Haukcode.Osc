@@ -16,12 +16,12 @@
  * 
  */
 
-
 namespace Rug.Osc
 {
-	public enum OscPacketFormat : int
-	{		
-		String = 0,
-		Binary = 1, 
-	}
+    public enum OscPacketFormat : int
+    {
+        String = 0,
+        Binary = 1,
+        Slip = 2,
+    }
 }

@@ -1,19 +1,19 @@
-﻿/* 
- * Rug.Osc 
- * 
+﻿/*
+ * Rug.Osc
+ *
  * Copyright (C) 2013 Phill Tew (peatew@gmail.com)
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
- * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
- * 
+ *
  */
 
 using System;
@@ -21,411 +21,402 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Rug.Osc
 {
-	internal static class Helper
-	{		
-		#region Private Static Members
+    internal static class Helper
+    {
+        #region Private Static Members
 
-		private static readonly byte[] m_Padding = new byte[] { 0, 0, 0, 0 };
+        private static bool isRunningOnMono;
+        private static readonly byte[] padding = new byte[] { 0, 0, 0, 0 };
 
-		#endregion
+        #endregion Private Static Members
 
-		#region Empty End Point
+        public static bool IsRunningOnMono { get { return isRunningOnMono; } }
 
-		public static IPEndPoint EmptyEndPoint { get { return new IPEndPoint(IPAddress.Any, 0); } }
+        static Helper()
+        {
+            isRunningOnMono = Type.GetType("Mono.Runtime") != null;
+        }
 
-		public static IPEndPoint EmptyEndPointIPv6 { get { return new IPEndPoint(IPAddress.IPv6Any, 0); } } 
+        #region Empty End Point
 
-		#endregion
+        public static IPEndPoint EmptyEndPoint { get { return new IPEndPoint(IPAddress.Any, 0); } }
 
-		#region Is Null Or White Space
+        public static IPEndPoint EmptyEndPointIPv6 { get { return new IPEndPoint(IPAddress.IPv6Any, 0); } }
 
-		public static bool IsNullOrWhiteSpace(string str) 
-		{
-			if (str == null)
-			{
-				return true; 
-			}
+        #endregion Empty End Point
 
-			if (String.IsNullOrEmpty(str.Trim()) == true)
-			{
-				return true; 
-			}
+        #region Is Null Or White Space
 
-			return false; 
-		}
+        public static bool IsNullOrWhiteSpace(string str)
+        {
+            if (str == null)
+            {
+                return true;
+            }
 
-		#endregion
+            if (String.IsNullOrEmpty(str.Trim()) == true)
+            {
+                return true;
+            }
 
-		#region UInt to Float Conversion Helper
+            return false;
+        }
 
-		/// <summary>
-		/// UInt to Float Conversion Helper 
-		/// http://stackoverflow.com/questions/8037645/cast-float-to-int-without-any-conversion
-		/// </summary>
-		[StructLayout(LayoutKind.Explicit)]
-		private struct FloatAndUIntUnion
-		{
-			[FieldOffset(0)]
-			public uint UInt32Bits;
-			[FieldOffset(0)]
-			public float FloatValue;
-		}
+        #endregion Is Null Or White Space
 
-		#endregion
+        #region UInt to Float Conversion Helper
 
-		#region Byte
+        /// <summary>
+        /// UInt to Float Conversion Helper
+        /// http://stackoverflow.com/questions/8037645/cast-float-to-int-without-any-conversion
+        /// </summary>
+        [StructLayout(LayoutKind.Explicit)]
+        private struct FloatAndUIntUnion
+        {
+            [FieldOffset(0)]
+            public uint UInt32Bits;
 
-		internal static void Write(System.IO.BinaryWriter writer, byte value)
-		{
-			writer.Write(value);
-			writer.Write((byte)0);
-			writer.Write((byte)0);
-			writer.Write((byte)0);
-		}
+            [FieldOffset(0)]
+            public float FloatValue;
+        }
 
-		internal static byte ReadByte(BinaryReader reader)
-		{
-			byte value = reader.ReadByte();
-			reader.ReadByte();
-			reader.ReadByte();
-			reader.ReadByte(); 
+        #endregion UInt to Float Conversion Helper
 
-			return value;
-		}
+        #region Byte
 
-		#endregion
+        public static void Write(System.IO.BinaryWriter writer, byte value)
+        {
+            writer.Write(value);
+            writer.Write((byte)0);
+            writer.Write((byte)0);
+            writer.Write((byte)0);
+        }
 
-		#region Int 32
+        public static byte ReadByte(BinaryReader reader)
+        {
+            byte value = reader.ReadByte();
+            reader.ReadByte();
+            reader.ReadByte();
+            reader.ReadByte();
 
-		internal static void Write(System.IO.BinaryWriter writer, int value)
-		{
-			uint allBits = unchecked((uint)value);
+            return value;
+        }
 
-			Write(writer, allBits);								
-		}
+        #endregion Byte
 
-		internal static int ReadInt32(System.IO.BinaryReader reader)
-		{
-			uint value = ReadUInt32(reader);
+        #region Int 32
 
-			return unchecked((int)value);
-		}
+        public static void Write(System.IO.BinaryWriter writer, int value)
+        {
+            uint allBits = unchecked((uint)value);
 
-		#endregion
+            Write(writer, allBits);
+        }
 
-		#region UInt 32
+        public static int ReadInt32(System.IO.BinaryReader reader)
+        {
+            uint value = ReadUInt32(reader);
 
-		internal static void Write(System.IO.BinaryWriter writer, uint value)
-		{
-			value = unchecked((value & 0xFF000000) >> 24 |
-							   (value & 0x00FF0000) >> 8 |
-							   (value & 0x0000FF00) << 8 |
-							   (value & 0x000000FF) << 24);
+            return unchecked((int)value);
+        }
 
-			writer.Write(value); 
-		}
+        #endregion Int 32
 
-		internal static uint ReadUInt32(System.IO.BinaryReader reader)
-		{
-			uint value = reader.ReadUInt32();
-			value = unchecked((value & 0xFF000000) >> 24 |
-							   (value & 0x00FF0000) >> 8 |
-							   (value & 0x0000FF00) << 8 |
-							   (value & 0x000000FF) << 24);
+        #region UInt 32
 
-			return value;
-		}
+        public static void Write(System.IO.BinaryWriter writer, uint value)
+        {
+            value = unchecked((value & 0xFF000000) >> 24 |
+                               (value & 0x00FF0000) >> 8 |
+                               (value & 0x0000FF00) << 8 |
+                               (value & 0x000000FF) << 24);
 
-		#endregion
+            writer.Write(value);
+        }
 
-		#region Single (float)
+        public static uint ReadUInt32(System.IO.BinaryReader reader)
+        {
+            uint value = reader.ReadUInt32();
+            value = unchecked((value & 0xFF000000) >> 24 |
+                               (value & 0x00FF0000) >> 8 |
+                               (value & 0x0000FF00) << 8 |
+                               (value & 0x000000FF) << 24);
 
-		internal static void Write(System.IO.BinaryWriter writer, float value)
-		{
-			FloatAndUIntUnion v = default(FloatAndUIntUnion);
+            return value;
+        }
 
-			v.FloatValue = value; 
+        #endregion UInt 32
 
-			Write(writer, v.UInt32Bits); 
-		}
+        #region Single (float)
 
-		internal static float ReadSingle(System.IO.BinaryReader reader)
-		{
-			FloatAndUIntUnion v = default(FloatAndUIntUnion);
+        public static void Write(System.IO.BinaryWriter writer, float value)
+        {
+            FloatAndUIntUnion v = default(FloatAndUIntUnion);
 
-			v.UInt32Bits = ReadUInt32(reader);
+            v.FloatValue = value;
 
-			return v.FloatValue; 
-		}
+            Write(writer, v.UInt32Bits);
+        }
 
-		#endregion
+        public static float ReadSingle(System.IO.BinaryReader reader)
+        {
+            FloatAndUIntUnion v = default(FloatAndUIntUnion);
 
-		#region Int 64
+            v.UInt32Bits = ReadUInt32(reader);
 
-		internal static void Write(System.IO.BinaryWriter writer, long value)
-		{
-			ulong allBits = unchecked((ulong)value);
+            return v.FloatValue;
+        }
 
-			Write(writer, allBits);
-		}
+        #endregion Single (float)
 
-		internal static long ReadInt64(System.IO.BinaryReader reader)
-		{
-			ulong value = ReadUInt64(reader);
+        #region Int 64
 
-			return unchecked((long)value);
-		}
+        public static void Write(System.IO.BinaryWriter writer, long value)
+        {
+            ulong allBits = unchecked((ulong)value);
 
-		#endregion
+            Write(writer, allBits);
+        }
 
-		#region Uint 64
+        public static long ReadInt64(System.IO.BinaryReader reader)
+        {
+            ulong value = ReadUInt64(reader);
 
-		internal static void Write(System.IO.BinaryWriter writer, ulong value)
-		{
-			value = unchecked((value & 0xFF00000000000000) >> 56 |
-							   (value & 0x00FF000000000000) >> 40 |
-							   (value & 0x0000FF0000000000) >> 24 |
-							   (value & 0x000000FF00000000) >> 8 |
-							   (value & 0x00000000FF000000) << 8 |
-							   (value & 0x0000000000FF0000) << 24 |
-							   (value & 0x000000000000FF00) << 40 |
-							   (value & 0x00000000000000FF) << 56);
+            return unchecked((long)value);
+        }
 
-			writer.Write(value); 
-		}
+        #endregion Int 64
 
-		internal static ulong ReadUInt64(System.IO.BinaryReader reader)
-		{
-			ulong value = reader.ReadUInt64();
-			value = unchecked((value & 0xFF00000000000000) >> 56 |
-							   (value & 0x00FF000000000000) >> 40 |
-							   (value & 0x0000FF0000000000) >> 24 |
-							   (value & 0x000000FF00000000) >> 8 |
-							   (value & 0x00000000FF000000) << 8 |
-							   (value & 0x0000000000FF0000) << 24 |
-							   (value & 0x000000000000FF00) << 40 |
-							   (value & 0x00000000000000FF) << 56);
+        #region Uint 64
 
-			return value;
-		}
+        public static void Write(System.IO.BinaryWriter writer, ulong value)
+        {
+            value = unchecked((value & 0xFF00000000000000) >> 56 |
+                               (value & 0x00FF000000000000) >> 40 |
+                               (value & 0x0000FF0000000000) >> 24 |
+                               (value & 0x000000FF00000000) >> 8 |
+                               (value & 0x00000000FF000000) << 8 |
+                               (value & 0x0000000000FF0000) << 24 |
+                               (value & 0x000000000000FF00) << 40 |
+                               (value & 0x00000000000000FF) << 56);
 
-		#endregion
+            writer.Write(value);
+        }
 
-		#region Double
+        public static ulong ReadUInt64(System.IO.BinaryReader reader)
+        {
+            ulong value = reader.ReadUInt64();
+            value = unchecked((value & 0xFF00000000000000) >> 56 |
+                               (value & 0x00FF000000000000) >> 40 |
+                               (value & 0x0000FF0000000000) >> 24 |
+                               (value & 0x000000FF00000000) >> 8 |
+                               (value & 0x00000000FF000000) << 8 |
+                               (value & 0x0000000000FF0000) << 24 |
+                               (value & 0x000000000000FF00) << 40 |
+                               (value & 0x00000000000000FF) << 56);
 
-		internal static void Write(System.IO.BinaryWriter writer, double value)
-		{
-			long setofBits = BitConverter.DoubleToInt64Bits(value);
+            return value;
+        }
 
-			ulong allBits = unchecked((ulong)setofBits);
+        #endregion Uint 64
 
-			Write(writer, allBits);
-		}
+        #region Double
 
-		internal static double ReadDouble(System.IO.BinaryReader reader)
-		{
-			ulong value = ReadUInt64(reader);
+        public static void Write(System.IO.BinaryWriter writer, double value)
+        {
+            long setofBits = BitConverter.DoubleToInt64Bits(value);
 
-			return BitConverter.Int64BitsToDouble(unchecked((long)value));
-		}
+            ulong allBits = unchecked((ulong)setofBits);
 
-		#endregion
+            Write(writer, allBits);
+        }
 
-		#region Blob
+        public static double ReadDouble(System.IO.BinaryReader reader)
+        {
+            ulong value = ReadUInt64(reader);
 
-		public static byte[] ParseBlob(string str, IFormatProvider provider)
-		{
-			if (Helper.IsNullOrWhiteSpace(str) == true)
-			{
-				return new byte[0];
-			}
+            return BitConverter.Int64BitsToDouble(unchecked((long)value));
+        }
 
-			string trimmed = str.Trim();
+        #endregion Double
 
-			if (trimmed.StartsWith("64x") == true)
-			{
-				return System.Convert.FromBase64String(trimmed.Substring(3));
-			}
-			else if (str.StartsWith("0x") == true)
-			{
-				trimmed = trimmed.Substring(2);
+        #region Blob
 
-				if (trimmed.Length % 2 != 0)
-				{
-					// this is an error 
-					throw new Exception(Strings.Parser_InvalidBlobStringLength);
-				}
+        public static byte[] ParseBlob(string str, IFormatProvider provider)
+        {
+            if (Helper.IsNullOrWhiteSpace(str) == true)
+            {
+                return new byte[0];
+            }
 
-				int length = trimmed.Length / 2;
+            string trimmed = str.Trim();
 
-				byte[] bytes = new byte[length];
+            if (trimmed.StartsWith("64x") == true)
+            {
+                return System.Convert.FromBase64String(trimmed.Substring(3));
+            }
+            else if (str.StartsWith("0x") == true)
+            {
+                trimmed = trimmed.Substring(2);
 
-				for (int i = 0; i < bytes.Length; i++)
-				{
-					bytes[i] = byte.Parse(trimmed.Substring(i * 2, 2), NumberStyles.HexNumber, provider);
-				}
+                if (trimmed.Length % 2 != 0)
+                {
+                    // this is an error
+                    throw new Exception("Invalid blob string length");
+                }
 
-				return bytes;
-			}
-			else
-			{
-				string[] parts = str.Split(',');
+                int length = trimmed.Length / 2;
 
-				byte[] bytes = new byte[parts.Length];
+                byte[] bytes = new byte[length];
 
-				for (int i = 0; i < bytes.Length; i++)
-				{
-					bytes[i] = byte.Parse(parts[i], NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite, provider);
-				}
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    bytes[i] = byte.Parse(trimmed.Substring(i * 2, 2), NumberStyles.HexNumber, provider);
+                }
 
-				return bytes;
-			}
-		}
+                return bytes;
+            }
+            else
+            {
+                string[] parts = str.Split(',');
 
-		public static string ToStringBlob(byte[] bytes)
-		{
-			// if the deafult is to be Base64 encoded
-			//return "64x" + System.Convert.ToBase64String(bytes); 
+                byte[] bytes = new byte[parts.Length];
 
-			StringBuilder sb = new StringBuilder((bytes.Length * 2) + 2);
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    bytes[i] = byte.Parse(parts[i], NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite, provider);
+                }
 
-			sb.Append("0x");
+                return bytes;
+            }
+        }
 
-			foreach (byte b in bytes)
-			{
-				sb.Append(b.ToString("X2"));
-			}				
+        #endregion Blob
 
-			return sb.ToString();
-		}
+        #region Color
 
-		#endregion
+        public static void Write(BinaryWriter writer, OscColor value)
+        {
+            uint intValue = unchecked((uint)(
+                        ((byte)value.R << 24) |
+                        ((byte)value.G << 16) |
+                        ((byte)value.B << 8) |
+                        ((byte)value.A << 0)));
 
-		#region Color
+            Write(writer, intValue);
+        }
 
-		internal static void Write(BinaryWriter writer, OscColor value)
-		{
-			uint intValue = unchecked((uint)(
-						((byte)value.R << 24) |
-						((byte)value.G << 16) |
-						((byte)value.B << 8) |
-						((byte)value.A << 0)));
+        public static OscColor ReadColor(System.IO.BinaryReader reader)
+        {
+            uint value = ReadUInt32(reader);
 
-			Write(writer, intValue);
-		}
+            byte a, r, g, b;
 
-		internal static OscColor ReadColor(System.IO.BinaryReader reader)
-		{			
-			uint value = ReadUInt32(reader);
+            r = (byte)((value & 0xFF000000) >> 24);
+            g = (byte)((value & 0x00FF0000) >> 16);
+            b = (byte)((value & 0x0000FF00) >> 8);
+            a = (byte)(value & 0x000000FF);
 
-			byte a, r, g, b;
+            return OscColor.FromArgb(a, r, g, b);
+        }
 
-			r = (byte)((value & 0xFF000000) >> 24);
-			g = (byte)((value & 0x00FF0000) >> 16);
-			b = (byte)((value & 0x0000FF00) >> 8);
-			a = (byte)(value & 0x000000FF);
+        #region Color Helpers
 
-			return OscColor.FromArgb(a, r, g, b);
-		}
+        public static object ParseColor(string str, IFormatProvider provider)
+        {
+            string[] pieces = str.Split(',');
 
-		#region Color Helpers
+            if (pieces.Length == 4)
+            {
+                byte a, r, g, b;
 
-		public static object ParseColor(string str, IFormatProvider provider)
-		{
-			string[] pieces = str.Split(',');
+                r = byte.Parse(pieces[0].Trim(), System.Globalization.NumberStyles.None, provider);
+                g = byte.Parse(pieces[1].Trim(), System.Globalization.NumberStyles.None, provider);
+                b = byte.Parse(pieces[2].Trim(), System.Globalization.NumberStyles.None, provider);
+                a = byte.Parse(pieces[3].Trim(), System.Globalization.NumberStyles.None, provider);
 
-			if (pieces.Length == 4)
-			{
-				byte a, r, g, b;
+                return OscColor.FromArgb(a, r, g, b);
+            }
+            else
+            {
+                throw new Exception($"Invalid color \'{str}\'");
+            }
+        }
 
-				r = byte.Parse(pieces[0].Trim(), System.Globalization.NumberStyles.None, provider);
-				g = byte.Parse(pieces[1].Trim(), System.Globalization.NumberStyles.None, provider);
-				b = byte.Parse(pieces[2].Trim(), System.Globalization.NumberStyles.None, provider);
-				a = byte.Parse(pieces[3].Trim(), System.Globalization.NumberStyles.None, provider);
+        public static string ToStringColor(OscColor color)
+        {
+            return $"{color.R}, {color.G}, {color.B}, {color.A}";
+        }
 
-				return OscColor.FromArgb(a, r, g, b);
-			}
-			else
-			{
-				throw new Exception(String.Format(Strings.Parser_InvalidColor, str));
-			}
-		}
+        #endregion Color Helpers
 
-		public static string ToStringColor(OscColor color)
-		{
-			return String.Format("{0}, {1}, {2}, {3}", color.R, color.G, color.B, color.A);		
-		}
+        #endregion Color
 
-		#endregion
+        #region OscTimeTag
 
-		#endregion
+        public static void Write(BinaryWriter writer, OscTimeTag value)
+        {
+            Write(writer, value.Value);
+        }
 
-		#region OscTimeTag
+        public static OscTimeTag ReadOscTimeTag(System.IO.BinaryReader reader)
+        {
+            ulong value = ReadUInt64(reader);
 
-		internal static void Write(BinaryWriter writer, OscTimeTag value)
-		{
-			Write(writer, value.Value); 
-		}
+            return new OscTimeTag(value);
+        }
 
-		internal static OscTimeTag ReadOscTimeTag(System.IO.BinaryReader reader)
-		{
-			ulong value = ReadUInt64(reader);
+        #endregion OscTimeTag
 
-			return new OscTimeTag(value);
-		}
+        #region OscMidiMessage
 
-		#endregion
+        public static void Write(BinaryWriter writer, OscMidiMessage value)
+        {
+            Write(writer, value.FullMessage);
+        }
 
-		#region OscMidiMessage
+        public static OscMidiMessage ReadOscMidiMessage(System.IO.BinaryReader reader)
+        {
+            uint value = ReadUInt32(reader);
 
-		internal static void Write(BinaryWriter writer, OscMidiMessage value)
-		{
-			Write(writer, value.FullMessage); 
-		}
+            return new OscMidiMessage(value);
+        }
 
-		internal static OscMidiMessage ReadOscMidiMessage(System.IO.BinaryReader reader)
-		{
-			uint value = ReadUInt32(reader);
+        #endregion OscMidiMessage
 
-			return new OscMidiMessage(value);
-		}
+        #region Padding
 
-		#endregion
+        public static void WritePadding(System.IO.BinaryWriter writer, long position)
+        {
+            int nullCount = 4 - (int)(position % 4);
 
-		#region Padding
+            if (nullCount < 4)
+            {
+                writer.Write(padding, 0, nullCount);
+            }
+        }
 
-		internal static void WritePadding(System.IO.BinaryWriter writer, long position)
-		{
-			int nullCount = 4 - (int)(position % 4);
+        public static bool SkipPadding(Stream stream)
+        {
+            if (stream.Position % 4 != 0)
+            {
+                long newPosition = stream.Position + (4 - (stream.Position % 4));
 
-			if (nullCount < 4)
-			{
-				writer.Write(m_Padding, 0, nullCount); 
-			}
-		}
+                // this shouldn't happen and means we're decoding rubbish
+                if (newPosition > stream.Length)
+                {
+                    return false;
+                }
 
-		internal static bool SkipPadding(Stream stream)
-		{
-			if (stream.Position % 4 != 0)
-			{
-				long newPosition = stream.Position + (4 - (stream.Position % 4));
+                stream.Position = newPosition;
+            }
 
-				// this shouldn't happen and means we're decoding rubbish
-				if (newPosition > stream.Length)
-				{
-					return false;
-				}
+            return true;
+        }
 
-				stream.Position = newPosition;
-			}
-
-			return true;
-		}
-
-		#endregion	
-	}
+        #endregion Padding
+    }
 }

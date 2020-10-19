@@ -1,19 +1,19 @@
-﻿/* 
- * Rug.Osc 
- * 
+﻿/*
+ * Rug.Osc
+ *
  * Copyright (C) 2013 Phill Tew (peatew@gmail.com)
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
- * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
- * 
+ *
  */
 
 using System;
@@ -22,156 +22,174 @@ using System.Text;
 
 namespace Rug.Osc
 {
-	/// <summary>
-	/// Reads osc packets from a stream
-	/// </summary>
-	public sealed class OscReader : IDisposable
-	{
-		#region Private Members
+    /// <summary>
+    /// Reads osc packets from a stream
+    /// </summary>
+    public sealed class OscReader : IDisposable
+    {
+        private readonly BinaryReader binaryReader;
+        private readonly byte[] slipByteCache;
+        private readonly Slip.SlipPacketReader slipReader;
+        private readonly StreamReader stringReader;
+        private int slipByteCount;
+        private int slipByteIndex;
 
-		private readonly Stream m_Stream;
-		private readonly OscPacketFormat m_Format;
-		private readonly BinaryReader m_BinaryReader;
-		private readonly StreamReader m_StringReader;
+        /// <summary>
+        /// Exposes access to the underlying stream of the OscReader.
+        /// </summary>
+        public Stream BaseStream { get; }
 
-		#endregion 
+        /// <summary>
+        /// Gets a value that indicates whether the current stream position is at the end of the stream.
+        /// </summary>
+        public bool EndOfStream
+        {
+            get
+            {
+                if (BaseStream.CanRead == false)
+                {
+                    return true;
+                }
 
-		#region Properties
+                switch (Format)
+                {
+                    case OscPacketFormat.Binary:
+                        return BaseStream.Position >= BaseStream.Length;
 
-		/// <summary>
-		/// Exposes access to the underlying stream of the OscReader.
-		/// </summary>
-		public Stream BaseStream { get { return m_Stream; } }
+                    case OscPacketFormat.Slip:
+                        return BaseStream.Position >= BaseStream.Length && slipByteIndex >= slipByteCount;
 
-		/// <summary>
-		/// Packet format 
-		/// </summary>
-		public OscPacketFormat Format { get { return m_Format; } }
+                    case OscPacketFormat.String:
+                        return stringReader.EndOfStream;
 
-		/// <summary>
-		/// Gets a value that indicates whether the current stream position is at the end of the stream.
-		/// </summary>
-		public bool EndOfStream 
-		{ 
-			get 
-			{
-				if (BaseStream.CanRead == false)
-				{
-					return true;
-				}
+                    default:
+                        throw new Exception($@"Invalid OSC stream format ""{Format}"".");
+                }
+            }
+        }
 
-				if (m_Format == OscPacketFormat.Binary)
-				{
-					return BaseStream.Position >= BaseStream.Length; 
-				}
-				else
-				{
-					return m_StringReader.EndOfStream;
-				}				
-			} 
-		}
+        /// <summary>
+        /// Packet format
+        /// </summary>
+        public OscPacketFormat Format { get; }
 
-		#endregion
+        /// <summary>
+        /// Initializes a new instance of the OscReader class based on the supplied stream.
+        /// </summary>
+        /// <param name="stream">a stream</param>
+        /// <param name="mode">the format of the packets in the stream</param>
+        public OscReader(Stream stream, OscPacketFormat mode)
+        {
+            this.BaseStream = stream;
+            Format = mode;
 
-		#region Constructor
+            switch (Format)
+            {
+                case OscPacketFormat.Binary:
+                    binaryReader = new BinaryReader(this.BaseStream);
+                    break;
 
-		/// <summary>
-		/// Initializes a new instance of the OscReader class based on the supplied stream. 
-		/// </summary>
-		/// <param name="stream">a stream</param>
-		/// <param name="mode">the format of the packets in the stream</param>
-		public OscReader(Stream stream, OscPacketFormat mode)
-		{
-			m_Stream = stream;
-			m_Format = mode;
-		
-			if (m_Format == OscPacketFormat.Binary)
-			{
-				m_BinaryReader = new BinaryReader(m_Stream);
-			}
-			else
-			{
-				m_StringReader = new StreamReader(m_Stream);
-			}
-		}
+                case OscPacketFormat.Slip:
+                    binaryReader = new BinaryReader(this.BaseStream);
+                    slipReader = new Slip.SlipPacketReader(1024 * 8);
 
-		#endregion
+                    slipByteCache = new byte[1024];
+                    slipByteIndex = 0;
+                    slipByteCount = 0;
+                    break;
 
-		#region Read
+                case OscPacketFormat.String:
+                    stringReader = new StreamReader(this.BaseStream);
+                    break;
 
-		/// <summary>
-		/// Read a single packet from the stream at the current position
-		/// </summary>
-		/// <returns>An osc packet</returns>
-		public OscPacket Read()
-		{
-			if (Format == OscPacketFormat.Binary)
-			{				
-				int length = Helper.ReadInt32(m_BinaryReader);
+                default:
+                    throw new Exception($@"Invalid OSC stream format ""{Format}"".");
+            }
+        }
 
-				byte[] bytes = new byte[length]; 
+        /// <summary>
+        /// Closes the current reader and the underlying stream.
+        /// </summary>
+        public void Close()
+        {
+            Dispose();
+        }
 
-				m_BinaryReader.Read(bytes, 0, length);
+        /// <summary>
+        /// Disposes the current reader and the underlying stream.
+        /// </summary>
+        public void Dispose()
+        {
+            binaryReader?.Close();
+            stringReader?.Close();
+        }
 
-				return OscPacket.Read(bytes, length); 
-			}
-			else
-			{
-				string line = m_StringReader.ReadLine();
-				OscPacket packet;
+        /// <summary>
+        /// Read a single packet from the stream at the current position
+        /// </summary>
+        /// <returns>An osc packet</returns>
+        public OscPacket Read()
+        {
+            switch (Format)
+            {
+                case OscPacketFormat.Binary:
+                    int length = Helper.ReadInt32(binaryReader);
 
-				if (OscPacket.TryParse(line, out packet) == false)
-				{
-					StringBuilder sb = new StringBuilder();
+                    byte[] bytes = new byte[length];
 
-					sb.AppendLine(line); 
+                    binaryReader.Read(bytes, 0, length);
 
-					while (EndOfStream == false)
-					{
-						sb.Append(m_StringReader.ReadLine());
+                    return OscPacket.Read(bytes, length);
 
-						if (OscPacket.TryParse(sb.ToString(), out packet) == true)
-						{
-							return packet; 
-						}
+                case OscPacketFormat.Slip:
+                    byte[] packetBytes = new byte[slipReader.BufferSize];
+                    int packetLength = 0;
 
-						sb.AppendLine(); 
-					}
+                    do
+                    {
+                        if (slipByteCount - slipByteIndex == 0)
+                        {
+                            slipByteIndex = 0;
 
-					return OscMessage.ParseError; 
-				}
+                            slipByteCount = binaryReader.Read(slipByteCache, 0, slipByteCache.Length);
+                        }
 
-				return packet; 
-			}
-		}
+                        slipByteIndex += slipReader.ProcessBytes(slipByteCache, slipByteIndex, slipByteCount - slipByteIndex, ref packetBytes, out packetLength);
+                    }
+                    while (packetLength <= 0 && EndOfStream == false);
 
-		#endregion 
+                    return packetLength > 0 ? OscPacket.Read(packetBytes, packetLength) : OscMessage.ParseError;
 
-		#region Close
+                case OscPacketFormat.String:
+                    string line = stringReader.ReadLine();
+                    OscPacket packet;
 
-		/// <summary>
-		/// Closes the current reader and the underlying stream.
-		/// </summary>
-		public void Close()
-		{
-			Dispose();
-		}
+                    if (OscPacket.TryParse(line, out packet) == false)
+                    {
+                        StringBuilder sb = new StringBuilder();
 
-		/// <summary>
-		/// Disposes the current reader and the underlying stream.
-		/// </summary>
-		public void Dispose()
-		{
-			if (m_Format == OscPacketFormat.Binary)
-			{
-				m_BinaryReader.Close();
-			}
-			else
-			{
-				m_StringReader.Close();
-			}
-		}
-	
-		#endregion
-	}
+                        sb.AppendLine(line);
+
+                        while (EndOfStream == false)
+                        {
+                            sb.Append(stringReader.ReadLine());
+
+                            if (OscPacket.TryParse(sb.ToString(), out packet) == true)
+                            {
+                                return packet;
+                            }
+
+                            sb.AppendLine();
+                        }
+
+                        return OscMessage.ParseError;
+                    }
+
+                    return packet;
+
+                default:
+                    throw new Exception($@"Invalid OSC stream format ""{Format}"".");
+            }
+        }
+    }
 }
