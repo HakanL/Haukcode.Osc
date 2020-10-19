@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Rug.Osc;
+using Haukcode.Osc;
 
 namespace WriteToFile
 {

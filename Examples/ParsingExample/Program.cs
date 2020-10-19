@@ -1,5 +1,5 @@
 ﻿using System;
-using Rug.Osc;
+using Haukcode.Osc;
 using System.Drawing;
 
 namespace ParsingExample

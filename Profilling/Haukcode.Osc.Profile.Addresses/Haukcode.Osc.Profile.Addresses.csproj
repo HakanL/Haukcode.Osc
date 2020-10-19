@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <Description>For use when attaining profile data for Haukcode.Osc.OscAddress and some other bits</Description>
+    <Copyright>Copyright © Phill Tew 2013</Copyright>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Haukcode.Osc\Haukcode.Osc.csproj" />
+    <ProjectReference Include="..\Haukcode.Osc.Profile\Haukcode.Osc.Profile.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Windows.Forms;
-using Rug.Osc;
+using Haukcode.Osc;
 
 namespace PollingListener
 {

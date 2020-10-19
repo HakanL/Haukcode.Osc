@@ -3,7 +3,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using Rug.Osc;
+using Haukcode.Osc;
 
 namespace ListenerManager
 {

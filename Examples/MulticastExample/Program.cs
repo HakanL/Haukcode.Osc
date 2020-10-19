@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading;
-using Rug.Osc;
+using Haukcode.Osc;
 
 namespace MulticastExample
 {
@@ -96,7 +96,10 @@ namespace MulticastExample
 						// this will block until one arrives or the socket is closed
 						OscPacket packet = m_Receiver.Receive();
 
-					    if (packet.Error == OscPacketError.None)
+						if (packet == null)
+							continue;
+
+						if (packet.Error == OscPacketError.None)
 					    {
 					        m_Listener.Invoke(packet);
 					    }

@@ -1,6 +1,7 @@
-# Rug.Osc 
+# Haukcode.Osc
 
-Simple, complete, open source OSC implementation for .NET and Mono. 
+Simple, complete, open source OSC implementation for .NET Standard 2.0
+Fork from Rug.Osc
 
 # Key Features: 
 * Pure .NET (C#) (2.0 or greater) so any .NET / Mono platform is supported. (Windows, OS-X, Linux, Android, I-OS, Unity3D and more)
@@ -13,7 +14,7 @@ Simple, complete, open source OSC implementation for .NET and Mono.
 * Parse osc messages and bundles from strings.
 * Optimized for use in real-time applications.
 * 100% thread safe.
-* Released under a permissive [MIT License](https://bitbucket.org/rugcode/rug.osc/wiki/License)
+* Released under a permissive MIT License.
 
 
 
@@ -39,15 +40,3 @@ using (OscSender sender = new OscSender(address, port))
 # More Examples
 * [Sending a message](https://bitbucket.org/rugcode/rug.osc/wiki/Sending%20a%20message)
 * [Receiving a message](https://bitbucket.org/rugcode/rug.osc/wiki/Receiving%20a%20message)
-
-
-
-# Links
-* [Source distribution](https://bitbucket.org/rugcode/rug.osc/get/Version-1.2.4.0.zip) (includes examples)
-* [Binarys](https://bitbucket.org/rugcode/rug.osc/downloads/Rug.Osc%201.2.4.0.zip)
-* [Nuget project page](http://www.nuget.org/packages/Rug.Osc/)
-* If you use this project please rate it on [Ohloh](https://www.ohloh.net/p/rugosc)
-* Feel free to follow us on twitter [@RugCode](https://twitter.com/RugCode)
-* Please donate bitcoin [via Mt.Gox](https://payment.mtgox.com/4dce465b-6348-46a5-abbf-c401255283ce) or directly at 1P8XvVrrBu68P5Rd8SyYHkZ75dHJA8XU3p
-
-![QR Code](http://rugcode.files.wordpress.com/2013/11/bitcoin-donations2.png)

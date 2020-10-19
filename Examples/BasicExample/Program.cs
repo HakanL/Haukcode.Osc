@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading;
-using Rug.Osc;
+using Haukcode.Osc;
 
 namespace BasicExample
 {
@@ -95,6 +95,9 @@ namespace BasicExample
 						// get the next message 
 						// this will block until one arrives or the socket is closed
 						OscPacket packet = m_Receiver.Receive();
+
+						if (packet == null)
+							continue;
 
 					    if (packet.Error == OscPacketError.None)
 					    {
